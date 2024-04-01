@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Monopoly2D.unity
+    path: Assets/Scenes/Loading.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 6d023e0bcaa3f1e42bdfd5d31ccfc24b
+  - enabled: 1
+    path: Assets/Scenes/GamePlayScene.unity
+    guid: ff08d06f65bda274ab16baf283f944c1
   m_configObjects: {}
