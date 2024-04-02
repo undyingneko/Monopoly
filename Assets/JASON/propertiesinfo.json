@@ -1,0 +1,98 @@
+[
+  {
+      "name": "Vending Machine",
+      "waypointIndex": 2,
+      "priceStage1": 5
+  },
+  {
+      "name": "Convenient Store",
+      "waypointIndex": 3,
+      "priceStage1": 6
+  },
+  {
+      "name": "Bento Shop",
+      "waypointIndex": 4,
+      "priceStage1": 7
+  },
+  {
+      "name": "Candy Apple Stall",
+      "waypointIndex": 6,
+      "priceStage1": 8
+  },
+  {
+      "name": "Cotton Candy Stall",
+      "waypointIndex": 7,
+      "priceStage1": 9
+  },
+  {
+      "name": "Mochi Shop",
+      "waypointIndex": 8,
+      "priceStage1": 10
+  },
+  {
+      "name": "Takoyaki Stall",
+      "waypointIndex": 10,
+      "priceStage1": 12
+  },
+  {
+      "name": "Ikayaki Stall",
+      "waypointIndex": 11,
+      "priceStage1": 14
+  },
+  {
+      "name": "Karaage Chicken",
+      "waypointIndex": 12,
+      "priceStage1": 16
+  },
+  {
+      "name": "Yakisoba Stall",
+      "waypointIndex": 15,
+      "priceStage1": 18
+  },
+  {
+      "name": "Ramen Shop",
+      "waypointIndex": 16,
+      "priceStage1": 20
+  },
+  {
+      "name": "French Patisserie Shop",
+      "waypointIndex": 18,
+      "priceStage1": 22
+  },
+  {
+      "name": "Cat Café",
+      "waypointIndex": 20,
+      "priceStage1": 24
+  },
+  {
+      "name": "Sake Bar",
+      "waypointIndex": 22,
+      "priceStage1": 26
+  },
+  {
+      "name": "Karaoke Lounge",
+      "waypointIndex": 23,
+      "priceStage1": 28
+  },
+  {
+      "name": "Buffet Restaurant",
+      "waypointIndex": 27,
+      "priceStage1": 30
+  },
+  {
+      "name": "Dimsum Restaurant",
+      "waypointIndex": 28,
+      "priceStage1": 34
+  },
+  {
+      "name": "Grill Restaurant",
+      "waypointIndex": 30,
+      "priceStage1": 36
+  },
+  {
+      "name": "Sushi Restaurant",
+      "waypointIndex": 31,
+      "priceStage1": 40
+  }
+ 
+]

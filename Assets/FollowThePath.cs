@@ -15,7 +15,9 @@ public class FollowThePath : MonoBehaviour {
     public TextMeshProUGUI plus200Text;
     public int[] propertyStages = new int[5];
     public TextMeshProUGUI moneyText; // Reference to the TextMeshProUGUI object for displaying money
-    public TextMeshProUGUI[] propertyTexts;   
+    public TextMeshProUGUI[] propertyTexts;
+    public int[][] propertyPrices;
+    public PropertyPopup propertyPopup;
  
     private void Start () 
     {
@@ -30,6 +32,22 @@ public class FollowThePath : MonoBehaviour {
     private void Update () {
         if (moveAllowed)
             Move();
+        if (!moveAllowed && Money > 0)
+        {
+            int lastWaypointIndex = waypointIndex % waypoints.Length;
+            PropertyManager.PropertyData propertyData = PropertyManager.Instance.GetPropertyByWaypointIndex(lastWaypointIndex);
+            if (propertyData != null)
+            {
+                foreach (int price in propertyData.prices)
+                {
+                    if (Money >= price)
+                    {
+                        propertyPopup.ShowPropertyDetails(propertyData.name, propertyData.prices);
+                        break; // Exit the loop since the player can buy at least one stage
+                    }
+                }
+            }
+        }
 	}
 
     private void Move()
@@ -41,12 +59,10 @@ public class FollowThePath : MonoBehaviour {
         if (transform.position == waypoints[waypointIndex].transform.position)
         {
             waypointIndex = (waypointIndex + 1) % waypoints.Length;
-
-            // Check if the player has reached the first waypoint
             if (waypointIndex == 0)
             {
                 Money += 200;
-                DisplayPlus200(); // Add 200 to player's money
+                DisplayPlus200();
             }
         }
     }
@@ -60,35 +76,27 @@ public class FollowThePath : MonoBehaviour {
 
     private IEnumerator HidePlus200Text()
     {
-        // Wait for 2 seconds
         yield return new WaitForSeconds(2f);
-        // Disable the UI Text element after 2 seconds
         plus200Text.gameObject.SetActive(false);
     }
   // Track stages of each property
 
     public void BuyNextStage(int propertyIndex)
     {
-        int price = CalculatePriceForNextStage(propertyIndex);
-        if (Money >= price && propertyStages[propertyIndex] < 4)
+        if (Money >= propertyPrices[propertyIndex][propertyStages[propertyIndex]] && propertyStages[propertyIndex] < 4)
         {
-            Money -= price; // Deduct money
+            Money -= propertyPrices[propertyIndex][propertyStages[propertyIndex]]; // Deduct money
             propertyStages[propertyIndex]++; // Increment property stage
             UpdateMoneyText(); // Update money text on UI
             UpdatePropertyText(propertyIndex); // Update property text on UI
         }
     }
-    private int CalculatePriceForNextStage(int propertyIndex)
-    {
-        // Implement your logic to calculate the price for the next stage of the property
-        // This can be based on the current stage, predefined prices, etc.
-        // For simplicity, you can use a fixed price per stage in this example.
-        return (propertyStages[propertyIndex] + 1) * 100; // Example: Each stage costs 100 more than the previous one
-    }
+
     private void UpdateMoneyText()
     {
         moneyText.text = "$" + Money.ToString(); // Update the text with the money value
     }
+    
     private void UpdatePropertyText(int propertyIndex)
     {
         propertyTexts[propertyIndex].text = "Stage: " + propertyStages[propertyIndex]; // Update the text with the property stage value
