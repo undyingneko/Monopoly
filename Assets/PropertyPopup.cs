@@ -12,36 +12,31 @@ public class PropertyPopup : MonoBehaviour
 
     private int selectedStageIndex;
 
-    public void ShowPropertyDetails(string propertyName, List<int> stagePrices)
+    public void ShowPropertyDetails(PropertyManager.PropertyData propertyData, int currentPlayerIndex)
     {
-    
-        propertyNameText.text = propertyName;
+        propertyNameText.text = propertyData.name;
 
-        // Display stage prices
-        for (int i = 0; i < stagePrices.Count; i++)
+        for (int i = 0; i < propertyData.prices.Count; i++)
         {
-            stagePriceTexts[i].text = "Stage " + (i + 1) + ": $" + stagePrices[i];
+            stagePriceTexts[i].text = "Stage " + (i + 1) + ": $" + propertyData.prices[i];
         }
 
-        // Instantiate buy buttons for each stage
-        for (int i = 0; i < stagePrices.Count; i++)
+        for (int i = 0; i < propertyData.prices.Count; i++)
         {
-            // Create a buy button for each stage
             GameObject buyButton = Instantiate(buyButtonPrefab, buttonContainers[i]);
-            // Set button text
             buyButton.GetComponentInChildren<TextMeshProUGUI>().text = "Buy";
-            // Add functionality to the buy button
             int stageIndex = i;
-            buyButton.GetComponent<Button>().onClick.AddListener(() => BuyStage(stageIndex));
+            buyButton.GetComponent<Button>().onClick.AddListener(() => BuyStage(stageIndex, currentPlayerIndex));
         }
 
         // Show the popup window
         gameObject.SetActive(true);
     }
 
-    private void BuyStage(int stageIndex)
+    private void BuyStage(int stageIndex, int currentPlayerIndex)
     {
         // Implement buy functionality here for the selected stageIndex
         Debug.Log("Buying Stage " + (stageIndex + 1));
+        gameObject.SetActive(false);
     }
 }

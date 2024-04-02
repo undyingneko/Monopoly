@@ -49,17 +49,11 @@ public class Dice : MonoBehaviour {
             
             yield return new WaitForSeconds(0.05f);
         }
-        // Calculate the sum of the two dice values
+
         int sum = diceValues[0] + diceValues[1];
         GameControl.diceSideThrown = sum;
-
-        // Handle player movement
         GameControl.MovePlayer(currentPlayer);
-
-        // Move to the next player's turn
         currentPlayer = (currentPlayer % 4) + 1;
-    
-
         coroutineAllowed = true;
         sumText.text = "" + sum;
     }

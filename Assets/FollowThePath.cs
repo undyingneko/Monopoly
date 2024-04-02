@@ -18,9 +18,10 @@ public class FollowThePath : MonoBehaviour {
     public TextMeshProUGUI[] propertyTexts;
     public int[][] propertyPrices;
     public PropertyPopup propertyPopup;
- 
+    private int currentPlayerIndex;
+
     private void Start () 
-    {
+    {    propertyPopup.gameObject.SetActive(false);
         transform.position = waypoints[waypointIndex].transform.position;
         if (waypointIndex == 0)
         {
@@ -28,12 +29,11 @@ public class FollowThePath : MonoBehaviour {
             DisplayPlus200();   
         }
     }
-	
     private void Update () {
         if (moveAllowed)
             Move();
         if (!moveAllowed && Money > 0)
-        {
+        {   
             int lastWaypointIndex = waypointIndex % waypoints.Length;
             PropertyManager.PropertyData propertyData = PropertyManager.Instance.GetPropertyByWaypointIndex(lastWaypointIndex);
             if (propertyData != null)
@@ -41,13 +41,16 @@ public class FollowThePath : MonoBehaviour {
                 foreach (int price in propertyData.prices)
                 {
                     if (Money >= price)
-                    {
-                        propertyPopup.ShowPropertyDetails(propertyData.name, propertyData.prices);
-                        break; // Exit the loop since the player can buy at least one stage
+                    {   
+                        propertyPopup.gameObject.SetActive(true);
                     }
                 }
             }
         }
+        else
+        {
+            propertyPopup.gameObject.SetActive(false);
+        }        
 	}
 
     private void Move()
