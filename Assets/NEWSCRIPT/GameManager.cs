@@ -31,7 +31,19 @@ public class GameManager : MonoBehaviour
     public void NextTurn()
     {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.Length;
-        StartCoroutine(StartTurnCoroutine());
+        players[currentPlayerIndex].StartTurn();
     }
-
+    // public void NextTurn()
+    // {
+    //     if (currentPlayer.InJail && currentPlayer.turnsInJail >= 3)
+    //     {
+    //         currentPlayer.InJail = false; // Release the player from jail
+    //         StartCoroutine(currentPlayer.RollTheDice()); // Roll the dice normally
+    //     }
+    //     else
+    //     {
+    //         currentPlayerIndex = (currentPlayerIndex + 1) % players.Length;
+    //         StartCoroutine(StartTurnCoroutine());
+    //     }
+    // }
 }

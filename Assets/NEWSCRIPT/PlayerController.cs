@@ -40,17 +40,9 @@ public class PlayerController : MonoBehaviour
         rollButton.onClick.AddListener(RollDiceOnClick);
         diceSides = Resources.LoadAll<Sprite>("DiceSides/");
         transform.position = waypoints[waypointIndex].transform.position;
-        // if (waypointIndex == 0)
-        // {
-        //     Money += 200; 
-        //     DisplayPlus200();   
-        // }
-
         UpdateMoneyText();
         playerMoveText.gameObject.SetActive(false);
-
-        rollButton.gameObject.SetActive(false);
-        
+        rollButton.gameObject.SetActive(false);       
     }
 
     private void RollDiceOnClick()
@@ -60,10 +52,12 @@ public class PlayerController : MonoBehaviour
             if (InJail)
             {
                 StartCoroutine(RollDiceInJail());
+                rollButton.gameObject.SetActive(false);
+                playerMoveText.gameObject.SetActive(false);
             }
             else
             {
-                StartCoroutine("RollTheDice");
+                StartCoroutine(RollTheDice());
                 rollButton.gameObject.SetActive(false);
                 playerMoveText.gameObject.SetActive(false);
             }
@@ -71,7 +65,7 @@ public class PlayerController : MonoBehaviour
     }
 
     private IEnumerator RollDiceInJail()
-    {
+    {       
         coroutineAllowed = false;
         int[] diceValues = new int[2];
 
@@ -86,7 +80,9 @@ public class PlayerController : MonoBehaviour
 
             yield return new WaitForSeconds(0.05f);
         }
+        
         int sum = diceValues[0] + diceValues[1];
+        sumText.text = "" + sum; 
         isDoubles = (diceValues[0] == diceValues[1]); 
 
         if (isDoubles)
@@ -95,13 +91,19 @@ public class PlayerController : MonoBehaviour
             MovePlayer(sum);
             turnsInJail = 0;
             EndTurn();
+            
         }
         else
         {
             if (turnsInJail >= 3)
-            {
+            {   
+                InJail = false;
                 MovePlayer(sum);
+                turnsInJail = 0;
                 EndTurn();
+                coroutineAllowed = false;
+                
+                // RollTheDiceAfterJail();
             }
             else
             {   
@@ -109,7 +111,13 @@ public class PlayerController : MonoBehaviour
                 EndTurn();
             }
         }
+        coroutineAllowed = true; 
     }
+
+    // private void RollTheDiceAfterJail()
+    // {
+    //     StartCoroutine(RollTheDice());
+    // }
 
 
     private IEnumerator RollTheDice()
@@ -117,6 +125,7 @@ public class PlayerController : MonoBehaviour
         coroutineAllowed = false;
         int[] diceValues = new int[2];
 
+        // Roll the dice
         for (int i = 0; i <= 20; i++)
         {
             for (int j = 0; j < diceImages.Length; j++)
@@ -130,35 +139,61 @@ public class PlayerController : MonoBehaviour
         }
 
         int sum = diceValues[0] + diceValues[1];
+        sumText.text = "" + sum; 
+
+        // Allow other actions and then check for doubles
+        yield return new WaitForSeconds(0.1f);
+        
+        MovePlayer(diceValues[0] + diceValues[1]);
+        
+        CheckForDoubles(diceValues);
+        coroutineAllowed = true; 
+    }
+
+    public void HackRollDice(int[] diceValues)
+    {
+        CheckForDoubles(diceValues);
+        
+    }
+
+    private void CheckForDoubles(int[] diceValues)
+    {   
         isDoubles = (diceValues[0] == diceValues[1]);
 
-        if (isDoubles)
+        if (isDoubles||currentPosition == 8 )
         {
             consecutiveDoublesCount++;
+            
             if (consecutiveDoublesCount >= 3)
             {
-                GoToJail();
-                yield break; // Exit the coroutine early
+                consecutiveDoublesCount = 0;
+                waypointIndex = 8;
+                transform.position = waypoints[waypointIndex].position;
+                DisplayGoToJailText();
+                InJail = true;
+                EndTurn();
+                return;
             }
             else
             {
-                MovePlayer(sum);
-                sumText.text = "" + sum;
                 StartTurn();
-                coroutineAllowed = true;
-                yield break;
+                
             }
         }
+
         else
         {
-            consecutiveDoublesCount = 0; // Reset consecutive doubles count
+            consecutiveDoublesCount = 0;
+            EndTurn();
         }
-        playerMoveText.gameObject.SetActive(true);
-        MovePlayer(sum);
-        sumText.text = "" + sum;
-        coroutineAllowed = true;
-        EndTurn();
+        
     }
+
+
+
+
+
+
 
     void MovePlayer(int steps)
     {
@@ -193,10 +228,6 @@ public class PlayerController : MonoBehaviour
     // Update the current position
     currentPosition += steps;
 
-    if (currentPosition == 8)
-    {
-        GoToJail();
-    }
     // You may want to check if the player has landed on a property here
     // and display the buy property popup if necessary
     }
@@ -211,14 +242,7 @@ public class PlayerController : MonoBehaviour
         goToJailText.gameObject.SetActive(false);
     }
 
-    private void GoToJail()
-    {
-        waypointIndex = 8;
-        transform.position = waypoints[waypointIndex].position;
-        DisplayGoToJailText();
-        InJail = true;
-        EndTurn();
-    }
+
     private void UpdateMoneyText()
     {
         // Update the text displayed on the moneyText object
@@ -228,8 +252,9 @@ public class PlayerController : MonoBehaviour
     {
         isTurn = false;
         playerMoveText.gameObject.SetActive(false);
-        gameManager.NextTurn();
         rollButton.gameObject.SetActive(false);
+        gameManager.NextTurn();
+        
     }
 
     public void StartTurn()
