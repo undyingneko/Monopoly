@@ -24,32 +24,93 @@ public class PlayerController : MonoBehaviour
     [HideInInspector]
     public int waypointIndex = 0;
     public bool moveAllowed = false;
-    public bool InJail = false;
     public int Money = 0;
     public TextMeshProUGUI plus200Text;
-    public TextMeshProUGUI moneyText; // Reference to the TextMeshProUGUI object for displaying money
-
-
-
+    public TextMeshProUGUI moneyText;
+    public TextMeshProUGUI playerMoveText;
+    private int consecutiveDoublesCount = 0;
+    public bool isDoubles = false;
+    public bool InJail = false;
+    private int turnsInJail = 0;
+    public TextMeshProUGUI goToJailText;
+    
     void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
         rollButton.onClick.AddListener(RollDiceOnClick);
         diceSides = Resources.LoadAll<Sprite>("DiceSides/");
         transform.position = waypoints[waypointIndex].transform.position;
-        if (waypointIndex == 0)
-        {
-            Money += 200; 
-            DisplayPlus200();   
-        }
+        // if (waypointIndex == 0)
+        // {
+        //     Money += 200; 
+        //     DisplayPlus200();   
+        // }
+
         UpdateMoneyText();
+        playerMoveText.gameObject.SetActive(false);
+
+        rollButton.gameObject.SetActive(false);
+        
     }
 
     private void RollDiceOnClick()
     {
         if (!GameManager.GameOver && isTurn && coroutineAllowed)
-            StartCoroutine("RollTheDice");
+        {
+            if (InJail)
+            {
+                StartCoroutine(RollDiceInJail());
+            }
+            else
+            {
+                StartCoroutine("RollTheDice");
+                rollButton.gameObject.SetActive(false);
+                playerMoveText.gameObject.SetActive(false);
+            }
+        }
     }
+
+    private IEnumerator RollDiceInJail()
+    {
+        coroutineAllowed = false;
+        int[] diceValues = new int[2];
+
+        for (int i = 0; i <= 20; i++)
+        {
+            for (int j = 0; j < diceImages.Length; j++)
+            {
+                int randomDiceSide = Random.Range(0, 6);
+                diceImages[j].sprite = diceSides[randomDiceSide];
+                diceValues[j] = randomDiceSide + 1;
+            }
+
+            yield return new WaitForSeconds(0.05f);
+        }
+        int sum = diceValues[0] + diceValues[1];
+        isDoubles = (diceValues[0] == diceValues[1]); 
+
+        if (isDoubles)
+        {
+            InJail = false;
+            MovePlayer(sum);
+            turnsInJail = 0;
+            EndTurn();
+        }
+        else
+        {
+            if (turnsInJail >= 3)
+            {
+                MovePlayer(sum);
+                EndTurn();
+            }
+            else
+            {   
+                turnsInJail++;
+                EndTurn();
+            }
+        }
+    }
+
 
     private IEnumerator RollTheDice()
     {
@@ -69,10 +130,34 @@ public class PlayerController : MonoBehaviour
         }
 
         int sum = diceValues[0] + diceValues[1];
+        isDoubles = (diceValues[0] == diceValues[1]);
+
+        if (isDoubles)
+        {
+            consecutiveDoublesCount++;
+            if (consecutiveDoublesCount >= 3)
+            {
+                GoToJail();
+                yield break; // Exit the coroutine early
+            }
+            else
+            {
+                MovePlayer(sum);
+                sumText.text = "" + sum;
+                StartTurn();
+                coroutineAllowed = true;
+                yield break;
+            }
+        }
+        else
+        {
+            consecutiveDoublesCount = 0; // Reset consecutive doubles count
+        }
+        playerMoveText.gameObject.SetActive(true);
         MovePlayer(sum);
         sumText.text = "" + sum;
         coroutineAllowed = true;
-        gameManager.NextTurn();
+        EndTurn();
     }
 
     void MovePlayer(int steps)
@@ -80,35 +165,60 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(MovePlayerCoroutine(steps));
     }
 
-IEnumerator MovePlayerCoroutine(int steps)
-{
-    int remainingSteps = steps;
-
-    while (remainingSteps + 1 > 0)
+    IEnumerator MovePlayerCoroutine(int steps)
     {
-        float stepDistance = moveSpeed * Time.deltaTime;
-        float distanceToNextWaypoint = Vector2.Distance(transform.position, waypoints[waypointIndex].position);
-        transform.position = Vector2.MoveTowards(transform.position, waypoints[waypointIndex].position, stepDistance);
-        if (distanceToNextWaypoint < stepDistance)
+        int remainingSteps = steps;
+
+        while (remainingSteps >= 0)
         {
-            waypointIndex = (waypointIndex + 1) % waypoints.Length;
-            if (waypointIndex == 0)
+            float stepDistance = moveSpeed * Time.deltaTime;
+            float distanceToNextWaypoint = Vector2.Distance(transform.position, waypoints[waypointIndex].position);
+            transform.position = Vector2.MoveTowards(transform.position, waypoints[waypointIndex].position, stepDistance);
+      
+            if (distanceToNextWaypoint < stepDistance)
             {
-                Money += 200;
-                DisplayPlus200();
-                UpdateMoneyText();
+                if (waypointIndex == 0)
+                {
+                    Money += 200;
+                    DisplayPlus200();
+                    UpdateMoneyText();
+                }
+                waypointIndex = (waypointIndex + 1) % waypoints.Length;
+
+                remainingSteps--;
             }
-            remainingSteps--;
+            yield return null;
         }
-        yield return null;
-    }
 
     // Update the current position
     currentPosition += steps;
 
+    if (currentPosition == 8)
+    {
+        GoToJail();
+    }
     // You may want to check if the player has landed on a property here
     // and display the buy property popup if necessary
-}
+    }
+    private void DisplayGoToJailText()
+    {
+        goToJailText.gameObject.SetActive(true);
+        StartCoroutine(HideGoToJailText());
+    }
+    private IEnumerator HideGoToJailText()
+    {
+        yield return new WaitForSeconds(2f);
+        goToJailText.gameObject.SetActive(false);
+    }
+
+    private void GoToJail()
+    {
+        waypointIndex = 8;
+        transform.position = waypoints[waypointIndex].position;
+        DisplayGoToJailText();
+        InJail = true;
+        EndTurn();
+    }
     private void UpdateMoneyText()
     {
         // Update the text displayed on the moneyText object
@@ -117,11 +227,16 @@ IEnumerator MovePlayerCoroutine(int steps)
     public void EndTurn()
     {
         isTurn = false;
+        playerMoveText.gameObject.SetActive(false);
+        gameManager.NextTurn();
+        rollButton.gameObject.SetActive(false);
     }
 
     public void StartTurn()
     {
         isTurn = true;
+        rollButton.gameObject.SetActive(true);
+        playerMoveText.gameObject.SetActive(true);
     }
     private void DisplayPlus200()
     {
