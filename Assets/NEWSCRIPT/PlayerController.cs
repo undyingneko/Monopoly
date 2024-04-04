@@ -91,6 +91,7 @@ public class PlayerController : MonoBehaviour
             MovePlayer(sum);
             turnsInJail = 0;
             EndTurn();
+            coroutineAllowed = false;
             
         }
         else
@@ -113,12 +114,6 @@ public class PlayerController : MonoBehaviour
         }
         coroutineAllowed = true; 
     }
-
-    // private void RollTheDiceAfterJail()
-    // {
-    //     StartCoroutine(RollTheDice());
-    // }
-
 
     private IEnumerator RollTheDice()
     {
