@@ -19,7 +19,7 @@ public class HackDoubleButton : MonoBehaviour
 
     }
 
-            // coroutineAllowed = false;
+        // coroutineAllowed = false;
         // int[] diceValues = new int[2];
 
         // // For testing purposes, set the dice values to double 6
@@ -37,6 +37,8 @@ public class HackDoubleButton : MonoBehaviour
 
         //     yield return new WaitForSeconds(0.05f);
         // }
+
+
 
         // // Calculate the sum of dice values
         // int sum = diceValues[0] + diceValues[1];

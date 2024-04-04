@@ -1,98 +1,99 @@
-[
-  {
-      "name": "Vending Machine",
-      "waypointIndex": 12,
-      "priceStage1": 5
-  },
-  {
-      "name": "Convenient Store",
-      "waypointIndex": 2,
-      "priceStage1": 6
-  },
-  {
-      "name": "Bento Shop",
-      "waypointIndex": 3,
-      "priceStage1": 7
-  },
-  {
-      "name": "Candy Apple Stall",
-      "waypointIndex": 5,
-      "priceStage1": 8
-  },
-  {
-      "name": "Cotton Candy Stall",
-      "waypointIndex": 6,
-      "priceStage1": 9
-  },
-  {
-      "name": "Mochi Shop",
-      "waypointIndex": 7,
-      "priceStage1": 10
-  },
-  {
-      "name": "Takoyaki Stall",
-      "waypointIndex": 9,
-      "priceStage1": 12
-  },
-  {
-      "name": "Ikayaki Stall",
-      "waypointIndex": 10,
-      "priceStage1": 14
-  },
-  {
-      "name": "Karaage Chicken",
-      "waypointIndex": 11,
-      "priceStage1": 16
-  },
-  {
-      "name": "Yakisoba Stall",
-      "waypointIndex": 14,
-      "priceStage1": 18
-  },
-  {
-      "name": "Ramen Shop",
-      "waypointIndex": 15,
-      "priceStage1": 20
-  },
-  {
-      "name": "French Patisserie Shop",
-      "waypointIndex": 17,
-      "priceStage1": 22
-  },
-  {
-      "name": "Cat Café",
-      "waypointIndex": 19,
-      "priceStage1": 24
-  },
-  {
-      "name": "Sake Bar",
-      "waypointIndex": 21,
-      "priceStage1": 26
-  },
-  {
-      "name": "Karaoke Lounge",
-      "waypointIndex": 22,
-      "priceStage1": 28
-  },
-  {
-      "name": "Buffet Restaurant",
-      "waypointIndex": 26,
-      "priceStage1": 30
-  },
-  {
-      "name": "Dimsum Restaurant",
-      "waypointIndex": 27,
-      "priceStage1": 34
-  },
-  {
-      "name": "Grill Restaurant",
-      "waypointIndex": 29,
-      "priceStage1": 36
-  },
-  {
-      "name": "Sushi Restaurant",
-      "waypointIndex": 30,
-      "priceStage1": 40
-  }
- 
-]
+{
+    "properties": [
+        {
+            "name": "Vending Machine",
+            "JSONwaypointIndex": 12,
+            "priceStage1": 5
+        },
+        {
+            "name": "Convenient Store",
+            "JSONwaypointIndex": 2,
+            "priceStage1": 6
+        },
+        {
+            "name": "Bento Shop",
+            "JSONwaypointIndex": 3,
+            "priceStage1": 7
+        },
+        {
+            "name": "Candy Apple Stall",
+            "JSONwaypointIndex": 5,
+            "priceStage1": 8
+        },
+        {
+            "name": "Cotton Candy Stall",
+            "JSONwaypointIndex": 6,
+            "priceStage1": 9
+        },
+        {
+            "name": "Mochi Shop",
+            "JSONwaypointIndex": 7,
+            "priceStage1": 10
+        },
+        {
+            "name": "Takoyaki Stall",
+            "JSONwaypointIndex": 9,
+            "priceStage1": 12
+        },
+        {
+            "name": "Ikayaki Stall",
+            "JSONwaypointIndex": 10,
+            "priceStage1": 14
+        },
+        {
+            "name": "Karaage Chicken",
+            "JSONwaypointIndex": 11,
+            "priceStage1": 16
+        },
+        {
+            "name": "Yakisoba Stall",
+            "JSONwaypointIndex": 14,
+            "priceStage1": 18
+        },
+        {
+            "name": "Ramen Shop",
+            "JSONwaypointIndex": 15,
+            "priceStage1": 20
+        },
+        {
+            "name": "French Patisserie Shop",
+            "JSONwaypointIndex": 17,
+            "priceStage1": 22
+        },
+        {
+            "name": "Cat Café",
+            "JSONwaypointIndex": 19,
+            "priceStage1": 24
+        },
+        {
+            "name": "Sake Bar",
+            "JSONwaypointIndex": 21,
+            "priceStage1": 26
+        },
+        {
+            "name": "Karaoke Lounge",
+            "JSONwaypointIndex": 22,
+            "priceStage1": 28
+        },
+        {
+            "name": "Buffet Restaurant",
+            "JSONwaypointIndex": 26,
+            "priceStage1": 30
+        },
+        {
+            "name": "Dimsum Restaurant",
+            "JSONwaypointIndex": 27,
+            "priceStage1": 34
+        },
+        {
+            "name": "Grill Restaurant",
+            "JSONwaypointIndex": 29,
+            "priceStage1": 36
+        },
+        {
+            "name": "Sushi Restaurant",
+            "JSONwaypointIndex": 30,
+            "priceStage1": 40
+        }
+    ]
+}

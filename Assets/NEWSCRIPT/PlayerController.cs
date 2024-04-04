@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour
 {
@@ -33,16 +34,26 @@ public class PlayerController : MonoBehaviour
     public bool InJail = false;
     private int turnsInJail = 0;
     public TextMeshProUGUI goToJailText;
+
+    public BuyPropertyPopup buyPropertyPopup;
+    private PropertyManager propertyManager;
+
+    public List<PropertyManager.PropertyData> properties;
     
     void Start()
-    {
+    {   
+        propertyManager = PropertyManager.Instance;
         gameManager = FindObjectOfType<GameManager>();
+
         rollButton.onClick.AddListener(RollDiceOnClick);
         diceSides = Resources.LoadAll<Sprite>("DiceSides/");
         transform.position = waypoints[waypointIndex].transform.position;
         UpdateMoneyText();
         playerMoveText.gameObject.SetActive(false);
-        rollButton.gameObject.SetActive(false);       
+        rollButton.gameObject.SetActive(false);
+
+        buyPropertyPopup = FindObjectOfType<BuyPropertyPopup>();
+        properties = propertyManager.properties;   
     }
 
     private void RollDiceOnClick()
@@ -120,7 +131,7 @@ public class PlayerController : MonoBehaviour
         coroutineAllowed = false;
         int[] diceValues = new int[2];
 
-        // Roll the dice
+        // //-----------------------
         for (int i = 0; i <= 20; i++)
         {
             for (int j = 0; j < diceImages.Length; j++)
@@ -129,9 +140,22 @@ public class PlayerController : MonoBehaviour
                 diceImages[j].sprite = diceSides[randomDiceSide];
                 diceValues[j] = randomDiceSide + 1;
             }
-
             yield return new WaitForSeconds(0.05f);
         }
+        // //---------------------
+        // // For testing purposes, set the dice values to double 6
+        // diceValues[0] = 4;
+        // diceValues[1] = 4;
+        // for (int i = 0; i <= 20; i++)
+        // {
+        //     for (int j = 0; j < diceImages.Length; j++)
+        //     {
+        //         diceImages[j].sprite = diceSides[3]; // Use the sprite for dice side 6
+        //     }
+
+        //     yield return new WaitForSeconds(0.05f);
+        // }      
+        // //---------------------
 
         int sum = diceValues[0] + diceValues[1];
         sumText.text = "" + sum; 
@@ -155,7 +179,7 @@ public class PlayerController : MonoBehaviour
     {   
         isDoubles = (diceValues[0] == diceValues[1]);
 
-        if (isDoubles||currentPosition == 8 )
+        if (isDoubles)
         {
             consecutiveDoublesCount++;
             
@@ -183,12 +207,6 @@ public class PlayerController : MonoBehaviour
         }
         
     }
-
-
-
-
-
-
 
     void MovePlayer(int steps)
     {
@@ -218,14 +236,85 @@ public class PlayerController : MonoBehaviour
                 remainingSteps--;
             }
             yield return null;
+            
         }
 
     // Update the current position
-    currentPosition += steps;
+    currentPosition = (currentPosition + steps) % waypoints.Length;
+    LandOnProperty();
+    }
+    // You may want to check if the player has landed on a property here
+
+    private void LandOnProperty()
+    {   
+
+        if (currentPosition == 8)
+        {
+            // Display the Go to Jail text and handle the jail logic
+            DisplayGoToJailText();                 
+            InJail = true;
+            consecutiveDoublesCount = 0;
+            EndTurn();
+            return;
+        }
+        // Get the property data for the current waypoint index from the PropertyManager
+        PropertyManager.PropertyData property = propertyManager.GetPropertyByWaypointIndex(currentPosition);
+        
+        if (property != null)
+        {
+            // Check if the property is unowned and the player has enough money to buy it
+            if (!property.owned && property.prices[0] <= Money)
+            {
+                // Display the buy property popup with property details
+                buyPropertyPopup.Display(property);
+            }
+            else
+            {
+                PayRent(property);
+            }
+        }
+    }
+
+    private void PayRent(PropertyManager.PropertyData property)
+    {
+        // Deduct rent from the player's money
+        Money -= property.rent;
+        
+        // Find the owner player object and add rent amount to their money
+        PlayerController ownerPlayer = FindPlayerByID(property.ownerID);
+        if (ownerPlayer != null)
+        {
+            ownerPlayer.Money += property.rent;
+        }
+
+        // Update UI for both players
+        UpdateMoneyText();
+        ownerPlayer.UpdateMoneyText();
+    }
+
+
+
+    // Method to find player object by ID
+    private PlayerController FindPlayerByID(int ID)
+    {
+        PlayerController[] players = FindObjectsOfType<PlayerController>();
+        foreach (PlayerController player in players)
+        {
+            if (player.playerID == ID)
+            {
+                return player;
+            }
+        }
+        return null;
+    }
+    
+
+
+
 
     // You may want to check if the player has landed on a property here
     // and display the buy property popup if necessary
-    }
+    
     private void DisplayGoToJailText()
     {
         goToJailText.gameObject.SetActive(true);
@@ -238,7 +327,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    private void UpdateMoneyText()
+    public void UpdateMoneyText()
     {
         // Update the text displayed on the moneyText object
         moneyText.text = Money.ToString();
