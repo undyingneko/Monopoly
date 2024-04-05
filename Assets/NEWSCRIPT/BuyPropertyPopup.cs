@@ -35,18 +35,26 @@ public class BuyPropertyPopup : MonoBehaviour
 
         propertyNameText.text = property.name;
 
-        for (int i = 0; i < property.prices.Count; i++)
+        // Ensure the length of the stagePriceTexts array matches the number of prices in the property
+        for (int i = 0; i < stagePriceTexts.Length; i++)
         {
-            stagePriceTexts[i].text = "Price: " + property.prices[i].ToString();
+            if (i < property.prices.Count)
+            {
+                stagePriceTexts[i].text = "Price: " + property.prices[i].ToString();
+                buyButtons[i].gameObject.SetActive(true);
+            }
+            else
+            {
+                // If there are more stagePriceTexts than prices, deactivate the extra buttons
+                stagePriceTexts[i].gameObject.SetActive(false);
+                buyButtons[i].gameObject.SetActive(false);
+            }
         }
 
-        for (int i = 0; i < buyButtons.Length; i++)
-        {
-            buyButtons[i].gameObject.SetActive(true);
-        }
-
+        // Start the buy confirmation timer coroutine
         buyConfirmationCoroutine = StartCoroutine(BuyConfirmationTimer());
     }
+
 
     public void BuyStage(int stageIndex)
     {

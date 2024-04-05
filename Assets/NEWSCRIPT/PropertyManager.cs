@@ -108,16 +108,17 @@ public class PropertyManager : MonoBehaviour
 
 
 
-    // Get property data by waypoint index
     public PropertyData GetPropertyByWaypointIndex(int JSONwaypointIndex)
     {
         foreach (var property in properties)
         {
-            if (property.JSONwaypointIndex  == JSONwaypointIndex)
+            if (property.JSONwaypointIndex == JSONwaypointIndex)
             {
+                Debug.Log("Property found: " + property.name);
                 return property;
             }
         }
+        Debug.LogWarning("No property found for waypoint index: " + JSONwaypointIndex);
         return null;
     }
 

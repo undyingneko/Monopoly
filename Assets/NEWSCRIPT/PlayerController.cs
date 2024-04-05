@@ -35,10 +35,16 @@ public class PlayerController : MonoBehaviour
     private int turnsInJail = 0;
     public TextMeshProUGUI goToJailText;
 
-    public BuyPropertyPopup buyPropertyPopup;
+    public Transform canvasTransform;
+
+    
+    private BuyPropertyPopup buyPropertyPopupPrefab;
+    public string buyPropertyPopupPrefabPath = "BuyPropertyPopupPrefab"; // Path to the prefab in the Resources folder
+
     private PropertyManager propertyManager;
 
     public List<PropertyManager.PropertyData> properties;
+    
     
     void Start()
     {   
@@ -52,9 +58,79 @@ public class PlayerController : MonoBehaviour
         playerMoveText.gameObject.SetActive(false);
         rollButton.gameObject.SetActive(false);
 
-        buyPropertyPopup = FindObjectOfType<BuyPropertyPopup>();
-        properties = propertyManager.properties;   
+        buyPropertyPopupPrefab = Resources.Load<BuyPropertyPopup>("BuyPropertyPopupPrefab");
+        if (buyPropertyPopupPrefab != null)
+        {
+            Debug.Log("Popup prefab loaded successfully.");
+            
+        }
+        else
+        {
+            Debug.LogError("Failed to load popup prefab.");
+        }
+        
+        // buyPropertyPopupPrefab = Resources.Load<BuyPropertyPopup>("BuyPropertyPopupPrefab");
+        // if (buyPropertyPopupPrefab != null)
+        // {
+        //     Debug.Log("Popup prefab loaded successfully.");
+        //     // Instantiate the buy property popup for each property
+        //     if (propertyManager != null && propertyManager.properties.Count > 0)
+        //     {
+        //         foreach (PropertyManager.PropertyData propertyData in propertyManager.properties)
+        //         {
+        //             InstantiateBuyPropertyPopup(propertyData);
+        //         }
+        //     }
+        //     else
+        //     {
+        //         Debug.LogError("No property data found.");
+        //     }
+        // }
+        // else
+        // {
+        //     Debug.LogError("Failed to load popup prefab.");
+        // }
+
+        
+        properties = propertyManager.properties;
+        if (propertyManager == null)
+        {
+            Debug.LogError("propertyManager is not assigned. Assign it in the Unity Editor or via script.");
+        }
+
+        // Ensure waypoints array is assigned and not empty
+        if (waypoints == null || waypoints.Length == 0)
+        {
+            Debug.LogError("waypoints array is not properly assigned or is empty. Assign it in the Unity Editor or via script.");
+        }  
     }
+    private void InstantiateBuyPropertyPopup(PropertyManager.PropertyData property)
+    {
+        // Find the Canvas GameObject
+        Canvas canvas = FindObjectOfType<Canvas>();
+        if (canvas == null)
+        {
+            Debug.LogError("Canvas GameObject not found.");
+            return;
+        }
+
+        // Instantiate the buy property popup and assign it to a variable
+        BuyPropertyPopup popupInstance = Instantiate(buyPropertyPopupPrefab, canvas.transform);
+
+        if (popupInstance != null)
+        {
+            Debug.Log("Buy property popup instantiated successfully.");
+
+            // Display the property data in the popup
+            popupInstance.Display(property);
+        }
+        else
+        {
+            Debug.LogError("Failed to instantiate the buy property popup.");
+            return;
+        }
+    }
+
 
     private void RollDiceOnClick()
     {
@@ -246,34 +322,55 @@ public class PlayerController : MonoBehaviour
     // You may want to check if the player has landed on a property here
 
     private void LandOnProperty()
-    {   
-
+    {
         if (currentPosition == 8)
         {
             // Display the Go to Jail text and handle the jail logic
-            DisplayGoToJailText();                 
+            DisplayGoToJailText();
             InJail = true;
             consecutiveDoublesCount = 0;
             EndTurn();
             return;
         }
+
         // Get the property data for the current waypoint index from the PropertyManager
         PropertyManager.PropertyData property = propertyManager.GetPropertyByWaypointIndex(currentPosition);
-        
+        Debug.Log("Inside LandOnProperty method.");
+
+        // Check if propertyManager is null
+        if (propertyManager == null)
+        {
+            Debug.LogError("propertyManager is null.");
+            return;
+        }
+
+        // Check if waypoints array is null
+        if (waypoints == null)
+        {
+            Debug.LogError("waypoints array is null.");
+            return;
+        }
+
         if (property != null)
         {
             // Check if the property is unowned and the player has enough money to buy it
             if (!property.owned && property.prices[0] <= Money)
             {
-                // Display the buy property popup with property details
-                buyPropertyPopup.Display(property);
+                // Instantiate the buy property popup
+                InstantiateBuyPropertyPopup(property);
             }
             else
             {
                 PayRent(property);
             }
         }
+        else
+        {
+            Debug.LogWarning("Property is null. No popup will be displayed.");
+        }
     }
+
+
 
     private void PayRent(PropertyManager.PropertyData property)
     {
