@@ -331,6 +331,7 @@ MonoBehaviour:
   - {fileID: 706812636}
   - {fileID: 1906955959}
   sumText: {fileID: 696462889}
+  isBuyPopUpActive: 0
   waypoints:
   - {fileID: 1480567133}
   - {fileID: 902812692}
@@ -368,12 +369,13 @@ MonoBehaviour:
   waypointIndex: 0
   moveAllowed: 0
   Money: 0
-  plus200Text: {fileID: 1259017702}
+  plus300Text: {fileID: 325961605688911676, guid: 87e59227bdfe619409cba9fcd0079140, type: 3}
   moneyText: {fileID: 120919859}
   playerMoveText: {fileID: 1356218437}
   isDoubles: 0
   InJail: 0
   goToJailText: {fileID: 998582064}
+  canvasTransform: {fileID: 0}
   buyPropertyPopupPrefabPath: BuyPropertyPopupPrefab
   properties: []
 --- !u!1 &47249268
@@ -4141,6 +4143,7 @@ MonoBehaviour:
   - {fileID: 706812636}
   - {fileID: 1906955959}
   sumText: {fileID: 696462889}
+  isBuyPopUpActive: 0
   waypoints:
   - {fileID: 652039616}
   - {fileID: 1384867454}
@@ -4178,12 +4181,13 @@ MonoBehaviour:
   waypointIndex: 0
   moveAllowed: 0
   Money: 0
-  plus200Text: {fileID: 1259017702}
+  plus300Text: {fileID: 325961605688911676, guid: 87e59227bdfe619409cba9fcd0079140, type: 3}
   moneyText: {fileID: 778374996}
   playerMoveText: {fileID: 47983003}
   isDoubles: 0
   InJail: 0
   goToJailText: {fileID: 998582064}
+  canvasTransform: {fileID: 0}
   buyPropertyPopupPrefabPath: BuyPropertyPopupPrefab
   properties: []
 --- !u!1 &807329864
@@ -4359,6 +4363,7 @@ MonoBehaviour:
   - {fileID: 706812636}
   - {fileID: 1906955959}
   sumText: {fileID: 696462889}
+  isBuyPopUpActive: 0
   waypoints:
   - {fileID: 1646973400}
   - {fileID: 807329865}
@@ -4396,12 +4401,13 @@ MonoBehaviour:
   waypointIndex: 0
   moveAllowed: 0
   Money: 0
-  plus200Text: {fileID: 1259017702}
+  plus300Text: {fileID: 325961605688911676, guid: 87e59227bdfe619409cba9fcd0079140, type: 3}
   moneyText: {fileID: 1833210962}
   playerMoveText: {fileID: 324510712}
   isDoubles: 0
   InJail: 0
   goToJailText: {fileID: 998582064}
+  canvasTransform: {fileID: 0}
   buyPropertyPopupPrefabPath: BuyPropertyPopupPrefab
   properties: []
 --- !u!1 &825779757
@@ -6538,17 +6544,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5755254336096623866, guid: 87e59227bdfe619409cba9fcd0079140, type: 3}
   m_PrefabInstance: {fileID: 1832101162}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1259017702 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 325961605688911676, guid: 87e59227bdfe619409cba9fcd0079140, type: 3}
-  m_PrefabInstance: {fileID: 1832101162}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1259300735
 GameObject:
   m_ObjectHideFlags: 0
@@ -8965,6 +8960,7 @@ MonoBehaviour:
   - {fileID: 706812636}
   - {fileID: 1906955959}
   sumText: {fileID: 696462889}
+  isBuyPopUpActive: 0
   waypoints:
   - {fileID: 531962509}
   - {fileID: 618150288}
@@ -9002,12 +8998,13 @@ MonoBehaviour:
   waypointIndex: 0
   moveAllowed: 0
   Money: 0
-  plus200Text: {fileID: 1259017702}
+  plus300Text: {fileID: 325961605688911676, guid: 87e59227bdfe619409cba9fcd0079140, type: 3}
   moneyText: {fileID: 1367893463}
   playerMoveText: {fileID: 1303154479}
   isDoubles: 0
   InJail: 0
   goToJailText: {fileID: 998582064}
+  canvasTransform: {fileID: 0}
   buyPropertyPopupPrefabPath: BuyPropertyPopupPrefab
   properties: []
 --- !u!1 &1702660624
@@ -9472,7 +9469,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6924800884800577433, guid: 87e59227bdfe619409cba9fcd0079140, type: 3}
       propertyPath: m_Name
-      value: Plus200Text
+      value: Plus300Text
       objectReference: {fileID: 0}
     - target: {fileID: 6924800884800577433, guid: 87e59227bdfe619409cba9fcd0079140, type: 3}
       propertyPath: m_IsActive
