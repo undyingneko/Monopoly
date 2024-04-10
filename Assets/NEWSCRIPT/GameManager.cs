@@ -5,7 +5,7 @@ using TMPro;
 public class GameManager : MonoBehaviour
 {
     public PlayerController[] players;
-    private int currentPlayerIndex;
+    public static int currentPlayerIndex;
     public static bool GameOver = false;
     
     private static TextMeshProUGUI[] playerMoney;
@@ -33,17 +33,5 @@ public class GameManager : MonoBehaviour
         currentPlayerIndex = (currentPlayerIndex + 1) % players.Length;
         players[currentPlayerIndex].StartTurn();
     }
-    // public void NextTurn()
-    // {
-    //     if (currentPlayer.InJail && currentPlayer.turnsInJail >= 3)
-    //     {
-    //         currentPlayer.InJail = false; // Release the player from jail
-    //         StartCoroutine(currentPlayer.RollTheDice()); // Roll the dice normally
-    //     }
-    //     else
-    //     {
-    //         currentPlayerIndex = (currentPlayerIndex + 1) % players.Length;
-    //         StartCoroutine(StartTurnCoroutine());
-    //     }
-    // }
+
 }

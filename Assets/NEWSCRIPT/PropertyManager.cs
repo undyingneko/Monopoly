@@ -15,7 +15,7 @@ public class PropertyManager : MonoBehaviour
     {
         public string name;
         public int JSONwaypointIndex;
-        public int priceStage1; 
+        public int priceStallBase; 
         public List<int> prices;
         public bool owned;
         public int ownerID;
@@ -86,7 +86,7 @@ public class PropertyManager : MonoBehaviour
                 // Calculate prices for each property
                 foreach (PropertyData property in properties)
                 {
-                    CalculatePropertyPrices(property, property.priceStage1); // Pass priceStage1 from JSON data
+                    CalculatePropertyPrices(property, property.priceStallBase); // Pass priceStage0 from JSON data
                 }
             }
             else
@@ -101,11 +101,6 @@ public class PropertyManager : MonoBehaviour
             Debug.LogError("JSON file not found at path: " + jsonFilePath);
         }
     }
-
-
-
-
-
 
 
     public PropertyData GetPropertyByWaypointIndex(int JSONwaypointIndex)
@@ -123,28 +118,19 @@ public class PropertyManager : MonoBehaviour
     }
 
     // Function to calculate property prices for different stages
-    private void CalculatePropertyPrices(PropertyData property, int priceStage1)
+    private void CalculatePropertyPrices(PropertyData property, int priceStallBase)
     {
         property.prices = new List<int>();
 
-        // Add stage 1 price
-        property.prices.Add(priceStage1);
+        // Add stage 0 price (priceStallBase)
+        property.prices.Add(priceStallBase);
 
-        // Calculate prices for subsequent stages
-        for (int i = 1; i <= 4; i++) // Assuming there are 5 stages in total
+        // Calculate prices for subsequent stages using multipliers
+        float[] multipliers = { 5f, 10f, 15f, 30f };
+        foreach (float multiplier in multipliers)
         {
-            float multiplier = 1f;
-            if (i == 2)
-                multiplier = 5f;
-            else if (i == 3)
-                multiplier = 5f * 2f;
-            else if (i == 4)
-                multiplier = 5f * 2f * 1.5f;
-            else if (i == 5)
-                multiplier = 5f * 2f * 1.5f * 2f;
-
             // Calculate the price for the current stage
-            int stagePrice = (int)(priceStage1 * multiplier);
+            int stagePrice = (int)(priceStallBase * multiplier);
 
             // Add the price to the list
             property.prices.Add(stagePrice);

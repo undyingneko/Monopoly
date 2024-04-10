@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     public Button rollButton;
     public Image[] diceImages;
     public TextMeshProUGUI sumText;
-
+    public bool isBuyPopUpActive = false;
     private Sprite[] diceSides;
     private bool coroutineAllowed = true;
 
@@ -25,8 +25,8 @@ public class PlayerController : MonoBehaviour
     [HideInInspector]
     public int waypointIndex = 0;
     public bool moveAllowed = false;
-    public int Money = 0;
-    public TextMeshProUGUI plus200Text;
+    public int Money = 2000;
+    public TextMeshProUGUI plus300Text;
     public TextMeshProUGUI moneyText;
     public TextMeshProUGUI playerMoveText;
     private int consecutiveDoublesCount = 0;
@@ -54,7 +54,7 @@ public class PlayerController : MonoBehaviour
         rollButton.onClick.AddListener(RollDiceOnClick);
         diceSides = Resources.LoadAll<Sprite>("DiceSides/");
         transform.position = waypoints[waypointIndex].transform.position;
-        UpdateMoneyText();
+        
         playerMoveText.gameObject.SetActive(false);
         rollButton.gameObject.SetActive(false);
 
@@ -69,29 +69,7 @@ public class PlayerController : MonoBehaviour
             Debug.LogError("Failed to load popup prefab.");
         }
         
-        // buyPropertyPopupPrefab = Resources.Load<BuyPropertyPopup>("BuyPropertyPopupPrefab");
-        // if (buyPropertyPopupPrefab != null)
-        // {
-        //     Debug.Log("Popup prefab loaded successfully.");
-        //     // Instantiate the buy property popup for each property
-        //     if (propertyManager != null && propertyManager.properties.Count > 0)
-        //     {
-        //         foreach (PropertyManager.PropertyData propertyData in propertyManager.properties)
-        //         {
-        //             InstantiateBuyPropertyPopup(propertyData);
-        //         }
-        //     }
-        //     else
-        //     {
-        //         Debug.LogError("No property data found.");
-        //     }
-        // }
-        // else
-        // {
-        //     Debug.LogError("Failed to load popup prefab.");
-        // }
-
-        
+ 
         properties = propertyManager.properties;
         if (propertyManager == null)
         {
@@ -103,6 +81,8 @@ public class PlayerController : MonoBehaviour
         {
             Debug.LogError("waypoints array is not properly assigned or is empty. Assign it in the Unity Editor or via script.");
         }  
+        Money = 2000;
+        UpdateMoneyText();
     }
     private void InstantiateBuyPropertyPopup(PropertyManager.PropertyData property)
     {
@@ -239,7 +219,7 @@ public class PlayerController : MonoBehaviour
         // Allow other actions and then check for doubles
         yield return new WaitForSeconds(0.1f);
         
-        MovePlayer(diceValues[0] + diceValues[1]);
+        
         
         CheckForDoubles(diceValues);
         coroutineAllowed = true; 
@@ -256,7 +236,7 @@ public class PlayerController : MonoBehaviour
         isDoubles = (diceValues[0] == diceValues[1]);
 
         if (isDoubles)
-        {
+        {   MovePlayer(diceValues[0] + diceValues[1]);
             consecutiveDoublesCount++;
             
             if (consecutiveDoublesCount >= 3)
@@ -271,13 +251,14 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
+                
                 StartTurn();
                 
             }
         }
 
         else
-        {
+        {   MovePlayer(diceValues[0] + diceValues[1]);
             consecutiveDoublesCount = 0;
             EndTurn();
         }
@@ -298,22 +279,24 @@ public class PlayerController : MonoBehaviour
             float stepDistance = moveSpeed * Time.deltaTime;
             float distanceToNextWaypoint = Vector2.Distance(transform.position, waypoints[waypointIndex].position);
             transform.position = Vector2.MoveTowards(transform.position, waypoints[waypointIndex].position, stepDistance);
-      
+
             if (distanceToNextWaypoint < stepDistance)
             {
-                if (waypointIndex == 0)
-                {
-                    Money += 200;
-                    DisplayPlus200();
-                    UpdateMoneyText();
-                }
                 waypointIndex = (waypointIndex + 1) % waypoints.Length;
-
                 remainingSteps--;
             }
+
             yield return null;
-            
         }
+
+        // Check if the player has completed a full loop around the board
+        if (waypointIndex == 0)
+        {
+            Money += 300;
+            DisplayPlus300();
+            UpdateMoneyText();
+        }
+        
 
     // Update the current position
     currentPosition = (currentPosition + steps) % waypoints.Length;
@@ -428,7 +411,12 @@ public class PlayerController : MonoBehaviour
     {
         // Update the text displayed on the moneyText object
         moneyText.text = Money.ToString();
+        Debug.Log("Money updated. Current money: " + Money);
     }
+
+
+
+
     public void EndTurn()
     {
         isTurn = false;
@@ -441,19 +429,22 @@ public class PlayerController : MonoBehaviour
     public void StartTurn()
     {
         isTurn = true;
-        rollButton.gameObject.SetActive(true);
-        playerMoveText.gameObject.SetActive(true);
+        if (!isBuyPopUpActive)
+        {
+            rollButton.gameObject.SetActive(true);
+            playerMoveText.gameObject.SetActive(true);
+        }
     }
-    private void DisplayPlus200()
+    private void DisplayPlus300()
     {
-        plus200Text.gameObject.SetActive(true);
-        plus200Text.text = "+200";
-        StartCoroutine(HidePlus200Text());
+        plus300Text.gameObject.SetActive(true);
+        plus300Text.text = "+300";
+        StartCoroutine(HidePlus300Text());
     }
-    private IEnumerator HidePlus200Text()
+    private IEnumerator HidePlus300Text()
     {
         yield return new WaitForSeconds(2f);
-        plus200Text.gameObject.SetActive(false);
+        plus300Text.gameObject.SetActive(false);
     }
 
 }
