@@ -9,10 +9,13 @@ public class GameManager : MonoBehaviour
     public static bool GameOver = false;
     
     private static TextMeshProUGUI[] playerMoney;
+    private PlayerController playerController;
 
     void Start()
     {
+        playerController = FindObjectOfType<PlayerController>();
         StartGame();
+        
     }
 
     void StartGame()
@@ -26,6 +29,7 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(1f); // Wait for 1 second before starting the first turn
         players[currentPlayerIndex].StartTurn();
+        // playerController.EndTurn();
     }
 
     public void NextTurn()

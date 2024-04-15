@@ -9,7 +9,7 @@ public class BuyPropertyPopup : MonoBehaviour
     public TextMeshProUGUI[] stagePriceTexts;
     public Button[] buyButtons;
     public Button closeButton; // Reference to the close button
-    
+   
     private PlayerController playerController;
 
     private PropertyManager.PropertyData currentProperty;
@@ -17,24 +17,39 @@ public class BuyPropertyPopup : MonoBehaviour
     private float buyConfirmationTime = 10f; // Time limit for confirming the purchase
 
     private Coroutine buyConfirmationCoroutine; // Coroutine reference for buy confirmation timer
+    private GameManager gameManager;
+
+
     private void Start()
     {
         playerController = FindObjectOfType<PlayerController>();
+        gameManager = FindObjectOfType<GameManager>();
     }
     private void OnEnable()
     {
-        playerController.isBuyPopUpActive = true;
-        buyConfirmationCoroutine = StartCoroutine(BuyConfirmationTimer());
-        closeButton.onClick.AddListener(Decline); // Add a listener to the close button
-        for (int i = 0; i < buyButtons.Length; i++)
+        playerController = FindObjectOfType<PlayerController>();
+        if (playerController != null)
         {
-            int index = i; // Store the current index in a local variable to avoid closure issues
-            buyButtons[i].onClick.AddListener(() => BuyStage(index, GameManager.currentPlayerIndex));
+            Debug.Log("Popup enabled");
+            playerController.isBuyPopUpActive = true;
+            buyConfirmationCoroutine = StartCoroutine(BuyConfirmationTimer());
+            closeButton.onClick.AddListener(Decline); // Add a listener to the close button
+            for (int i = 0; i < buyButtons.Length; i++)
+            {
+                int index = i; // Store the current index in a local variable to avoid closure issues
+                buyButtons[i].onClick.AddListener(() => BuyStage(index, GameManager.currentPlayerIndex));
+            }
+        }
+        else
+        {
+            Debug.LogError("PlayerController not found!");
         }
     }
 
     private void OnDisable()
-    {   playerController.isBuyPopUpActive = false;
+    {   Debug.Log("Popup disabled");
+        playerController = FindObjectOfType<PlayerController>();
+        playerController.isBuyPopUpActive = false;
         // Stop the buy confirmation timer when the panel is disabled
         if (buyConfirmationCoroutine != null)
         {
@@ -91,10 +106,14 @@ public class BuyPropertyPopup : MonoBehaviour
                         currentPlayer.properties.Add(currentProperty); // Add property to player's properties list
                         Debug.Log("Property bought successfully.");
                         gameObject.SetActive(false); // Close the Buy Property Popup
+                        playerController.EndBuyPropertyInteraction();
+                        
                     }
                     else
                     {
                         Debug.LogWarning("Insufficient funds to buy the property.");
+                        playerController.EndBuyPropertyInteraction();
+                        // playerController.EndTurn();
                     }
                 }
                 else
@@ -112,7 +131,9 @@ public class BuyPropertyPopup : MonoBehaviour
             {
                 StopCoroutine(buyConfirmationCoroutine);
             }
+            // playerController.EndBuyPropertyInteraction();
         }
+        Debug.Log ("currentPlayerIndex:"+ GameManager.currentPlayerIndex);
     }
 
     IEnumerator BuyConfirmationTimer()
@@ -127,5 +148,7 @@ public class BuyPropertyPopup : MonoBehaviour
     {
         // Close the popup immediately when the close button is pressed
         gameObject.SetActive(false);
+        playerController.EndBuyPropertyInteraction();
+        
     }
 }

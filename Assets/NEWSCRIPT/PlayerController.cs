@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     public Button rollButton;
     public Image[] diceImages;
     public TextMeshProUGUI sumText;
-    public bool isBuyPopUpActive = false;
+    
     private Sprite[] diceSides;
     private bool coroutineAllowed = true;
 
@@ -45,6 +45,8 @@ public class PlayerController : MonoBehaviour
 
     public List<PropertyManager.PropertyData> properties;
     
+    public bool isBuyPopUpActive = false;
+    public bool buyPropertyDecisionMade = false;
     
     void Start()
     {   
@@ -157,7 +159,10 @@ public class PlayerController : MonoBehaviour
             InJail = false;
             MovePlayer(sum);
             turnsInJail = 0;
-            EndTurn();
+            // if (buyPropertyDecisionMade == true){
+            //     EndTurn();
+            //     }
+            
             coroutineAllowed = false;
             
         }
@@ -168,10 +173,13 @@ public class PlayerController : MonoBehaviour
                 InJail = false;
                 MovePlayer(sum);
                 turnsInJail = 0;
-                EndTurn();
+                // if (buyPropertyDecisionMade == true){
+                //     EndTurn();
+                //     }
+            
                 coroutineAllowed = false;
                 
-                // RollTheDiceAfterJail();
+                
             }
             else
             {   
@@ -219,10 +227,11 @@ public class PlayerController : MonoBehaviour
         // Allow other actions and then check for doubles
         yield return new WaitForSeconds(0.1f);
         
-        
-        
+        Debug.Log ("currentPlayerIndex:"+ GameManager.currentPlayerIndex);
         CheckForDoubles(diceValues);
+        // yield return StartCoroutine(CheckForDoubles(diceValues));
         coroutineAllowed = true; 
+        Debug.Log ("currentPlayerIndex:"+ GameManager.currentPlayerIndex);
     }
 
     public void HackRollDice(int[] diceValues)
@@ -247,7 +256,7 @@ public class PlayerController : MonoBehaviour
                 DisplayGoToJailText();
                 InJail = true;
                 EndTurn();
-                return;
+                // yield break;
             }
             else
             {
@@ -260,7 +269,13 @@ public class PlayerController : MonoBehaviour
         else
         {   MovePlayer(diceValues[0] + diceValues[1]);
             consecutiveDoublesCount = 0;
-            EndTurn();
+            
+            // if (buyPropertyDecisionMade)
+            // {
+            //     yield return new WaitUntil(() => !isBuyPopUpActive); // Wait until the buy pop-up interaction is completed
+            //     EndTurn(); // End the turn after the buy pop-up interaction is completed
+            //     yield break;
+            // }
         }
         
     }
@@ -345,11 +360,13 @@ public class PlayerController : MonoBehaviour
             else
             {
                 PayRent(property);
+                EndTurn();
             }
         }
         else
         {
             Debug.LogWarning("Property is null. No popup will be displayed.");
+            EndTurn();
         }
     }
 
@@ -372,7 +389,13 @@ public class PlayerController : MonoBehaviour
         ownerPlayer.UpdateMoneyText();
     }
 
-
+    public void EndBuyPropertyInteraction()
+    {
+        buyPropertyDecisionMade = true;
+        Debug.Log("Decision is made");
+        EndTurn();
+        
+    }
 
     // Method to find player object by ID
     private PlayerController FindPlayerByID(int ID)
@@ -423,7 +446,8 @@ public class PlayerController : MonoBehaviour
         playerMoveText.gameObject.SetActive(false);
         rollButton.gameObject.SetActive(false);
         gameManager.NextTurn();
-        
+        Debug.Log("new turn started");
+
     }
 
     public void StartTurn()
@@ -433,8 +457,12 @@ public class PlayerController : MonoBehaviour
         {
             rollButton.gameObject.SetActive(true);
             playerMoveText.gameObject.SetActive(true);
+            buyPropertyDecisionMade = false;
         }
+
     }
+
+
     private void DisplayPlus300()
     {
         plus300Text.gameObject.SetActive(true);

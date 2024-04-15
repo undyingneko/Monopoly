@@ -331,7 +331,6 @@ MonoBehaviour:
   - {fileID: 706812636}
   - {fileID: 1906955959}
   sumText: {fileID: 696462889}
-  isBuyPopUpActive: 0
   waypoints:
   - {fileID: 1480567133}
   - {fileID: 902812692}
@@ -375,9 +374,11 @@ MonoBehaviour:
   isDoubles: 0
   InJail: 0
   goToJailText: {fileID: 998582064}
-  canvasTransform: {fileID: 0}
+  canvasTransform: {fileID: 1311088092}
   buyPropertyPopupPrefabPath: BuyPropertyPopupPrefab
   properties: []
+  isBuyPopUpActive: 0
+  buyPropertyDecisionMade: 0
 --- !u!1 &47249268
 GameObject:
   m_ObjectHideFlags: 0
@@ -4143,7 +4144,6 @@ MonoBehaviour:
   - {fileID: 706812636}
   - {fileID: 1906955959}
   sumText: {fileID: 696462889}
-  isBuyPopUpActive: 0
   waypoints:
   - {fileID: 652039616}
   - {fileID: 1384867454}
@@ -4187,9 +4187,11 @@ MonoBehaviour:
   isDoubles: 0
   InJail: 0
   goToJailText: {fileID: 998582064}
-  canvasTransform: {fileID: 0}
+  canvasTransform: {fileID: 1311088092}
   buyPropertyPopupPrefabPath: BuyPropertyPopupPrefab
   properties: []
+  isBuyPopUpActive: 0
+  buyPropertyDecisionMade: 0
 --- !u!1 &807329864
 GameObject:
   m_ObjectHideFlags: 0
@@ -4363,7 +4365,6 @@ MonoBehaviour:
   - {fileID: 706812636}
   - {fileID: 1906955959}
   sumText: {fileID: 696462889}
-  isBuyPopUpActive: 0
   waypoints:
   - {fileID: 1646973400}
   - {fileID: 807329865}
@@ -4407,9 +4408,11 @@ MonoBehaviour:
   isDoubles: 0
   InJail: 0
   goToJailText: {fileID: 998582064}
-  canvasTransform: {fileID: 0}
+  canvasTransform: {fileID: 1311088092}
   buyPropertyPopupPrefabPath: BuyPropertyPopupPrefab
   properties: []
+  isBuyPopUpActive: 0
+  buyPropertyDecisionMade: 0
 --- !u!1 &825779757
 GameObject:
   m_ObjectHideFlags: 0
@@ -8960,7 +8963,6 @@ MonoBehaviour:
   - {fileID: 706812636}
   - {fileID: 1906955959}
   sumText: {fileID: 696462889}
-  isBuyPopUpActive: 0
   waypoints:
   - {fileID: 531962509}
   - {fileID: 618150288}
@@ -9004,9 +9006,11 @@ MonoBehaviour:
   isDoubles: 0
   InJail: 0
   goToJailText: {fileID: 998582064}
-  canvasTransform: {fileID: 0}
+  canvasTransform: {fileID: 1311088092}
   buyPropertyPopupPrefabPath: BuyPropertyPopupPrefab
   properties: []
+  isBuyPopUpActive: 0
+  buyPropertyDecisionMade: 0
 --- !u!1 &1702660624
 GameObject:
   m_ObjectHideFlags: 0
