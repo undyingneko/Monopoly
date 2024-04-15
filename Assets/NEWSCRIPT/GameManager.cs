@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using TMPro;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,10 +11,18 @@ public class GameManager : MonoBehaviour
     
     private static TextMeshProUGUI[] playerMoney;
     private PlayerController playerController;
+    public static GameManager Instance;
+    void Awake()
+    {
+        Instance = this; // Assign the current instance to the static property
+    }
+   
 
     void Start()
     {
         playerController = FindObjectOfType<PlayerController>();
+
+
         StartGame();
         
     }
@@ -22,8 +31,18 @@ public class GameManager : MonoBehaviour
     {
         // Initialize the game
         currentPlayerIndex = 0;
+
+        // Assign team IDs to players
+        for (int i = 0; i < players.Length; i++)
+        {
+            int teamID = (i % 2) + 1; // Alternating between team 1 and team 2
+            players[i].AssignTeamID(teamID); // Assign team ID to the player
+            players[i].AssignPlayerID(i + 1); // Assign player ID
+        }
+
         StartCoroutine(StartTurnCoroutine());
     }
+
 
     IEnumerator StartTurnCoroutine()
     {
@@ -32,10 +51,16 @@ public class GameManager : MonoBehaviour
         // playerController.EndTurn();
     }
 
+    public void SetPlayers(PlayerController[] newPlayers)
+    {
+        players = newPlayers;
+    }   
+
     public void NextTurn()
     {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.Length;
         players[currentPlayerIndex].StartTurn();
     }
+
 
 }

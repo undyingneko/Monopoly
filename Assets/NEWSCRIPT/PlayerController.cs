@@ -6,7 +6,9 @@ using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour
 {
+    PlayerController playerController;
     public int playerID;
+    public int teamID;
     private int currentPosition;
     private bool isTurn;
 
@@ -47,9 +49,33 @@ public class PlayerController : MonoBehaviour
     
     public bool isBuyPopUpActive = false;
     public bool buyPropertyDecisionMade = false;
-    
+
+    private SpriteRenderer spriteRenderer;
+    private int originalSortingOrder = 0;
+
+    public void AssignPlayerID(int id)
+    {
+        playerID = id;
+    }    
+    public void AssignTeamID(int id)
+    {
+        teamID = id;
+    }
+    public void UpdatePropertyOwnership(int propertystageIndex)
+    {
+        for (int i = 0; i <= propertystageIndex; i++)
+        {
+            for (int j = 0; j <= i; j++)
+            {
+                properties[j].owned = true;
+            }
+        }
+    }
+
+  
     void Start()
     {   
+        playerController = FindObjectOfType<PlayerController>();
         propertyManager = PropertyManager.Instance;
         gameManager = FindObjectOfType<GameManager>();
 
@@ -85,6 +111,9 @@ public class PlayerController : MonoBehaviour
         }  
         Money = 2000;
         UpdateMoneyText();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        originalSortingOrder = spriteRenderer.sortingOrder;
+
     }
     private void InstantiateBuyPropertyPopup(PropertyManager.PropertyData property)
     {
@@ -159,9 +188,8 @@ public class PlayerController : MonoBehaviour
             InJail = false;
             MovePlayer(sum);
             turnsInJail = 0;
-            // if (buyPropertyDecisionMade == true){
-            //     EndTurn();
-            //     }
+            yield return new WaitUntil(() => playerController.buyPropertyDecisionMade);
+            EndTurn();
             
             coroutineAllowed = false;
             
@@ -173,9 +201,8 @@ public class PlayerController : MonoBehaviour
                 InJail = false;
                 MovePlayer(sum);
                 turnsInJail = 0;
-                // if (buyPropertyDecisionMade == true){
-                //     EndTurn();
-                //     }
+                yield return new WaitUntil(() => playerController.buyPropertyDecisionMade);
+                EndTurn();
             
                 coroutineAllowed = false;
                 
@@ -223,15 +250,21 @@ public class PlayerController : MonoBehaviour
 
         int sum = diceValues[0] + diceValues[1];
         sumText.text = "" + sum; 
-
-        // Allow other actions and then check for doubles
+        MovePlayer(diceValues[0] + diceValues[1]);
+        
         yield return new WaitForSeconds(0.1f);
         
-        Debug.Log ("currentPlayerIndex:"+ GameManager.currentPlayerIndex);
+        yield return new WaitUntil(() => playerController.buyPropertyDecisionMade);
+
+        
         CheckForDoubles(diceValues);
+
+
+        yield return new WaitForSeconds(0.1f);
         // yield return StartCoroutine(CheckForDoubles(diceValues));
         coroutineAllowed = true; 
-        Debug.Log ("currentPlayerIndex:"+ GameManager.currentPlayerIndex);
+        Debug.Log("Coroutine completed. currentPlayerIndex: " + GameManager.currentPlayerIndex);
+
     }
 
     public void HackRollDice(int[] diceValues)
@@ -245,7 +278,8 @@ public class PlayerController : MonoBehaviour
         isDoubles = (diceValues[0] == diceValues[1]);
 
         if (isDoubles)
-        {   MovePlayer(diceValues[0] + diceValues[1]);
+        {   
+            Debug.Log ("inside isDouble");
             consecutiveDoublesCount++;
             
             if (consecutiveDoublesCount >= 3)
@@ -267,9 +301,10 @@ public class PlayerController : MonoBehaviour
         }
 
         else
-        {   MovePlayer(diceValues[0] + diceValues[1]);
+        {   
+            // MovePlayer(diceValues[0] + diceValues[1]);
             consecutiveDoublesCount = 0;
-            
+            EndTurn();
             // if (buyPropertyDecisionMade)
             // {
             //     yield return new WaitUntil(() => !isBuyPopUpActive); // Wait until the buy pop-up interaction is completed
@@ -357,45 +392,56 @@ public class PlayerController : MonoBehaviour
                 // Instantiate the buy property popup
                 InstantiateBuyPropertyPopup(property);
             }
-            else
-            {
-                PayRent(property);
-                EndTurn();
+            if (property.owned)
+            {   
+                PlayerController ownerPlayer = FindTeamByID(property.ownerID);
+                if (ownerPlayer != null && ownerPlayer.teamID != this.teamID)
+                {
+                    Money -= property.rent;
+                    ownerPlayer.Money += property.rent;
+                    UpdateMoneyText();
+                    ownerPlayer.UpdateMoneyText();
+                }
+                // EndTurn();
+                playerController.buyPropertyDecisionMade = true;
+                
             }
         }
         else
         {
             Debug.LogWarning("Property is null. No popup will be displayed.");
-            EndTurn();
+            playerController.buyPropertyDecisionMade = true;
+            // EndTurn();
         }
     }
 
 
 
-    private void PayRent(PropertyManager.PropertyData property)
-    {
-        // Deduct rent from the player's money
-        Money -= property.rent;
+    // private void PayRent(PropertyManager.PropertyData property)
+    // {
+    //     // Deduct rent from the player's money
+    //     Money -= property.rent;
         
-        // Find the owner player object and add rent amount to their money
-        PlayerController ownerPlayer = FindPlayerByID(property.ownerID);
-        if (ownerPlayer != null)
-        {
-            ownerPlayer.Money += property.rent;
-        }
-
-        // Update UI for both players
-        UpdateMoneyText();
-        ownerPlayer.UpdateMoneyText();
-    }
-
-    public void EndBuyPropertyInteraction()
-    {
-        buyPropertyDecisionMade = true;
-        Debug.Log("Decision is made");
-        EndTurn();
+    //     // Find the owner player object and add rent amount to their money
+    //     PlayerController ownerPlayer = FindPlayerByID(property.ownerID);
         
-    }
+    //     if (ownerPlayer != null)
+    //     {
+    //         ownerPlayer.Money += property.rent;
+    //     }
+
+    //     // Update UI for both players
+    //     UpdateMoneyText();
+    //     ownerPlayer.UpdateMoneyText();
+    // }
+
+    // public void EndBuyPropertyInteraction()
+    // {
+    //     buyPropertyDecisionMade = true;
+    //     Debug.Log("Decision is made");
+    //     EndTurn();
+        
+    // }
 
     // Method to find player object by ID
     private PlayerController FindPlayerByID(int ID)
@@ -411,6 +457,18 @@ public class PlayerController : MonoBehaviour
         return null;
     }
     
+    private PlayerController FindTeamByID(int ID)
+    {
+        PlayerController[] players = FindObjectsOfType<PlayerController>();
+        foreach (PlayerController player in players)
+        {
+            if (player.teamID == ID)
+            {
+                return player;
+            }
+        }
+        return null; // Return -1 if no player with the given ID is found
+    }
 
 
 
@@ -445,6 +503,7 @@ public class PlayerController : MonoBehaviour
         isTurn = false;
         playerMoveText.gameObject.SetActive(false);
         rollButton.gameObject.SetActive(false);
+        spriteRenderer.sortingOrder = originalSortingOrder;
         gameManager.NextTurn();
         Debug.Log("new turn started");
 
@@ -454,10 +513,11 @@ public class PlayerController : MonoBehaviour
     {
         isTurn = true;
         if (!isBuyPopUpActive)
-        {
+        {   
+            spriteRenderer.sortingOrder = originalSortingOrder + 1;
             rollButton.gameObject.SetActive(true);
             playerMoveText.gameObject.SetActive(true);
-            buyPropertyDecisionMade = false;
+            playerController.buyPropertyDecisionMade = false;
         }
 
     }

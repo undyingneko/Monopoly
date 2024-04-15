@@ -102,18 +102,26 @@ public class BuyPropertyPopup : MonoBehaviour
                         Debug.Log("Money deducted successfully. Remaining money: " + currentPlayer.Money);
                         currentProperty.owned = true; // Set property ownership
                         currentProperty.ownerID = currentPlayer.playerID;
+                        currentProperty.teamownerID = currentPlayer.teamID;
                         currentPlayer.UpdateMoneyText(); // Update money UI
                         currentPlayer.properties.Add(currentProperty); // Add property to player's properties list
+
+                        currentPlayer.UpdatePropertyOwnership(stageIndex);
                         Debug.Log("Property bought successfully.");
+                        currentProperty.CalculateRent(stageIndex);
                         gameObject.SetActive(false); // Close the Buy Property Popup
-                        playerController.EndBuyPropertyInteraction();
+                        // playerController.EndBuyPropertyInteraction();
+                        playerController.buyPropertyDecisionMade = true;
+                        Debug.Log("buyPropertyDecisionMade set to : " + playerController.buyPropertyDecisionMade);
                         
                     }
                     else
                     {
                         Debug.LogWarning("Insufficient funds to buy the property.");
-                        playerController.EndBuyPropertyInteraction();
+                        // playerController.EndBuyPropertyInteraction();
                         // playerController.EndTurn();
+                        playerController.buyPropertyDecisionMade = true;
+                        Debug.Log("buyPropertyDecisionMade set to : " + playerController.buyPropertyDecisionMade);
                     }
                 }
                 else
@@ -142,13 +150,18 @@ public class BuyPropertyPopup : MonoBehaviour
 
         // Close the popup after the confirmation time if no purchase is made
         gameObject.SetActive(false);
+        // playerController.EndBuyPropertyInteraction();
+        playerController.buyPropertyDecisionMade = true;
+        Debug.Log("buyPropertyDecisionMade set to : " + playerController.buyPropertyDecisionMade);
     }
 
     public void Decline()
     {
         // Close the popup immediately when the close button is pressed
         gameObject.SetActive(false);
-        playerController.EndBuyPropertyInteraction();
+        // playerController.EndBuyPropertyInteraction();
+        playerController.buyPropertyDecisionMade = true;
+        Debug.Log("buyPropertyDecisionMade set to : " + playerController.buyPropertyDecisionMade);
         
     }
 }

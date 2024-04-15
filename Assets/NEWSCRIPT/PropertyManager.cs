@@ -19,8 +19,27 @@ public class PropertyManager : MonoBehaviour
         public List<int> prices;
         public bool owned;
         public int ownerID;
+        public int teamownerID;
         public int rent;
         
+    
+        public void CalculateRent(int stageIndex)
+        {
+            // Initialize rent to 0
+            rent = 0;
+
+            // Check if prices list is not null and stageIndex is within its bounds
+            if (prices != null && stageIndex >= 0 && stageIndex < prices.Count - 1)
+            {
+                // Rent is half of the price of the next stage
+                rent = prices[stageIndex] / 2;
+            }
+            else
+            {
+                // Unable to calculate rent if the next stage doesn't exist or prices list is null
+                Debug.LogError("Unable to calculate rent. Invalid stage index or no next stage.");
+            }
+        }
     }
 
     public List<PropertyData> properties = new List<PropertyData>();

@@ -2,7 +2,7 @@
     "properties": [
         {
             "name": "Vending Machine",
-            "JSONwaypointIndex": 12,
+            "JSONwaypointIndex": 1,
             "priceStallBase": 5
         },
         {
