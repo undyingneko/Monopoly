@@ -35,13 +35,16 @@ public class GameManager : MonoBehaviour
         // Assign team IDs to players
         for (int i = 0; i < players.Length; i++)
         {
-            int teamID = (i % 2) + 1; // Alternating between team 1 and team 2
+            int teamID = (i == 0 || i == 3) ? 1 : 2; // Alternating between team 1 and team 2
+
             players[i].AssignTeamID(teamID); // Assign team ID to the player
             players[i].AssignPlayerID(i + 1); // Assign player ID
         }
 
         StartCoroutine(StartTurnCoroutine());
     }
+
+
 
 
     IEnumerator StartTurnCoroutine()

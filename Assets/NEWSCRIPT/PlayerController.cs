@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour
     PlayerController playerController;
     public int playerID;
     public int teamID;
+    public TextMeshProUGUI teamNumberText;
+
     private int currentPosition;
     private bool isTurn;
 
@@ -28,7 +30,7 @@ public class PlayerController : MonoBehaviour
     public int waypointIndex = 0;
     public bool moveAllowed = false;
     public int Money = 2000;
-    public TextMeshProUGUI plus300Text;
+    public TextMeshProUGUI plus300TextPrefab;
     public TextMeshProUGUI moneyText;
     public TextMeshProUGUI playerMoveText;
     private int consecutiveDoublesCount = 0;
@@ -46,6 +48,7 @@ public class PlayerController : MonoBehaviour
     private PropertyManager propertyManager;
 
     public List<PropertyManager.PropertyData> properties;
+    public List<PropertyManager.PropertyData> ownedProperties = new List<PropertyManager.PropertyData>();
     
     public bool isBuyPopUpActive = false;
     public bool buyPropertyDecisionMade = false;
@@ -57,10 +60,12 @@ public class PlayerController : MonoBehaviour
     {
         playerID = id;
     }    
-    public void AssignTeamID(int id)
+    public void AssignTeamID(int teamid)
     {
-        teamID = id;
+        teamID = teamid;
+        teamNumberText.text = "Team: " + teamID.ToString();
     }
+
     public void UpdatePropertyOwnership(int propertystageIndex)
     {
         for (int i = 0; i <= propertystageIndex; i++)
@@ -163,22 +168,38 @@ public class PlayerController : MonoBehaviour
     }
 
     private IEnumerator RollDiceInJail()
-    {       
+    {    
+        Debug.Log("inside roll dice in jail");   
         coroutineAllowed = false;
         int[] diceValues = new int[2];
 
+        // For testing purposes, set the dice values to double 6
+        diceValues[0] = 4;
+        diceValues[1] = 4;
         for (int i = 0; i <= 20; i++)
         {
             for (int j = 0; j < diceImages.Length; j++)
             {
-                int randomDiceSide = Random.Range(0, 6);
-                diceImages[j].sprite = diceSides[randomDiceSide];
-                diceValues[j] = randomDiceSide + 1;
+                diceImages[j].sprite = diceSides[3]; // Use the sprite for dice side 6
             }
 
             yield return new WaitForSeconds(0.05f);
-        }
-        
+        }      
+        // //---------------------
+
+        //------------------------------------------
+        // for (int i = 0; i <= 20; i++)
+        // {
+        //     for (int j = 0; j < diceImages.Length; j++)
+        //     {
+        //         int randomDiceSide = Random.Range(0, 6);
+        //         diceImages[j].sprite = diceSides[randomDiceSide];
+        //         diceValues[j] = randomDiceSide + 1;
+        //     }
+
+        //     yield return new WaitForSeconds(0.05f);
+        // }
+        //-------------------------------------
         int sum = diceValues[0] + diceValues[1];
         sumText.text = "" + sum; 
         isDoubles = (diceValues[0] == diceValues[1]); 
@@ -186,8 +207,8 @@ public class PlayerController : MonoBehaviour
         if (isDoubles)
         {
             InJail = false;
-            MovePlayer(sum);
             turnsInJail = 0;
+            MovePlayer(diceValues[0] + diceValues[1]);
             yield return new WaitUntil(() => playerController.buyPropertyDecisionMade);
             EndTurn();
             
@@ -199,7 +220,7 @@ public class PlayerController : MonoBehaviour
             if (turnsInJail >= 3)
             {   
                 InJail = false;
-                MovePlayer(sum);
+                MovePlayer(diceValues[0] + diceValues[1]);
                 turnsInJail = 0;
                 yield return new WaitUntil(() => playerController.buyPropertyDecisionMade);
                 EndTurn();
@@ -222,48 +243,55 @@ public class PlayerController : MonoBehaviour
         coroutineAllowed = false;
         int[] diceValues = new int[2];
 
-        // //-----------------------
-        for (int i = 0; i <= 20; i++)
-        {
-            for (int j = 0; j < diceImages.Length; j++)
-            {
-                int randomDiceSide = Random.Range(0, 6);
-                diceImages[j].sprite = diceSides[randomDiceSide];
-                diceValues[j] = randomDiceSide + 1;
-            }
-            yield return new WaitForSeconds(0.05f);
-        }
-        // //---------------------
-        // // For testing purposes, set the dice values to double 6
-        // diceValues[0] = 4;
-        // diceValues[1] = 4;
+        //-----------------------
         // for (int i = 0; i <= 20; i++)
         // {
         //     for (int j = 0; j < diceImages.Length; j++)
         //     {
-        //         diceImages[j].sprite = diceSides[3]; // Use the sprite for dice side 6
+        //         int randomDiceSide = Random.Range(0, 6);
+        //         diceImages[j].sprite = diceSides[randomDiceSide];
+        //         diceValues[j] = randomDiceSide + 1;
         //     }
-
         //     yield return new WaitForSeconds(0.05f);
-        // }      
-        // //---------------------
+        // }
+        //---------------------
+        // For testing purposes, set the dice values to double 6
+        diceValues[0] = 4;
+        diceValues[1] = 4;
+        for (int i = 0; i <= 20; i++)
+        {
+            for (int j = 0; j < diceImages.Length; j++)
+            {
+                diceImages[j].sprite = diceSides[3]; // Use the sprite for dice side 6
+            }
+
+            yield return new WaitForSeconds(0.05f);
+        }      
+        //---------------------
 
         int sum = diceValues[0] + diceValues[1];
         sumText.text = "" + sum; 
-        MovePlayer(diceValues[0] + diceValues[1]);
-        
         yield return new WaitForSeconds(0.1f);
+
+        yield return MovePlayerCoroutine(sum);
+        // MovePlayer(diceValues[0] + diceValues[1]);
+
+        if (currentPosition == 8)
+        {
+            DisplayGoToJailText();
+            InJail = true;
+            consecutiveDoublesCount = 0;
+            EndTurn();
+            coroutineAllowed = false;
+            Debug.Log("exited roll dice normal. currentPlayerIndex: " + GameManager.currentPlayerIndex);
+            yield break;
+             // Exit the coroutine early if the player is in jail
+        }        
+        // CheckForDoubles(diceValues);
         
-        yield return new WaitUntil(() => playerController.buyPropertyDecisionMade);
+        yield return StartCoroutine(CheckForDoubles(diceValues));
 
-        
-        CheckForDoubles(diceValues);
-
-
-        yield return new WaitForSeconds(0.1f);
-        // yield return StartCoroutine(CheckForDoubles(diceValues));
         coroutineAllowed = true; 
-        Debug.Log("Coroutine completed. currentPlayerIndex: " + GameManager.currentPlayerIndex);
 
     }
 
@@ -273,7 +301,7 @@ public class PlayerController : MonoBehaviour
         
     }
 
-    private void CheckForDoubles(int[] diceValues)
+    private IEnumerator CheckForDoubles(int[] diceValues)
     {   
         isDoubles = (diceValues[0] == diceValues[1]);
 
@@ -283,18 +311,24 @@ public class PlayerController : MonoBehaviour
             consecutiveDoublesCount++;
             
             if (consecutiveDoublesCount >= 3)
-            {
+            {   
+                
+                yield return new WaitUntil(() => playerController.buyPropertyDecisionMade);
                 consecutiveDoublesCount = 0;
                 waypointIndex = 8;
                 transform.position = waypoints[waypointIndex].position;
                 DisplayGoToJailText();
                 InJail = true;
+                
                 EndTurn();
-                // yield break;
+                yield break;
+                // coroutineAllowed = false;
+
             }
             else
-            {
+            {   
                 
+                yield return new WaitUntil(() => playerController.buyPropertyDecisionMade);
                 StartTurn();
                 
             }
@@ -302,9 +336,11 @@ public class PlayerController : MonoBehaviour
 
         else
         {   
-            // MovePlayer(diceValues[0] + diceValues[1]);
             consecutiveDoublesCount = 0;
+            MovePlayer(diceValues[0] + diceValues[1]);
+            yield return new WaitUntil(() => playerController.buyPropertyDecisionMade);
             EndTurn();
+            yield break;
             // if (buyPropertyDecisionMade)
             // {
             //     yield return new WaitUntil(() => !isBuyPopUpActive); // Wait until the buy pop-up interaction is completed
@@ -337,34 +373,28 @@ public class PlayerController : MonoBehaviour
             }
 
             yield return null;
-        }
+        
 
         // Check if the player has completed a full loop around the board
-        if (waypointIndex == 0)
-        {
-            Money += 300;
-            DisplayPlus300();
-            UpdateMoneyText();
+            if (waypointIndex == 0)
+            {
+                Money += 300;
+                DisplayPlus300();
+                UpdateMoneyText();
+            }
         }
-        
 
     // Update the current position
     currentPosition = (currentPosition + steps) % waypoints.Length;
+    Debug.Log("Current posision after moving only=" +currentPosition);
+    
     LandOnProperty();
     }
     // You may want to check if the player has landed on a property here
 
     private void LandOnProperty()
     {
-        if (currentPosition == 8)
-        {
-            // Display the Go to Jail text and handle the jail logic
-            DisplayGoToJailText();
-            InJail = true;
-            consecutiveDoublesCount = 0;
-            EndTurn();
-            return;
-        }
+
 
         // Get the property data for the current waypoint index from the PropertyManager
         PropertyManager.PropertyData property = propertyManager.GetPropertyByWaypointIndex(currentPosition);
@@ -505,19 +535,22 @@ public class PlayerController : MonoBehaviour
         rollButton.gameObject.SetActive(false);
         spriteRenderer.sortingOrder = originalSortingOrder;
         gameManager.NextTurn();
-        Debug.Log("new turn started");
+        
 
     }
 
     public void StartTurn()
     {
         isTurn = true;
+        coroutineAllowed = true;
         if (!isBuyPopUpActive)
         {   
             spriteRenderer.sortingOrder = originalSortingOrder + 1;
             rollButton.gameObject.SetActive(true);
             playerMoveText.gameObject.SetActive(true);
             playerController.buyPropertyDecisionMade = false;
+            
+            
         }
 
     }
@@ -525,14 +558,19 @@ public class PlayerController : MonoBehaviour
 
     private void DisplayPlus300()
     {
+        // Instantiate the Plus300Text prefab and set its position
+        TextMeshProUGUI plus300Text = Instantiate(plus300TextPrefab, canvasTransform);
         plus300Text.gameObject.SetActive(true);
-        plus300Text.text = "+300";
-        StartCoroutine(HidePlus300Text());
+
+        // Set the position of the Plus300Text
+        // plus300Text.rectTransform.position = /* Set position here */;
+
+        StartCoroutine(HidePlus300Text(plus300Text));
     }
-    private IEnumerator HidePlus300Text()
+    private IEnumerator HidePlus300Text(TextMeshProUGUI plus300Text)
     {
         yield return new WaitForSeconds(2f);
-        plus300Text.gameObject.SetActive(false);
+        Destroy(plus300Text.gameObject); // Destroy the Plus300Text object after 2 seconds
     }
 
 }

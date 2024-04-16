@@ -100,13 +100,16 @@ public class BuyPropertyPopup : MonoBehaviour
                     {
                         currentPlayer.Money -= stagePrice; // Deduct money
                         Debug.Log("Money deducted successfully. Remaining money: " + currentPlayer.Money);
-                        currentProperty.owned = true; // Set property ownership
-                        currentProperty.ownerID = currentPlayer.playerID;
+                        
+                        currentProperty.owned = true; // Set property ownership                
+                        currentProperty.ownerID = currentPlayer.playerID;                        
                         currentProperty.teamownerID = currentPlayer.teamID;
+
                         currentPlayer.UpdateMoneyText(); // Update money UI
-                        currentPlayer.properties.Add(currentProperty); // Add property to player's properties list
+                        currentPlayer.ownedProperties.Add(currentProperty); // Add property to player's properties list
 
                         currentPlayer.UpdatePropertyOwnership(stageIndex);
+
                         Debug.Log("Property bought successfully.");
                         currentProperty.CalculateRent(stageIndex);
                         gameObject.SetActive(false); // Close the Buy Property Popup
