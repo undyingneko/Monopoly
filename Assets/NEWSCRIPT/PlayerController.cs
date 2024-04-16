@@ -22,6 +22,8 @@ public class PlayerController : MonoBehaviour
     private bool coroutineAllowed = true;
 
     private GameManager gameManager;
+
+    private bool loopCompleted = false;
     
     public Transform[] waypoints;
     [SerializeField]
@@ -175,31 +177,31 @@ public class PlayerController : MonoBehaviour
         int[] diceValues = new int[2];
 
         // For testing purposes, set the dice values to double 6
-        diceValues[0] = 4;
-        diceValues[1] = 4;
-        for (int i = 0; i <= 20; i++)
-        {
-            for (int j = 0; j < diceImages.Length; j++)
-            {
-                diceImages[j].sprite = diceSides[3]; // Use the sprite for dice side 6
-            }
-
-            yield return new WaitForSeconds(0.05f);
-        }      
-        // //---------------------
-
-        //------------------------------------------
+        // diceValues[0] = 4;
+        // diceValues[1] = 4;
         // for (int i = 0; i <= 20; i++)
         // {
         //     for (int j = 0; j < diceImages.Length; j++)
         //     {
-        //         int randomDiceSide = Random.Range(0, 6);
-        //         diceImages[j].sprite = diceSides[randomDiceSide];
-        //         diceValues[j] = randomDiceSide + 1;
+        //         diceImages[j].sprite = diceSides[3]; // Use the sprite for dice side 6
         //     }
 
         //     yield return new WaitForSeconds(0.05f);
-        // }
+        // }     
+        // //---------------------
+
+        //------------------------------------------
+        for (int i = 0; i <= 20; i++)
+        {
+            for (int j = 0; j < diceImages.Length; j++)
+            {
+                int randomDiceSide = Random.Range(0, 6);
+                diceImages[j].sprite = diceSides[randomDiceSide];
+                diceValues[j] = randomDiceSide + 1;
+            }
+
+            yield return new WaitForSeconds(0.05f);
+        }
         //-------------------------------------
         int sum = diceValues[0] + diceValues[1];
         sumText.text = "" + sum; 
@@ -210,12 +212,13 @@ public class PlayerController : MonoBehaviour
             InJail = false;
             turnsInJail = 0;
             Debug.Log("current position before moving in jail" + currentPosition); 
-            MovePlayer(diceValues[0] + diceValues[1]);
+            Debug.Log("sum= " + sum);
+            MovePlayer(sum);
             yield return new WaitUntil(() => playerController.buyPropertyDecisionMade);
             Debug.Log("current position after moving in jail" + currentPosition); 
             EndTurn();
-            
             coroutineAllowed = false;
+            
             
         }
         else
@@ -231,6 +234,7 @@ public class PlayerController : MonoBehaviour
                 coroutineAllowed = false;
                 
                 
+                
             }
             else
             {   
@@ -243,36 +247,38 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator RollTheDice()
     {
+        Debug.Log("inside roll dice normal");
         coroutineAllowed = false;
         int[] diceValues = new int[2];
 
         //-----------------------
-        // for (int i = 0; i <= 20; i++)
-        // {
-        //     for (int j = 0; j < diceImages.Length; j++)
-        //     {
-        //         int randomDiceSide = Random.Range(0, 6);
-        //         diceImages[j].sprite = diceSides[randomDiceSide];
-        //         diceValues[j] = randomDiceSide + 1;
-        //     }
-        //     yield return new WaitForSeconds(0.05f);
-        // }
-        //---------------------
-        // For testing purposes, set the dice values to double 6
-        diceValues[0] = 4;
-        diceValues[1] = 4;
         for (int i = 0; i <= 20; i++)
         {
             for (int j = 0; j < diceImages.Length; j++)
             {
-                diceImages[j].sprite = diceSides[3]; // Use the sprite for dice side 6
+                int randomDiceSide = Random.Range(0, 6);
+                diceImages[j].sprite = diceSides[randomDiceSide];
+                diceValues[j] = randomDiceSide + 1;
             }
-
             yield return new WaitForSeconds(0.05f);
-        }      
+        }
+        //---------------------
+        // For testing purposes, set the dice values to double 6
+        // diceValues[0] = 4;
+        // diceValues[1] = 4;
+        // for (int i = 0; i <= 20; i++)
+        // {
+        //     for (int j = 0; j < diceImages.Length; j++)
+        //     {
+        //         diceImages[j].sprite = diceSides[3]; // Use the sprite for dice side 6
+        //     }
+
+        //     yield return new WaitForSeconds(0.05f);
+        // }      
         //---------------------
 
         int sum = diceValues[0] + diceValues[1];
+        // int sum = 7;
         sumText.text = "" + sum; 
         yield return new WaitForSeconds(0.1f);
 
@@ -286,7 +292,6 @@ public class PlayerController : MonoBehaviour
             consecutiveDoublesCount = 0;
             EndTurn();
             coroutineAllowed = false;
-            Debug.Log("exited roll dice normal. currentPlayerIndex: " + GameManager.currentPlayerIndex);
             yield break;
              // Exit the coroutine early if the player is in jail
         }        
@@ -340,7 +345,7 @@ public class PlayerController : MonoBehaviour
         else
         {   
             consecutiveDoublesCount = 0;
-            MovePlayer(diceValues[0] + diceValues[1]);
+            // MovePlayer(diceValues[0] + diceValues[1]);
             yield return new WaitUntil(() => playerController.buyPropertyDecisionMade);
             EndTurn();
             yield break;
@@ -357,43 +362,67 @@ public class PlayerController : MonoBehaviour
     void MovePlayer(int steps)
     {
         StartCoroutine(MovePlayerCoroutine(steps));
+        
     }
 
     IEnumerator MovePlayerCoroutine(int steps)
     {
         int remainingSteps = steps;
 
-        while (remainingSteps >= 0)
+        while (remainingSteps > 0)
         {
             float stepDistance = moveSpeed * Time.deltaTime;
-            float distanceToNextWaypoint = Vector2.Distance(transform.position, waypoints[waypointIndex].position);
-            transform.position = Vector2.MoveTowards(transform.position, waypoints[waypointIndex].position, stepDistance);
+            Vector2 targetPosition = waypoints[(waypointIndex + 1) % waypoints.Length].position;
+            float distanceToNextWaypoint = Vector2.Distance(transform.position, targetPosition);
 
+            transform.position = Vector2.MoveTowards(transform.position, targetPosition, stepDistance);
+
+  
             if (distanceToNextWaypoint < stepDistance)
             {
+
                 waypointIndex = (waypointIndex + 1) % waypoints.Length;
                 remainingSteps--;
+
+
+                // if (waypointIndex == 0)
+                // {
+                //     // Ensure the loopCompleted flag is false before adding money
+                //     if (!loopCompleted)
+                //     {
+                //         Money += 300;
+                //         DisplayPlus300();
+                //         UpdateMoneyText();
+
+                //         // Set the loopCompleted flag to true to prevent multiple additions
+                //         loopCompleted = true;
+                //     }
+                // }
+                // else
+                // {
+                //     // Reset the loopCompleted flag if the player is not at waypoint 0
+                //     loopCompleted = false;
+                // }
+                if (waypointIndex == 0)
+                {
+                    // Ensure the loopCompleted flag is false before adding money
+                    Money += 300;
+                    DisplayPlus300();
+                    UpdateMoneyText();
+                }
             }
 
             yield return null;
-        
-
-        // Check if the player has completed a full loop around the board
-            if (waypointIndex == 0)
-            {
-                Money += 300;
-                DisplayPlus300();
-                UpdateMoneyText();
-            }
         }
+        
+        // Update the current position
+        currentPosition = (currentPosition + steps) % waypoints.Length;
+        Debug.Log("Current position after moving: " + currentPosition);
+        Debug.Log("Current waypoint index: " + waypointIndex);
 
-    // Update the current position
-    currentPosition = (currentPosition + steps) % waypoints.Length;
-    Debug.Log("Current posision after moving only=" +currentPosition);
-    
-    LandOnProperty();
+        LandOnProperty();
     }
-    // You may want to check if the player has landed on a property here
+
 
     private void LandOnProperty()
     {
