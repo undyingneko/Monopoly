@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour
 {
-    PlayerController playerController;
+    private PlayerController playerController;
     public int playerID;
     public int teamID;
     public TextMeshProUGUI teamNumberText;
@@ -414,7 +414,7 @@ public class PlayerController : MonoBehaviour
 
             yield return null;
         }
-        
+
         // Update the current position
         currentPosition = (currentPosition + steps) % waypoints.Length;
         Debug.Log("Current position after moving: " + currentPosition);
