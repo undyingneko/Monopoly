@@ -169,7 +169,8 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator RollDiceInJail()
     {    
-        Debug.Log("inside roll dice in jail");   
+        Debug.Log("inside roll dice in jail");
+        Debug.Log("current position step in jail=" + currentPosition);   
         coroutineAllowed = false;
         int[] diceValues = new int[2];
 
@@ -208,8 +209,10 @@ public class PlayerController : MonoBehaviour
         {
             InJail = false;
             turnsInJail = 0;
+            Debug.Log("current position before moving in jail" + currentPosition); 
             MovePlayer(diceValues[0] + diceValues[1]);
             yield return new WaitUntil(() => playerController.buyPropertyDecisionMade);
+            Debug.Log("current position after moving in jail" + currentPosition); 
             EndTurn();
             
             coroutineAllowed = false;
