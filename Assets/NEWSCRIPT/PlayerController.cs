@@ -384,32 +384,31 @@ public class PlayerController : MonoBehaviour
                 waypointIndex = (waypointIndex + 1) % waypoints.Length;
                 remainingSteps--;
 
-
-                // if (waypointIndex == 0)
-                // {
-                //     // Ensure the loopCompleted flag is false before adding money
-                //     if (!loopCompleted)
-                //     {
-                //         Money += 300;
-                //         DisplayPlus300();
-                //         UpdateMoneyText();
-
-                //         // Set the loopCompleted flag to true to prevent multiple additions
-                //         loopCompleted = true;
-                //     }
-                // }
-                // else
-                // {
-                //     // Reset the loopCompleted flag if the player is not at waypoint 0
-                //     loopCompleted = false;
-                // }
                 if (waypointIndex == 0)
                 {
                     // Ensure the loopCompleted flag is false before adding money
-                    Money += 300;
-                    DisplayPlus300();
-                    UpdateMoneyText();
+                    if (!loopCompleted)
+                    {
+                        Money += 300;
+                        DisplayPlus300();
+                        UpdateMoneyText();
+
+                        // Set the loopCompleted flag to true to prevent multiple additions
+                        loopCompleted = true;
+                    }
                 }
+                else
+                {
+                    // Reset the loopCompleted flag if the player is not at waypoint 0
+                    loopCompleted = false;
+                }
+                // if (waypointIndex == 0)
+                // {
+                //     // Ensure the loopCompleted flag is false before adding money
+                //     Money += 300;
+                //     DisplayPlus300();
+                //     UpdateMoneyText();
+                // }
             }
 
             yield return null;
