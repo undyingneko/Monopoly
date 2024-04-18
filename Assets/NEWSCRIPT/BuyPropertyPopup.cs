@@ -5,10 +5,10 @@ using System.Collections;
 
 public class BuyPropertyPopup : MonoBehaviour
 {
-    public TextMeshProUGUI propertyNameText;
-    public TextMeshProUGUI[] stagePriceTexts;
-    public Button[] buyButtons;
-    public Button closeButton; // Reference to the close button
+    public TextMeshProUGUI BuyPropertyPopup_propertyNameText;
+    public TextMeshProUGUI[] BuyPropertyPopup_stagePriceTexts;
+    public Button[] BuyPropertyPopup_buyButtons;
+    public Button BuyPropertyPopup_closeButton; // Reference to the close button
    
     private PlayerController playerController;
 
@@ -33,11 +33,11 @@ public class BuyPropertyPopup : MonoBehaviour
             Debug.Log("Popup enabled");
             playerController.isBuyPopUpActive = true;
             buyConfirmationCoroutine = StartCoroutine(BuyConfirmationTimer());
-            closeButton.onClick.AddListener(Decline); // Add a listener to the close button
-            for (int i = 0; i < buyButtons.Length; i++)
+            BuyPropertyPopup_closeButton.onClick.AddListener(Decline); // Add a listener to the close button
+            for (int i = 0; i < BuyPropertyPopup_buyButtons.Length; i++)
             {
                 int index = i; // Store the current index in a local variable to avoid closure issues
-                buyButtons[i].onClick.AddListener(() => BuyStage(index, GameManager.currentPlayerIndex));
+                BuyPropertyPopup_buyButtons[i].onClick.AddListener(() => BuyStage(index, GameManager.currentPlayerIndex));
             }
         }
         else
@@ -61,21 +61,21 @@ public class BuyPropertyPopup : MonoBehaviour
     {
         currentProperty = property;
 
-        propertyNameText.text = property.name;
+        BuyPropertyPopup_propertyNameText.text = property.name;
 
         // Ensure the length of the stagePriceTexts array matches the number of prices in the property
-        for (int i = 0; i < stagePriceTexts.Length; i++)
+        for (int i = 0; i < BuyPropertyPopup_stagePriceTexts.Length; i++)
         {
             if (i < property.prices.Count)
             {
-                stagePriceTexts[i].text = "Price: " + property.prices[i].ToString();
-                buyButtons[i].gameObject.SetActive(true);
+                BuyPropertyPopup_stagePriceTexts[i].text = "Price: " + property.prices[i].ToString();
+                BuyPropertyPopup_buyButtons[i].gameObject.SetActive(true);
             }
             else
             {
                 // If there are more stagePriceTexts than prices, deactivate the extra buttons
-                stagePriceTexts[i].gameObject.SetActive(false);
-                buyButtons[i].gameObject.SetActive(false);
+                BuyPropertyPopup_stagePriceTexts[i].gameObject.SetActive(false);
+                BuyPropertyPopup_buyButtons[i].gameObject.SetActive(false);
             }
         }
 
