@@ -57,6 +57,7 @@ public class PlayerController : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
     private int originalSortingOrder = 0;
+    
 
     public void AssignPlayerID(int id)
     {
@@ -133,14 +134,14 @@ public class PlayerController : MonoBehaviour
         }
 
         // Instantiate the buy property popup and assign it to a variable
-        BuyPropertyPopup popupInstance = Instantiate(buyPropertyPopupPrefab, canvas.transform);
+        BuyPropertyPopup BuypopupInstance = Instantiate(buyPropertyPopupPrefab, canvas.transform);
 
-        if (popupInstance != null)
+        if (BuypopupInstance != null)
         {
             Debug.Log("Buy property popup instantiated successfully.");
 
             // Display the property data in the popup
-            popupInstance.Display(property);
+            BuypopupInstance.Display(property);
         }
         else
         {

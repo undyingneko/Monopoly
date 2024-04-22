@@ -24,6 +24,7 @@ public class PropertyManager : MonoBehaviour
         public int buyoutMultiplier;
         public int buyoutCount;
         public int buyoutPrice;
+        public int currentStageIndex; // Track the highest stage index that the player owns
 
     
         public void CalculateRent(int stageIndex)

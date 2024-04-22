@@ -366,7 +366,7 @@ MonoBehaviour:
   - {fileID: 2071942108}
   - {fileID: 1017440424}
   - {fileID: 1579630525}
-  moveSpeed: 5
+  moveSpeed: 50
   waypointIndex: 0
   moveAllowed: 0
   Money: 0
@@ -5789,7 +5789,7 @@ MonoBehaviour:
   - {fileID: 2071942108}
   - {fileID: 1017440424}
   - {fileID: 1579630525}
-  moveSpeed: 5
+  moveSpeed: 50
   waypointIndex: 0
   moveAllowed: 0
   Money: 0
@@ -6067,7 +6067,7 @@ MonoBehaviour:
   - {fileID: 2071942108}
   - {fileID: 1017440424}
   - {fileID: 1579630525}
-  moveSpeed: 5
+  moveSpeed: 50
   waypointIndex: 0
   moveAllowed: 0
   Money: 0
@@ -12821,7 +12821,7 @@ MonoBehaviour:
   - {fileID: 2071942108}
   - {fileID: 1017440424}
   - {fileID: 1579630525}
-  moveSpeed: 5
+  moveSpeed: 50
   waypointIndex: 0
   moveAllowed: 0
   Money: 0

@@ -60,28 +60,61 @@ public class BuyPropertyPopup : MonoBehaviour
     public void Display(PropertyManager.PropertyData property)
     {
         currentProperty = property;
-
         BuyPropertyPopup_propertyNameText.text = property.name;
 
-        // Ensure the length of the stagePriceTexts array matches the number of prices in the property
-        for (int i = 0; i < BuyPropertyPopup_stagePriceTexts.Length; i++)
+
+        // int maxStageIndex = Mathf.Min(3, currentProperty.currentStageIndex + 1);
+
+        for (int i = 0; i < 5; i++)
         {
-            if (i < property.prices.Count)
+            if (i < 3)
             {
-                BuyPropertyPopup_stagePriceTexts[i].text = "Price: " + property.prices[i].ToString();
-                BuyPropertyPopup_buyButtons[i].gameObject.SetActive(true);
+                if (!currentProperty.owned || i <= currentProperty.currentStageIndex)
+                {
+                    BuyPropertyPopup_stagePriceTexts[i].text = "Price: " + property.prices[i].ToString();
+                    BuyPropertyPopup_buyButtons[i].gameObject.SetActive(true);
+                }
+                else
+                {
+                    BuyPropertyPopup_stagePriceTexts[i].gameObject.SetActive(false);
+                    BuyPropertyPopup_buyButtons[i].gameObject.SetActive(false);
+                }
             }
-            else
+            else if (i == 3)
             {
-                // If there are more stagePriceTexts than prices, deactivate the extra buttons
-                BuyPropertyPopup_stagePriceTexts[i].gameObject.SetActive(false);
-                BuyPropertyPopup_buyButtons[i].gameObject.SetActive(false);
+                if (!currentProperty.owned && currentProperty.currentStageIndex == 2)
+                {
+                    BuyPropertyPopup_stagePriceTexts[i].text = "Price: " + property.prices[3].ToString();
+                    BuyPropertyPopup_buyButtons[i].gameObject.SetActive(true);
+                }
+                else
+                {
+                    BuyPropertyPopup_stagePriceTexts[i].gameObject.SetActive(false);
+                    BuyPropertyPopup_buyButtons[i].gameObject.SetActive(false);
+                }
+            }
+            else if (i == 4)
+            {
+                if (!currentProperty.owned && currentProperty.currentStageIndex == 3)
+                {
+                    BuyPropertyPopup_stagePriceTexts[i].text = "Price: " + property.prices[4].ToString();
+                    BuyPropertyPopup_buyButtons[i].gameObject.SetActive(true);
+                }
+                else
+                {
+                    BuyPropertyPopup_stagePriceTexts[i].gameObject.SetActive(false);
+                    BuyPropertyPopup_buyButtons[i].gameObject.SetActive(false);
+                }
             }
         }
+
+
 
         // Start the buy confirmation timer coroutine
         buyConfirmationCoroutine = StartCoroutine(BuyConfirmationTimer());
     }
+
+
 
     public void BuyStage(int stageIndex, int currentPlayerIndex)
     {
@@ -104,6 +137,11 @@ public class BuyPropertyPopup : MonoBehaviour
                         currentProperty.owned = true; // Set property ownership                
                         currentProperty.ownerID = currentPlayer.playerID;                        
                         currentProperty.teamownerID = currentPlayer.teamID;
+
+                        if (stageIndex > currentProperty.currentStageIndex)
+                        {
+                            currentProperty.currentStageIndex = stageIndex;
+                        }                       
 
                         currentPlayer.UpdateMoneyText(); // Update money UI
                         currentPlayer.ownedProperties.Add(currentProperty); // Add property to player's properties list
