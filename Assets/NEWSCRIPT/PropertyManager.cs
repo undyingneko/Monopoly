@@ -21,7 +21,10 @@ public class PropertyManager : MonoBehaviour
         public int ownerID;
         public int teamownerID;
         public int rent;
-        
+        public int buyoutMultiplier;
+        public int buyoutCount;
+        public int buyoutPrice;
+
     
         public void CalculateRent(int stageIndex)
         {
@@ -40,6 +43,20 @@ public class PropertyManager : MonoBehaviour
                 Debug.LogError("Unable to calculate rent. Invalid stage index or no next stage.");
             }
         }
+
+        public int CalculateBuyoutPrice(int stageIndex)
+        {
+            int basePrice = prices[stageIndex];
+            buyoutPrice = basePrice;
+
+            // Calculate buyout price based on buyout count
+            for (int i = 0; i < buyoutCount; i++)
+            {
+                buyoutPrice *= 2;
+            }
+
+            return buyoutPrice;
+        }        
     }
 
     public List<PropertyData> properties = new List<PropertyData>();
@@ -155,5 +172,4 @@ public class PropertyManager : MonoBehaviour
             property.prices.Add(stagePrice);
         }
     }
-
 }

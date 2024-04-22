@@ -2,15 +2,18 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+
 public class TileScript : MonoBehaviour
 {
     public int Tilepopup_waypointIndex;
     public GameObject TilepopupPrefab; // Reference to the prefab variant of the popup window
+    public Canvas canvas;
+    private GameObject popupInstance;
 
-    public TextMeshProUGUI Tilepopup_propertyNameText;
+    // public TextMeshProUGUI Tilepopup_propertyNameText;
     public TextMeshProUGUI[] Tilepopup_stagePriceTexts;
-    public TextMeshProUGUI Tilepopup_RentPrice;
-    public Button Tilepopup_closeButton;
+    // public TextMeshProUGUI Tilepopup_RentPrice;
+    // public Button Tilepopup_closeButton;
 
     private PropertyManager propertyManager;
 
@@ -40,7 +43,9 @@ public class TileScript : MonoBehaviour
                 if (propertyData != null)
                 {
                     // Instantiate the popup window prefab variant
-                    GameObject popupInstance = Instantiate(TilepopupPrefab);
+                    popupInstance = Instantiate(TilepopupPrefab, canvas.transform);
+                    Button Tilepopup_closeButton = popupInstance.transform.Find("Tilepopup_closeButton").GetComponent<Button>();
+                    Tilepopup_closeButton.onClick.AddListener(Decline);
 
                     // Populate the popup window with property information
                     UpdatePopupContent(popupInstance, propertyData);
@@ -56,37 +61,64 @@ public class TileScript : MonoBehaviour
     private void UpdatePopupContent(GameObject popupInstance, PropertyManager.PropertyData propertyData)
     {
         // // Get references to the Text elements within the popup window
-        // Text propertyNameText = popupInstance.transform.Find("PropertyNameText").GetComponent<Text>();
-        // Text priceEachStageText = popupInstance.transform.Find("PriceEachStageText").GetComponent<Text>();
-        Text ownerText = popupInstance.transform.Find("OwnerText").GetComponent<Text>();
-        // Text rentPriceText = popupInstance.transform.Find("RentPriceText").GetComponent<Text>();
 
+        TextMeshProUGUI Tilepopup_propertyNameText = popupInstance.transform.Find("Tilepopup_propertyNameText").GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI ownerText = popupInstance.transform.Find("OwnerText").GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI Tilepopup_RentPrice = popupInstance.transform.Find("Tilepopup_RentPrice").GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI Tilepopup_BuyOutPrice = popupInstance.transform.Find("Tilepopup_BuyOutPrice").GetComponent<TextMeshProUGUI>();
+        
+        // TextMeshProUGUI priceEachStageText = popupInstance.transform.Find("PriceEachStageText").GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI priceStage0Text = popupInstance.transform.Find("Tile_PriceStage0").GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI priceStage4Text = popupInstance.transform.Find("Tile_PriceStage4").GetComponent<TextMeshProUGUI>();
+        // Tilepopup_stagePriceTexts = new TextMeshProUGUI[5]; // Assuming 5 stage prices
+        // for (int i = 0; i < 5; i++)
+        // {
+        //     Tilepopup_stagePriceTexts[i] = popupInstance.transform.Find("Tile_PriceStage" + i).GetComponent<TextMeshProUGUI>();
+        // }        
 
 
         //----- Update Text elements with property information-------
-        // propertyNameText.text = "Property Name: " + propertyData.name;
-        // priceEachStageText.text = "Price Each Stage: " + string.Join(", ", propertyData.prices);
+
 
         Tilepopup_propertyNameText.text = propertyData.name;
+        ownerText.text = "Owned By: " + (propertyData.owned ? "Player " + propertyData.ownerID : "None");
+        Tilepopup_RentPrice.text = "Current Rent Price: " + propertyData.rent;
+        Tilepopup_BuyOutPrice.text = "Buy Out Price: " + propertyData.buyoutPrice;
 
+        // string stagePricesText = "Price Each Stage:\n";
+        // for (int i = 0; i < propertyData.prices.Count; i++)
+        // {
+        //     stagePricesText += "Stage " + i + ": " + propertyData.prices[i] + "\n";
+        // }
 
-        for (int i = 0; i < Tilepopup_stagePriceTexts.Length; i++)
+        priceStage0Text.text = "Price to buy Land: " + propertyData.prices[0];
+        priceStage4Text.text = "Price to buy Hotel: " + propertyData.prices[4];
+
+        // priceEachStageText.text = stagePricesText;    
+        for (int i = 1; i <= 3; i++)
         {
             if (i < propertyData.prices.Count)
             {
-                Tilepopup_stagePriceTexts[i].text = "Stage "+ i +"'s price: "+ propertyData.prices[i].ToString();
-
+                TextMeshProUGUI stagePriceText = popupInstance.transform.Find("Tile_PriceStage" + i).GetComponent<TextMeshProUGUI>();
+                stagePriceText.text = "Price stage " + i + ": " + propertyData.prices[i];
+                stagePriceText.gameObject.SetActive(true);
             }
             else
             {
-                // If there are more stagePriceTexts than prices, deactivate the extra buttons
-                Tilepopup_stagePriceTexts[i].gameObject.SetActive(false);
+                TextMeshProUGUI stagePriceText = popupInstance.transform.Find("Tile_PriceStage" + i).GetComponent<TextMeshProUGUI>();
+                stagePriceText.gameObject.SetActive(false);
             }
-        }        
+        }       
 
-        Tilepopup_RentPrice.text = "Current Rent Price: " + propertyData.rent;
 
-        ownerText.text = "Owned By: " + (propertyData.owned ? "Player " + propertyData.ownerID : "None");
-        // rentPriceText.text = "Rent Price: " + propertyData.rent;
+
     }
+    public void Decline()
+    {
+        // Close the popup window when the close button is pressed
+        if (popupInstance != null)
+        {
+            Destroy(popupInstance);
+        }
+    }   
 }
