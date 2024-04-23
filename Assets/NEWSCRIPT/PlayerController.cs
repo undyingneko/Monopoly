@@ -44,9 +44,10 @@ public class PlayerController : MonoBehaviour
     public Transform canvasTransform;
 
     
-    private BuyPropertyPopup buyPropertyPopupPrefab;
-    public string buyPropertyPopupPrefabPath = "BuyPropertyPopupPrefab"; // Path to the prefab in the Resources folder
-
+    private BuyPropertyPopup012 buyPropertyPopup012Prefab;
+    public string buyPropertyPopup012PrefabPath = "BuyPropertyPopup012Prefab"; // Path to the prefab in the Resources folder
+    public GameObject NoNoneyMessagePrefab;
+    
     private PropertyManager propertyManager;
 
     public List<PropertyManager.PropertyData> properties;
@@ -57,6 +58,7 @@ public class PlayerController : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
     private int originalSortingOrder = 0;
+    private bool NoMoneyMessageDestroyed = false; // Declare at the beginning of the method
     
 
     public void AssignPlayerID(int id)
@@ -94,8 +96,8 @@ public class PlayerController : MonoBehaviour
         playerMoveText.gameObject.SetActive(false);
         rollButton.gameObject.SetActive(false);
 
-        buyPropertyPopupPrefab = Resources.Load<BuyPropertyPopup>("BuyPropertyPopupPrefab");
-        if (buyPropertyPopupPrefab != null)
+        buyPropertyPopup012Prefab = Resources.Load<BuyPropertyPopup012>("BuyPropertyPopup012Prefab");
+        if (buyPropertyPopup012Prefab != null)
         {
             Debug.Log("Popup prefab loaded successfully.");
             
@@ -104,7 +106,18 @@ public class PlayerController : MonoBehaviour
         {
             Debug.LogError("Failed to load popup prefab.");
         }
-        
+
+        NoNoneyMessagePrefab = Resources.Load<GameObject>("NoNoneyMessagePrefab");
+        if (NoNoneyMessagePrefab == null)
+        {
+            Debug.LogError("NoNoneyMessagePrefab not found in Resources folder.");
+        }
+
+        properties = propertyManager.properties;
+        if (propertyManager == null)
+        {
+            Debug.LogError("propertyManager is not assigned. Assign it in the Unity Editor or via script.");
+        }        
  
         properties = propertyManager.properties;
         if (propertyManager == null)
@@ -134,14 +147,14 @@ public class PlayerController : MonoBehaviour
         }
 
         // Instantiate the buy property popup and assign it to a variable
-        BuyPropertyPopup BuypopupInstance = Instantiate(buyPropertyPopupPrefab, canvas.transform);
+        BuyPropertyPopup012 BuypopupInstance = Instantiate(buyPropertyPopup012Prefab, canvas.transform);
 
         if (BuypopupInstance != null)
         {
             Debug.Log("Buy property popup instantiated successfully.");
 
             // Display the property data in the popup
-            BuypopupInstance.Display(property);
+            BuypopupInstance.Display012(property);
         }
         else
         {
@@ -417,64 +430,104 @@ public class PlayerController : MonoBehaviour
 
         // Update the current position
         currentPosition = (currentPosition + steps) % waypoints.Length;
-        Debug.Log("Current position after moving: " + currentPosition);
-        Debug.Log("Current waypoint index: " + waypointIndex);
-
-        LandOnProperty();
+        StartCoroutine(LandOnProperty());
     }
 
 
-    private void LandOnProperty()
+    private IEnumerator LandOnProperty()
     {
-
-
-        // Get the property data for the current waypoint index from the PropertyManager
         PropertyManager.PropertyData property = propertyManager.GetPropertyByWaypointIndex(currentPosition);
         Debug.Log("Inside LandOnProperty method.");
-
         // Check if propertyManager is null
         if (propertyManager == null)
         {
             Debug.LogError("propertyManager is null.");
-            return;
+            yield break;
         }
 
         // Check if waypoints array is null
         if (waypoints == null)
         {
             Debug.LogError("waypoints array is null.");
-            return;
+            yield break;
         }
 
         if (property != null)
         {
             // Check if the property is unowned and the player has enough money to buy it
-            if (!property.owned && property.prices[0] <= Money)
+            int nextStageIndex = property.currentStageIndex + 1;
+            if (!property.owned && nextStageIndex < property.prices.Count && property.prices[nextStageIndex] <= Money)
             {
                 // Instantiate the buy property popup
                 InstantiateBuyPropertyPopup(property);
             }
-            if (property.owned)
-            {   
+            else if (property.owned)
+            {
                 PlayerController ownerPlayer = FindTeamByID(property.ownerID);
-                if (ownerPlayer != null && ownerPlayer.teamID != this.teamID)
+                if (ownerPlayer != null && ownerPlayer.teamID == this.teamID)
                 {
+                    if (nextStageIndex < property.prices.Count && property.prices[nextStageIndex] <= Money)
+                    {
+                        InstantiateBuyPropertyPopup(property);
+                    }
+                    else
+                    {
+                        if (Money < property.prices[nextStageIndex])
+                        {
+                            GameObject NoMoneyMessageObject = Instantiate(NoNoneyMessagePrefab, canvasTransform);
+                            TextMeshProUGUI messageText = NoMoneyMessageObject.GetComponent<TextMeshProUGUI>();
+                            messageText.text = "Not enough money to acquire this property!";
+
+                            // Hide the message after 2 seconds
+                            yield return StartCoroutine(HideMessageAfterDelay(NoMoneyMessageObject, 2f));
+                            yield return new WaitUntil(() => NoMoneyMessageDestroyed);
+                            playerController.buyPropertyDecisionMade = true;
+                            yield break;
+                        }
+                    }
+                }
+                else
+                {
+                    // Pay rent to the owner if the property is owned by another team
                     Money -= property.rent;
                     ownerPlayer.Money += property.rent;
                     UpdateMoneyText();
                     ownerPlayer.UpdateMoneyText();
+                    playerController.buyPropertyDecisionMade = true;
+                    yield break;
                 }
-                // EndTurn();
-                playerController.buyPropertyDecisionMade = true;
-                
+            }
+            else
+            {
+                // Player doesn't have enough money to buy the property
+                if (Money < property.prices[nextStageIndex])
+                {
+                    GameObject NoMoneyMessageObject = Instantiate(NoNoneyMessagePrefab, canvasTransform);
+                    TextMeshProUGUI messageText = NoMoneyMessageObject.GetComponent<TextMeshProUGUI>();
+                    messageText.text = "Not enough money to acquire this property!";
+
+                    // Hide the message after 2 seconds
+                    yield return StartCoroutine(HideMessageAfterDelay(NoMoneyMessageObject, 2f));
+                    yield return new WaitUntil(() => NoMoneyMessageDestroyed);
+                    playerController.buyPropertyDecisionMade = true;
+                    yield break;
+                }
             }
         }
         else
         {
             Debug.LogWarning("Property is null. No popup will be displayed.");
-            playerController.buyPropertyDecisionMade = true;
             // EndTurn();
+            playerController.buyPropertyDecisionMade = true;
+            yield break;
         }
+    }
+
+    private IEnumerator HideMessageAfterDelay(GameObject NoMoneyMessageObject, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        Destroy(NoMoneyMessageObject);
+        NoMoneyMessageDestroyed = true;
     }
 
 

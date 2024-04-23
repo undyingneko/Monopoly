@@ -1075,7 +1075,7 @@ GameObject:
   - component: {fileID: 1751000926693981139}
   - component: {fileID: 7675125451168565210}
   m_Layer: 5
-  m_Name: BuyPropertyPopupPrefab
+  m_Name: BuyPropertyPopup012Prefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
