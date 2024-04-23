@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour
 {
-    private PlayerController playerController;
+    private PlayerController currentPlayerController;
     public int playerID;
     public int teamID;
     public TextMeshProUGUI teamNumberText;
@@ -85,7 +85,7 @@ public class PlayerController : MonoBehaviour
   
     void Start()
     {   
-        playerController = FindObjectOfType<PlayerController>();
+        currentPlayerController = FindObjectOfType<PlayerController>();
         propertyManager = PropertyManager.Instance;
         gameManager = FindObjectOfType<GameManager>();
 
@@ -228,7 +228,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("current position before moving in jail" + currentPosition); 
             Debug.Log("sum= " + sum);
             MovePlayer(sum);
-            yield return new WaitUntil(() => playerController.buyPropertyDecisionMade);
+            yield return new WaitUntil(() => currentPlayerController.buyPropertyDecisionMade);
             Debug.Log("current position after moving in jail" + currentPosition); 
             EndTurn();
             coroutineAllowed = false;
@@ -242,7 +242,7 @@ public class PlayerController : MonoBehaviour
                 InJail = false;
                 MovePlayer(diceValues[0] + diceValues[1]);
                 turnsInJail = 0;
-                yield return new WaitUntil(() => playerController.buyPropertyDecisionMade);
+                yield return new WaitUntil(() => currentPlayerController.buyPropertyDecisionMade);
                 EndTurn();
             
                 coroutineAllowed = false;
@@ -335,7 +335,7 @@ public class PlayerController : MonoBehaviour
             if (consecutiveDoublesCount >= 3)
             {   
                 
-                yield return new WaitUntil(() => playerController.buyPropertyDecisionMade);
+                yield return new WaitUntil(() => currentPlayerController.buyPropertyDecisionMade);
                 consecutiveDoublesCount = 0;
                 waypointIndex = 8;
                 transform.position = waypoints[waypointIndex].position;
@@ -350,7 +350,7 @@ public class PlayerController : MonoBehaviour
             else
             {   
                 
-                yield return new WaitUntil(() => playerController.buyPropertyDecisionMade);
+                yield return new WaitUntil(() => currentPlayerController.buyPropertyDecisionMade);
                 StartTurn();
                 
             }
@@ -360,7 +360,7 @@ public class PlayerController : MonoBehaviour
         {   
             consecutiveDoublesCount = 0;
             // MovePlayer(diceValues[0] + diceValues[1]);
-            yield return new WaitUntil(() => playerController.buyPropertyDecisionMade);
+            yield return new WaitUntil(() => currentPlayerController.buyPropertyDecisionMade);
             EndTurn();
             yield break;
             // if (buyPropertyDecisionMade)
@@ -463,8 +463,9 @@ public class PlayerController : MonoBehaviour
             }
             else if (property.owned)
             {
-                PlayerController ownerPlayer = FindTeamByID(property.ownerID);
-                if (ownerPlayer != null && ownerPlayer.teamID == this.teamID)
+                PlayerController ownerPlayer = FindPlayerByID(property.ownerID);
+                PlayerController ownerTeam = FindTeamByID(property.teamownerID);
+                if (ownerPlayer != null && ownerTeam.teamID == this.teamID)
                 {
                     if (nextStageIndex < property.prices.Count && property.prices[nextStageIndex] <= Money)
                     {
@@ -481,7 +482,7 @@ public class PlayerController : MonoBehaviour
                             // Hide the message after 2 seconds
                             yield return StartCoroutine(HideMessageAfterDelay(NoMoneyMessageObject, 2f));
                             yield return new WaitUntil(() => NoMoneyMessageDestroyed);
-                            playerController.buyPropertyDecisionMade = true;
+                            currentPlayerController.buyPropertyDecisionMade = true;
                             yield break;
                         }
                     }
@@ -493,7 +494,7 @@ public class PlayerController : MonoBehaviour
                     ownerPlayer.Money += property.rent;
                     UpdateMoneyText();
                     ownerPlayer.UpdateMoneyText();
-                    playerController.buyPropertyDecisionMade = true;
+                    currentPlayerController.buyPropertyDecisionMade = true;
                     yield break;
                 }
             }
@@ -509,7 +510,7 @@ public class PlayerController : MonoBehaviour
                     // Hide the message after 2 seconds
                     yield return StartCoroutine(HideMessageAfterDelay(NoMoneyMessageObject, 2f));
                     yield return new WaitUntil(() => NoMoneyMessageDestroyed);
-                    playerController.buyPropertyDecisionMade = true;
+                    currentPlayerController.buyPropertyDecisionMade = true;
                     yield break;
                 }
             }
@@ -518,7 +519,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.LogWarning("Property is null. No popup will be displayed.");
             // EndTurn();
-            playerController.buyPropertyDecisionMade = true;
+            currentPlayerController.buyPropertyDecisionMade = true;
             yield break;
         }
     }
@@ -529,34 +530,6 @@ public class PlayerController : MonoBehaviour
         Destroy(NoMoneyMessageObject);
         NoMoneyMessageDestroyed = true;
     }
-
-
-
-    // private void PayRent(PropertyManager.PropertyData property)
-    // {
-    //     // Deduct rent from the player's money
-    //     Money -= property.rent;
-        
-    //     // Find the owner player object and add rent amount to their money
-    //     PlayerController ownerPlayer = FindPlayerByID(property.ownerID);
-        
-    //     if (ownerPlayer != null)
-    //     {
-    //         ownerPlayer.Money += property.rent;
-    //     }
-
-    //     // Update UI for both players
-    //     UpdateMoneyText();
-    //     ownerPlayer.UpdateMoneyText();
-    // }
-
-    // public void EndBuyPropertyInteraction()
-    // {
-    //     buyPropertyDecisionMade = true;
-    //     Debug.Log("Decision is made");
-    //     EndTurn();
-        
-    // }
 
     // Method to find player object by ID
     private PlayerController FindPlayerByID(int ID)
@@ -633,7 +606,7 @@ public class PlayerController : MonoBehaviour
             spriteRenderer.sortingOrder = originalSortingOrder + 1;
             rollButton.gameObject.SetActive(true);
             playerMoveText.gameObject.SetActive(true);
-            playerController.buyPropertyDecisionMade = false;
+            currentPlayerController.buyPropertyDecisionMade = false;
             
             
         }
