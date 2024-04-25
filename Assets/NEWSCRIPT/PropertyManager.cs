@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine.UI;
 
 public class PropertyManager : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class PropertyManager : MonoBehaviour
         public int JSONwaypointIndex;
         public int priceStallBase; 
         public List<int> prices;
+        public List<GameObject> stageImages;
         public bool owned;
         public int ownerID;
         public int teamownerID;
@@ -26,7 +28,6 @@ public class PropertyManager : MonoBehaviour
         public int buyoutPrice;
         public int currentStageIndex; // Track the highest stage index that the player owns
 
-    
         public void CalculateRent(int stageIndex)
         {
             // Initialize rent to 0
@@ -59,6 +60,7 @@ public class PropertyManager : MonoBehaviour
             return buyoutPrice;
         }        
     }
+
 
     public List<PropertyData> properties = new List<PropertyData>();
 
@@ -96,6 +98,8 @@ public class PropertyManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         LoadProperties();
+        
+        
     }
 
 
@@ -124,6 +128,7 @@ public class PropertyManager : MonoBehaviour
                 foreach (PropertyData property in properties)
                 {
                     CalculatePropertyPrices(property, property.priceStallBase); // Pass priceStage0 from JSON data
+                    LoadStageImagesForProperty(property);
                 }
             }
             else
@@ -137,8 +142,8 @@ public class PropertyManager : MonoBehaviour
             // JSON file not found
             Debug.LogError("JSON file not found at path: " + jsonFilePath);
         }
+        
     }
-
 
     public PropertyData GetPropertyByWaypointIndex(int JSONwaypointIndex)
     {
@@ -147,13 +152,71 @@ public class PropertyManager : MonoBehaviour
             if (property.JSONwaypointIndex == JSONwaypointIndex)
             {
                 Debug.Log("Property found: " + property.name);
+
                 return property;
             }
         }
         Debug.LogWarning("No property found for waypoint index: " + JSONwaypointIndex);
         return null;
     }
+    private void LoadStageImagesForProperty(PropertyData property)
+    {
+        // Clear existing stage images
+        property.stageImages.Clear();
 
+        // Load stage images dynamically for the current property
+        for (int i = 0; i < property.prices.Count; i++)
+        {
+            // Construct the image name using JSONwaypointIndex and stage index
+            string imageName = "P" + property.JSONwaypointIndex + "_S" + i;
+
+            // Find the image GameObject by name
+            GameObject stageImageGO = GameObject.Find(imageName);
+            if (stageImageGO != null)
+            {
+                // Add the found image GameObject to the stageImages list
+                property.stageImages.Insert(i, stageImageGO);
+                Debug.Log("Stage Image loaded for property " + property.name + ", stage " + i + ": " + imageName);
+                
+            }
+            else
+            {
+                Debug.LogWarning("Image not found with name: " + imageName + " for property " + property.name);
+            }
+        }
+
+        Debug.Log("Number of stage images after loaded for property " + property.name + ": " + property.stageImages.Count);
+
+        // Ensure the number of loaded images matches the number of stages
+        if (property.stageImages.Count == property.prices.Count)
+        {
+            for (int i = 0; i < property.stageImages.Count; i++)
+            {
+                // Assign the image to its corresponding stage
+                GameObject stageImage = property.stageImages[i];
+                // You can set the position, rotation, scale, or other properties of the image here
+                // For example, you can use stageImage.transform.position to set its position
+                // You may need to adjust this code based on your specific requirements
+                Debug.Log("Stage Image for stage " + i + " associated with property " + property.name);
+                
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Number of loaded images does not match the number of stages for property: " + property.name);
+        }
+    }
+    public void LoadAllStageImages()
+    {
+        if (properties != null && properties.Count > 0)
+        {
+            foreach (PropertyData property in properties)
+            {
+                // Load stage images dynamically for the current property
+                LoadStageImagesForProperty(property);
+            }
+        }
+    }
     // Function to calculate property prices for different stages
     private void CalculatePropertyPrices(PropertyData property, int priceStallBase)
     {

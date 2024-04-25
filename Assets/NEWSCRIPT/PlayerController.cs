@@ -437,6 +437,7 @@ public class PlayerController : MonoBehaviour
     private IEnumerator LandOnProperty()
     {
         PropertyManager.PropertyData property = propertyManager.GetPropertyByWaypointIndex(currentPosition);
+        Debug.Log("Number of stage images after landing " + property.name + ": " + property.stageImages.Count);
         Debug.Log("Inside LandOnProperty method.");
         // Check if propertyManager is null
         if (propertyManager == null)
