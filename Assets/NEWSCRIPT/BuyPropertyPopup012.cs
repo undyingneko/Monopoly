@@ -20,6 +20,8 @@ public class BuyPropertyPopup012 : MonoBehaviour
     private Coroutine buyConfirmationCoroutine; // Coroutine reference for buy confirmation timer
     private GameManager gameManager;
     private PropertyManager propertyManager;
+    public Transform canvasTransform;
+    public GameObject stageImagePrefab;
 
 
 
@@ -31,7 +33,7 @@ public class BuyPropertyPopup012 : MonoBehaviour
         playerController = FindObjectOfType<PlayerController>();
         gameManager = FindObjectOfType<GameManager>();
         propertyManager = PropertyManager.Instance;
-        propertyManager.LoadAllStageImages();
+        // propertyManager.LoadAllStageImages();
 
         // Ensure that the PropertyManager reference is not null
         if (propertyManager == null)
@@ -80,7 +82,7 @@ public class BuyPropertyPopup012 : MonoBehaviour
         currentProperty = property;
 
         BuyPropertyPopup_propertyNameText.text = property.name;
-        property.stageImages.Clear();
+        // property.stageImageInstances.Clear();
 
         // Ensure the length of the stagePriceTexts array matches the number of prices in the property
         for (int i = 0; i < BuyPropertyPopup_stagePriceTexts.Length; i++)
@@ -150,7 +152,7 @@ public class BuyPropertyPopup012 : MonoBehaviour
                         currentProperty.CalculateRent(stageIndex);
                         gameObject.SetActive(false); // Close the Buy Property Popup
                         // playerController.EndBuyPropertyInteraction();
-                        ActivateBoughtStageImage(stageIndex);
+                        GameObject stageImageInstance = Instantiate(currentProperty.stageImages[stageIndex], canvasTransform);
                         Debug.Log("JSONwaypointIndex = "+ currentProperty.JSONwaypointIndex + "+" + "currentStageIndex = " + currentProperty.currentStageIndex);
                         Debug.Log("Image Count " + currentProperty.stageImages.Count);
                         playerController.buyPropertyDecisionMade = true;
@@ -186,51 +188,51 @@ public class BuyPropertyPopup012 : MonoBehaviour
         Debug.Log ("currentPlayerIndex:"+ GameManager.currentPlayerIndex);
     }
     
-public void ActivateBoughtStageImage(int stageIndex)
-{
-    if (currentProperty != null)
-    {
-        // Deactivate all stage images first
-        DeactivateAllStageImages(currentProperty);
+// public void ActivateBoughtStageImage(int stageIndex)
+// {
+//     if (currentProperty != null)
+//     {
+//         // Deactivate all stage images first
+//         DeactivateAllStageImages(currentProperty);
 
         
-        // Check if the stage index is within the bounds of the stageImages list
-        if (stageIndex >= 0 && stageIndex < currentProperty.stageImages.Count)
-        {
-            // Activate the image GameObject at the specified index
-            GameObject stageImage = currentProperty.stageImages[stageIndex];
-            if (stageImage != null)
-            {
-                stageImage.SetActive(true);
-                Debug.Log("Activated stage image for JSONwaypointIndex: " + currentProperty.JSONwaypointIndex + ", Stage Index: " + stageIndex);
-            }
-            else
-            {
-                Debug.LogWarning("Image GameObject is null.");
-            }
-        }
-        else
-        {
-            Debug.LogWarning("Invalid stage index: " + stageIndex);
-        }
-    }
-    else
-    {
-        Debug.LogWarning("Property is null. Cannot activate stage image.");
-    }
-}
+//         // Check if the stage index is within the bounds of the stageImages list
+//         if (stageIndex >= 0 && stageIndex < currentProperty.stageImages.Count)
+//         {
+//             // Activate the image GameObject at the specified index
+//             GameObject stageImage = currentProperty.stageImages[stageIndex];
+//             if (stageImage != null)
+//             {
+//                 stageImage.SetActive(true);
+//                 Debug.Log("Activated stage image for JSONwaypointIndex: " + currentProperty.JSONwaypointIndex + ", Stage Index: " + stageIndex);
+//             }
+//             else
+//             {
+//                 Debug.LogWarning("Image GameObject is null.");
+//             }
+//         }
+//         else
+//         {
+//             Debug.LogWarning("Invalid stage index: " + stageIndex);
+//         }
+//     }
+//     else
+//     {
+//         Debug.LogWarning("Property is null. Cannot activate stage image.");
+//     }
+// }
 
 
 
 
-private void DeactivateAllStageImages(PropertyManager.PropertyData property)
-{
-    // Iterate through each stage image in the list and deactivate it
-    foreach (var stageImage in property.stageImages)
-    {
-        stageImage.SetActive(false);
-    }
-}
+// private void DeactivateAllStageImages(PropertyManager.PropertyData property)
+// {
+//     // Iterate through each stage image in the list and deactivate it
+//     foreach (var stageImage in property.stageImages)
+//     {
+//         stageImage.SetActive(false);
+//     }
+// }
 
     IEnumerator BuyConfirmationTimer()
     {

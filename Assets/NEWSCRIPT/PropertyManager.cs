@@ -5,12 +5,15 @@ using UnityEngine.UI;
 
 public class PropertyManager : MonoBehaviour
 {
+    [SerializeField]
+    private Transform canvasTransform;
+
     [System.Serializable]
     public class PropertyDataWrapper
     {
         public List<PropertyData> properties;
     }
-
+    
     [System.Serializable]
     public class PropertyData
     {
@@ -18,7 +21,8 @@ public class PropertyManager : MonoBehaviour
         public int JSONwaypointIndex;
         public int priceStallBase; 
         public List<int> prices;
-        public List<GameObject> stageImages;
+        public List<GameObject> stageImages = new List<GameObject>();
+        public int numberOfStages;
         public bool owned;
         public int ownerID;
         public int teamownerID;
@@ -27,6 +31,7 @@ public class PropertyManager : MonoBehaviour
         public int buyoutCount;
         public int buyoutPrice;
         public int currentStageIndex; // Track the highest stage index that the player owns
+        
 
         public void CalculateRent(int stageIndex)
         {
@@ -84,7 +89,16 @@ public class PropertyManager : MonoBehaviour
             return instance;
         }
     }
+    private void Start()
+    {
+        if (canvasTransform == null)
+        {
+            Debug.LogError("Canvas transform reference not set. Please assign the Canvas transform in the Inspector.");
+            return;
+        }
 
+        // Call any method that requires canvasTransform here
+    }
     private void Awake()
     {
         if (instance != null && instance != this)
@@ -159,30 +173,30 @@ public class PropertyManager : MonoBehaviour
         Debug.LogWarning("No property found for waypoint index: " + JSONwaypointIndex);
         return null;
     }
+
     private void LoadStageImagesForProperty(PropertyData property)
     {
-        // Clear existing stage images
-        property.stageImages.Clear();
-
-        // Load stage images dynamically for the current property
+        // Iterate through each stage index
         for (int i = 0; i < property.prices.Count; i++)
         {
-            // Construct the image name using JSONwaypointIndex and stage index
-            string imageName = "P" + property.JSONwaypointIndex + "_S" + i;
+            // Construct the prefab path using JSON waypoint index and stage index
+            string prefabPath = "StageImages/P" + property.JSONwaypointIndex + "_S" + i;
 
-            // Find the image GameObject by name
-            GameObject stageImageGO = GameObject.Find(imageName);
-            if (stageImageGO != null)
+            // Load the stage image prefab from the Resources folder
+            GameObject stageImagePrefab = Resources.Load<GameObject>(prefabPath);
+
+            if (stageImagePrefab == null)
             {
-                // Add the found image GameObject to the stageImages list
-                property.stageImages.Insert(i, stageImageGO);
-                Debug.Log("Stage Image loaded for property " + property.name + ", stage " + i + ": " + imageName);
-                
+                Debug.LogError("Stage image prefab not found at path: " + prefabPath);
+                continue;
             }
-            else
-            {
-                Debug.LogWarning("Image not found with name: " + imageName + " for property " + property.name);
-            }
+
+            // Instantiate the stage image prefab
+            GameObject stageImageInstance = Instantiate(stageImagePrefab);
+            stageImageInstance.transform.SetParent(canvasTransform, false);
+
+            // Add the instantiated stage image to the property's stage images list
+            property.stageImages.Add(stageImageInstance);
         }
 
         Debug.Log("Number of stage images after loaded for property " + property.name + ": " + property.stageImages.Count);
@@ -206,17 +220,18 @@ public class PropertyManager : MonoBehaviour
             Debug.LogWarning("Number of loaded images does not match the number of stages for property: " + property.name);
         }
     }
-    public void LoadAllStageImages()
-    {
-        if (properties != null && properties.Count > 0)
-        {
-            foreach (PropertyData property in properties)
-            {
-                // Load stage images dynamically for the current property
-                LoadStageImagesForProperty(property);
-            }
-        }
-    }
+    
+    // public void LoadAllStageImages()
+    // {
+    //     if (properties != null && properties.Count > 0)
+    //     {
+    //         foreach (PropertyData property in properties)
+    //         {
+    //             // Load stage images dynamically for the current property
+    //             LoadStageImagesForProperty(property);
+    //         }
+    //     }
+    // }
     // Function to calculate property prices for different stages
     private void CalculatePropertyPrices(PropertyData property, int priceStallBase)
     {
