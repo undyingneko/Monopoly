@@ -20,50 +20,77 @@ public class PropertyManager : MonoBehaviour
         public string name;
         public int JSONwaypointIndex;
         public int priceStallBase; 
-        public List<int> prices;
+        // public int numberOfStages;
+
+        public List<int> stagePrices = new List<int>(); // Stores prices for each stage
+        public List<int> rentPrices = new List<int>(); // Stores rent prices for each stage
+        public List<int> stageIndexes = new List<int>();
         public List<GameObject> stageImages = new List<GameObject>();
-        public int numberOfStages;
+
+        // public List<GameObject> stageImages;
+        
         public bool owned;
         public int ownerID;
         public int teamownerID;
-        public int rent;
+
         public int buyoutMultiplier;
         public int buyoutCount;
         public int buyoutPrice;
         public int currentStageIndex; // Track the highest stage index that the player owns
-        
+        public int nextStageIndex;
 
-        public void CalculateRent(int stageIndex)
+
+
+        public void InitializePrices()
         {
-            // Initialize rent to 0
-            rent = 0;
+            stagePrices.Clear();
+            rentPrices.Clear();
+            stageIndexes.Clear();
+            stageImages.Clear();    
 
-            // Check if prices list is not null and stageIndex is within its bounds
-            if (prices != null && stageIndex >= 0 && stageIndex < prices.Count - 1)
+            for (int i = 0; i < 5; i++)
             {
-                // Rent is half of the price of the next stage
-                rent = prices[stageIndex] / 2;
+                int stagePrice = CalculateStagePrice(i);
+                int rentPrice = stagePrice / 2; // Or calculate rent price differently
+
+                stagePrices.Add(stagePrice);
+                rentPrices.Add(rentPrice);
+                stageIndexes.Add(i);
             }
-            else
+        }
+        
+        private int CalculateStagePrice(int stageIndex)
+        {
+            switch (stageIndex)
             {
-                // Unable to calculate rent if the next stage doesn't exist or prices list is null
-                Debug.LogError("Unable to calculate rent. Invalid stage index or no next stage.");
+                case 0:
+                    return priceStallBase;
+                case 1:
+                    return 5 * priceStallBase;
+                case 2:
+                    return 10 * priceStallBase;
+                case 3:
+                    return 15 * priceStallBase;
+                case 4:
+                    return 30 * priceStallBase;
+                default:
+                    return 0; // Handle invalid stage index gracefully
             }
         }
 
-        public int CalculateBuyoutPrice(int stageIndex)
-        {
-            int basePrice = prices[stageIndex];
-            buyoutPrice = basePrice;
+        // public int CalculateBuyoutPrice(int stageIndex)
+        // {
+        //     int basePrice = prices[stageIndex];
+        //     buyoutPrice = basePrice;
 
-            // Calculate buyout price based on buyout count
-            for (int i = 0; i < buyoutCount; i++)
-            {
-                buyoutPrice *= 2;
-            }
+        //     // Calculate buyout price based on buyout count
+        //     for (int i = 0; i < buyoutCount; i++)
+        //     {
+        //         buyoutPrice *= 2;
+        //     }
 
-            return buyoutPrice;
-        }        
+        //     return buyoutPrice;
+        // }        
     }
 
 
@@ -96,7 +123,6 @@ public class PropertyManager : MonoBehaviour
             Debug.LogError("Canvas transform reference not set. Please assign the Canvas transform in the Inspector.");
             return;
         }
-
         // Call any method that requires canvasTransform here
     }
     private void Awake()
@@ -110,10 +136,7 @@ public class PropertyManager : MonoBehaviour
             instance = this;
         }
         DontDestroyOnLoad(gameObject);
-
         LoadProperties();
-        
-        
     }
 
 
@@ -141,7 +164,7 @@ public class PropertyManager : MonoBehaviour
                 // Calculate prices for each property
                 foreach (PropertyData property in properties)
                 {
-                    CalculatePropertyPrices(property, property.priceStallBase); // Pass priceStage0 from JSON data
+                    property.InitializePrices();
                     LoadStageImagesForProperty(property);
                 }
             }
@@ -177,7 +200,7 @@ public class PropertyManager : MonoBehaviour
     private void LoadStageImagesForProperty(PropertyData property)
     {
         // Iterate through each stage index
-        for (int i = 0; i < property.prices.Count; i++)
+        for (int i = 0; i < property.stageIndexes.Count; i++)
         {
             // Construct the prefab path using JSON waypoint index and stage index
             string prefabPath = "StageImages/P" + property.JSONwaypointIndex + "_S" + i;
@@ -203,7 +226,7 @@ public class PropertyManager : MonoBehaviour
         Debug.Log("Number of stage images after loaded for property " + property.name + ": " + property.stageImages.Count);
 
         // Ensure the number of loaded images matches the number of stages
-        if (property.stageImages.Count == property.prices.Count)
+        if (property.stageImages.Count == property.stageIndexes.Count)
         {
             for (int i = 0; i < property.stageImages.Count; i++)
             {
@@ -222,34 +245,5 @@ public class PropertyManager : MonoBehaviour
         }
     }
     
-    // public void LoadAllStageImages()
-    // {
-    //     if (properties != null && properties.Count > 0)
-    //     {
-    //         foreach (PropertyData property in properties)
-    //         {
-    //             // Load stage images dynamically for the current property
-    //             LoadStageImagesForProperty(property);
-    //         }
-    //     }
-    // }
-    // Function to calculate property prices for different stages
-    private void CalculatePropertyPrices(PropertyData property, int priceStallBase)
-    {
-        property.prices = new List<int>();
 
-        // Add stage 0 price (priceStallBase)
-        property.prices.Add(priceStallBase);
-
-        // Calculate prices for subsequent stages using multipliers
-        float[] multipliers = { 5f, 10f, 15f, 30f };
-        foreach (float multiplier in multipliers)
-        {
-            // Calculate the price for the current stage
-            int stagePrice = (int)(priceStallBase * multiplier);
-
-            // Add the price to the list
-            property.prices.Add(stagePrice);
-        }
-    }
 }

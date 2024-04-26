@@ -307,7 +307,7 @@ Transform:
   m_GameObject: {fileID: 21105485}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.74, y: -2.07, z: 0}
+  m_LocalPosition: {x: 8.12, y: -5.95, z: 0}
   m_LocalScale: {x: 0.39999998, y: 0.39999998, z: 0.39999998}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -378,7 +378,7 @@ MonoBehaviour:
   goToJailText: {fileID: 998582064}
   canvasTransform: {fileID: 1311088092}
   buyPropertyPopup012PrefabPath: BuyPropertyPopup012Prefab
-  NoNoneyMessagePrefab: {fileID: 0}
+  NoNoneyMessagePrefab: {fileID: 342627816554099887, guid: dfee07065c276734b9e07eb2f5d071b0, type: 3}
   properties: []
   ownedProperties: []
   isBuyPopUpActive: 0
@@ -1223,7 +1223,7 @@ GameObject:
   - component: {fileID: 120919860}
   - component: {fileID: 120919859}
   m_Layer: 5
-  m_Name: Player3Money
+  m_Name: Player2Money
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1368,7 +1368,7 @@ GameObject:
   - component: {fileID: 138412185}
   - component: {fileID: 138412184}
   m_Layer: 5
-  m_Name: RollButton2
+  m_Name: RollButton3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1872,7 +1872,7 @@ GameObject:
   - component: {fileID: 234416335}
   - component: {fileID: 234416334}
   m_Layer: 5
-  m_Name: Player1Icon
+  m_Name: Player3Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2400,7 +2400,7 @@ GameObject:
   - component: {fileID: 324510713}
   - component: {fileID: 324510712}
   m_Layer: 5
-  m_Name: Player1MoveText
+  m_Name: Player3MoveText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2822,7 +2822,7 @@ GameObject:
   - component: {fileID: 366308891}
   - component: {fileID: 366308890}
   m_Layer: 5
-  m_Name: moneyframe (1)
+  m_Name: moneyframe3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5343,7 +5343,7 @@ GameObject:
   - component: {fileID: 714192225}
   - component: {fileID: 714192224}
   m_Layer: 5
-  m_Name: RollButton1
+  m_Name: RollButton0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5884,7 +5884,7 @@ GameObject:
   - component: {fileID: 778374997}
   - component: {fileID: 778374996}
   m_Layer: 5
-  m_Name: Player1Money
+  m_Name: Player0Money
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6160,7 +6160,7 @@ Transform:
   m_GameObject: {fileID: 793143338}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -10.6, y: 1.42, z: 0}
+  m_LocalPosition: {x: -7.82, y: 5.44, z: 0}
   m_LocalScale: {x: 0.059999995, y: 0.059999995, z: 0.059999995}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -6231,7 +6231,7 @@ MonoBehaviour:
   goToJailText: {fileID: 998582064}
   canvasTransform: {fileID: 1311088092}
   buyPropertyPopup012PrefabPath: BuyPropertyPopup012Prefab
-  NoNoneyMessagePrefab: {fileID: 0}
+  NoNoneyMessagePrefab: {fileID: 342627816554099887, guid: dfee07065c276734b9e07eb2f5d071b0, type: 3}
   properties: []
   ownedProperties: []
   isBuyPopUpActive: 0
@@ -6444,7 +6444,7 @@ Transform:
   m_GameObject: {fileID: 817987052}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.66, y: -0.93, z: 0}
+  m_LocalPosition: {x: 7.81, y: 5.62, z: 0}
   m_LocalScale: {x: 0.059999995, y: 0.059999995, z: 0.059999995}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -6515,7 +6515,7 @@ MonoBehaviour:
   goToJailText: {fileID: 998582064}
   canvasTransform: {fileID: 1311088092}
   buyPropertyPopup012PrefabPath: BuyPropertyPopup012Prefab
-  NoNoneyMessagePrefab: {fileID: 0}
+  NoNoneyMessagePrefab: {fileID: 342627816554099887, guid: dfee07065c276734b9e07eb2f5d071b0, type: 3}
   properties: []
   ownedProperties: []
   isBuyPopUpActive: 0
@@ -7186,7 +7186,7 @@ GameObject:
   - component: {fileID: 989305670}
   - component: {fileID: 989305671}
   m_Layer: 5
-  m_Name: TeamOfPlayer3
+  m_Name: TeamOfPlayer1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7698,7 +7698,7 @@ GameObject:
   - component: {fileID: 1029894633}
   - component: {fileID: 1029894632}
   m_Layer: 5
-  m_Name: RollButton3
+  m_Name: RollButton2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8883,7 +8883,7 @@ GameObject:
   - component: {fileID: 1182421181}
   - component: {fileID: 1182421180}
   m_Layer: 5
-  m_Name: Player3Icon
+  m_Name: Player1Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10075,7 +10075,7 @@ GameObject:
   - component: {fileID: 1303154480}
   - component: {fileID: 1303154479}
   m_Layer: 5
-  m_Name: Player3MoveText
+  m_Name: Player1MoveText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10531,29 +10531,29 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 47249269}
-  - {fileID: 234416333}
-  - {fileID: 1250468020}
   - {fileID: 1182421179}
+  - {fileID: 1250468020}
+  - {fileID: 234416333}
   - {fileID: 47983002}
-  - {fileID: 324510711}
-  - {fileID: 1356218436}
   - {fileID: 1303154478}
+  - {fileID: 1356218436}
+  - {fileID: 324510711}
   - {fileID: 1575635391}
   - {fileID: 714192222}
-  - {fileID: 138412183}
-  - {fileID: 1029894631}
   - {fileID: 2076514329}
+  - {fileID: 1029894631}
+  - {fileID: 138412183}
   - {fileID: 706812635}
   - {fileID: 1906955958}
   - {fileID: 696462891}
   - {fileID: 1744083315}
-  - {fileID: 366308889}
-  - {fileID: 1734367486}
   - {fileID: 1735654437}
+  - {fileID: 1734367486}
+  - {fileID: 366308889}
   - {fileID: 778374995}
-  - {fileID: 1833210961}
-  - {fileID: 120919858}
   - {fileID: 1367893462}
+  - {fileID: 120919858}
+  - {fileID: 1833210961}
   - {fileID: 1259017701}
   - {fileID: 998582063}
   - {fileID: 479372875}
@@ -10561,9 +10561,9 @@ RectTransform:
   - {fileID: 2134459454}
   - {fileID: 1098592476}
   - {fileID: 1306345114}
-  - {fileID: 2077393188}
-  - {fileID: 1736353392}
   - {fileID: 989305669}
+  - {fileID: 1736353392}
+  - {fileID: 2077393188}
   - {fileID: 1019387497}
   - {fileID: 2137392327}
   - {fileID: 1246159768}
@@ -11049,7 +11049,7 @@ GameObject:
   - component: {fileID: 1367893464}
   - component: {fileID: 1367893463}
   m_Layer: 5
-  m_Name: Player4Money
+  m_Name: Player1Money
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13848,7 +13848,7 @@ Transform:
   m_GameObject: {fileID: 1676970792}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.7, y: -3.13, z: 0}
+  m_LocalPosition: {x: -7.99, y: -5.88, z: 0}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -13919,7 +13919,7 @@ MonoBehaviour:
   goToJailText: {fileID: 998582064}
   canvasTransform: {fileID: 1311088092}
   buyPropertyPopup012PrefabPath: BuyPropertyPopup012Prefab
-  NoNoneyMessagePrefab: {fileID: 0}
+  NoNoneyMessagePrefab: {fileID: 342627816554099887, guid: dfee07065c276734b9e07eb2f5d071b0, type: 3}
   properties: []
   ownedProperties: []
   isBuyPopUpActive: 0
@@ -14209,7 +14209,7 @@ GameObject:
   - component: {fileID: 1734367488}
   - component: {fileID: 1734367487}
   m_Layer: 5
-  m_Name: moneyframe (2)
+  m_Name: moneyframe2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14284,7 +14284,7 @@ GameObject:
   - component: {fileID: 1735654439}
   - component: {fileID: 1735654438}
   m_Layer: 5
-  m_Name: moneyframe (3)
+  m_Name: moneyframe1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14617,7 +14617,7 @@ GameObject:
   - component: {fileID: 1744083317}
   - component: {fileID: 1744083316}
   m_Layer: 5
-  m_Name: moneyframe
+  m_Name: moneyframe0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15026,7 +15026,7 @@ GameObject:
   - component: {fileID: 1833210963}
   - component: {fileID: 1833210962}
   m_Layer: 5
-  m_Name: Player2Money
+  m_Name: Player3Money
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16632,7 +16632,7 @@ GameObject:
   - component: {fileID: 2076514330}
   - component: {fileID: 2076514332}
   m_Layer: 5
-  m_Name: RollButton4
+  m_Name: RollButton1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16752,7 +16752,7 @@ GameObject:
   - component: {fileID: 2077393190}
   - component: {fileID: 2077393189}
   m_Layer: 5
-  m_Name: TeamOfPlayer1
+  m_Name: TeamOfPlayer3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

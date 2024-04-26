@@ -438,7 +438,7 @@ public class PlayerController : MonoBehaviour
     private IEnumerator LandOnProperty()
     {
         PropertyManager.PropertyData property = propertyManager.GetPropertyByWaypointIndex(currentPosition);
-        Debug.Log("Number of stage images after landing " + property.name + ": " + property.stageImages.Count);
+        // Debug.Log("Number of stage images after landing " + property.name + ": " + property.stageImages.Count);
         Debug.Log("Inside LandOnProperty method.");
         // Check if propertyManager is null
         if (propertyManager == null)
@@ -457,8 +457,8 @@ public class PlayerController : MonoBehaviour
         if (property != null)
         {
             // Check if the property is unowned and the player has enough money to buy it
-            int nextStageIndex = property.currentStageIndex + 1;
-            if (!property.owned && nextStageIndex < property.prices.Count && property.prices[nextStageIndex] <= Money)
+            
+            if (!property.owned && property.nextStageIndex < property.stagePrices.Count && property.stagePrices[property.nextStageIndex] <= Money)
             {
                 // Instantiate the buy property popup
                 InstantiateBuyPropertyPopup(property);
@@ -469,13 +469,13 @@ public class PlayerController : MonoBehaviour
                 PlayerController ownerTeam = FindTeamByID(property.teamownerID);
                 if (ownerPlayer != null && ownerTeam.teamID == this.teamID)
                 {
-                    if (nextStageIndex < property.prices.Count && property.prices[nextStageIndex] <= Money)
+                    if (property.nextStageIndex < property.stagePrices.Count && property.stagePrices[property.nextStageIndex] <= Money)
                     {
                         InstantiateBuyPropertyPopup(property);
                     }
                     else
                     {
-                        if (Money < property.prices[nextStageIndex])
+                        if (Money < property.stagePrices[property.nextStageIndex])
                         {
                             GameObject NoMoneyMessageObject = Instantiate(NoNoneyMessagePrefab, canvasTransform);
                             TextMeshProUGUI messageText = NoMoneyMessageObject.GetComponent<TextMeshProUGUI>();
@@ -492,8 +492,9 @@ public class PlayerController : MonoBehaviour
                 else
                 {
                     // Pay rent to the owner if the property is owned by another team
-                    Money -= property.rent;
-                    ownerPlayer.Money += property.rent;
+                    int rentPriceToDeduct = property.rentPrices[property.currentStageIndex]; 
+                    Money -= rentPriceToDeduct;
+                    ownerPlayer.Money += rentPriceToDeduct;
                     UpdateMoneyText();
                     ownerPlayer.UpdateMoneyText();
                     currentPlayerController.buyPropertyDecisionMade = true;
@@ -503,7 +504,7 @@ public class PlayerController : MonoBehaviour
             else
             {
                 // Player doesn't have enough money to buy the property
-                if (Money < property.prices[nextStageIndex])
+                if (Money < property.rentPrices[property.nextStageIndex])
                 {
                     GameObject NoMoneyMessageObject = Instantiate(NoNoneyMessagePrefab, canvasTransform);
                     TextMeshProUGUI messageText = NoMoneyMessageObject.GetComponent<TextMeshProUGUI>();
