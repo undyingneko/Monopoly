@@ -42,6 +42,7 @@ public class PlayerController : MonoBehaviour
     public TextMeshProUGUI goToJailText;
 
     public Transform canvasTransform;
+    
 
     
     private BuyPropertyPopup012 buyPropertyPopup012Prefab;
@@ -58,7 +59,7 @@ public class PlayerController : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
     private int originalSortingOrder = 0;
-    private bool NoMoneyMessageDestroyed = false; // Declare at the beginning of the method
+    
     
 
     public void AssignPlayerID(int id)
@@ -482,7 +483,7 @@ public class PlayerController : MonoBehaviour
 
                             // Hide the message after 2 seconds
                             yield return StartCoroutine(HideMessageAfterDelay(NoMoneyMessageObject, 2f));
-                            yield return new WaitUntil(() => NoMoneyMessageDestroyed);
+                            yield return new WaitForSeconds(2f);
                             currentPlayerController.buyPropertyDecisionMade = true;
                             yield break;
                         }
@@ -510,7 +511,7 @@ public class PlayerController : MonoBehaviour
 
                     // Hide the message after 2 seconds
                     yield return StartCoroutine(HideMessageAfterDelay(NoMoneyMessageObject, 2f));
-                    yield return new WaitUntil(() => NoMoneyMessageDestroyed);
+                    yield return new WaitForSeconds(2f);
                     currentPlayerController.buyPropertyDecisionMade = true;
                     yield break;
                 }
@@ -529,7 +530,7 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         Destroy(NoMoneyMessageObject);
-        NoMoneyMessageDestroyed = true;
+        
     }
 
     // Method to find player object by ID

@@ -150,9 +150,14 @@ public class BuyPropertyPopup012 : MonoBehaviour
 
                         Debug.Log("Property bought successfully.");
                         currentProperty.CalculateRent(stageIndex);
-                        gameObject.SetActive(false); // Close the Buy Property Popup
-                        // playerController.EndBuyPropertyInteraction();
-                        GameObject stageImageInstance = Instantiate(currentProperty.stageImages[stageIndex], canvasTransform);
+                        gameObject.SetActive(false); 
+
+                        DeactivateOldStageImages(currentProperty);
+                        currentProperty.stageImages[stageIndex].SetActive(true);
+
+                        
+
+
                         Debug.Log("JSONwaypointIndex = "+ currentProperty.JSONwaypointIndex + "+" + "currentStageIndex = " + currentProperty.currentStageIndex);
                         Debug.Log("Image Count " + currentProperty.stageImages.Count);
                         playerController.buyPropertyDecisionMade = true;
@@ -233,6 +238,26 @@ public class BuyPropertyPopup012 : MonoBehaviour
 //         stageImage.SetActive(false);
 //     }
 // }
+
+    private void DeactivateOldStageImages(PropertyManager.PropertyData property)
+    {
+        // Ensure the property has stage images
+        if (property.stageImages != null && property.stageImages.Count > 0)
+        {
+            // Iterate through each stage image
+            foreach (GameObject stageImage in property.stageImages)
+            {
+                // Deactivate the stage image
+                stageImage.SetActive(false);
+            }
+            Debug.Log("Old stage images deactivated for property: " + property.name);
+        }
+        else
+        {
+            Debug.LogWarning("No stage images found for property: " + property.name);
+        }
+    }
+
 
     IEnumerator BuyConfirmationTimer()
     {

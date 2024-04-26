@@ -194,6 +194,7 @@ public class PropertyManager : MonoBehaviour
             // Instantiate the stage image prefab
             GameObject stageImageInstance = Instantiate(stageImagePrefab);
             stageImageInstance.transform.SetParent(canvasTransform, false);
+            stageImageInstance.SetActive(false);
 
             // Add the instantiated stage image to the property's stage images list
             property.stageImages.Add(stageImageInstance);
