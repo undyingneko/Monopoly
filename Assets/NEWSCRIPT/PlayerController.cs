@@ -634,10 +634,4 @@ public class PlayerController : MonoBehaviour
         Destroy(plus300Text.gameObject); // Destroy the Plus300Text object after 2 seconds
     }
 
-    public int GetPlayerIndex()
-    {
-        // Return the player index or any identifier that represents the player
-        return playerID; // Assuming playerID is used as the player index
-    }
-
 }
