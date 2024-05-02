@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class PropertyManager : MonoBehaviour
 {
+    public Color[] playerColors;
+    private Dictionary<PropertyData, Image> priceTags = new Dictionary<PropertyData, Image>();
+    private PlayerController playerController;
+
     [SerializeField]
     private Transform canvasTransform;
 
@@ -90,7 +94,12 @@ public class PropertyManager : MonoBehaviour
         //     }
 
         //     return buyoutPrice;
-        // }        
+        // } 
+        public Image GetPriceTag()
+        {
+            // Implement this method to return the price tag associated with the property
+            return null;
+        }              
     }
 
 
@@ -118,6 +127,7 @@ public class PropertyManager : MonoBehaviour
     }
     private void Start()
     {
+        playerController = FindObjectOfType<PlayerController>();
         if (canvasTransform == null)
         {
             Debug.LogError("Canvas transform reference not set. Please assign the Canvas transform in the Inspector.");
@@ -166,6 +176,14 @@ public class PropertyManager : MonoBehaviour
                 {
                     property.InitializePrices();
                     LoadStageImagesForProperty(property);
+                    Image priceTag = property.GetPriceTag();
+                    if (priceTag != null)
+                    {
+                        // Set the initial color of the price tag to black
+                        priceTag.color = Color.black;
+                        // Store the property and its price tag in the dictionary
+                        priceTags[property] = priceTag;
+                    }                   
                 }
             }
             else
@@ -181,6 +199,48 @@ public class PropertyManager : MonoBehaviour
         }
         
     }
+    
+    public void UpdatePriceTagColor(PropertyData property, PlayerController player)
+    {
+        // Check if the property exists in the dictionary
+        if (priceTags.ContainsKey(property))
+        {
+            // Deactivate all price tags first
+            DeactivateAllPriceTags();
+            // Activate the price tag prefab corresponding to the player's index
+            ActivatePriceTagPrefab(player.GetPlayerIndex());
+        }
+        else
+        {
+            Debug.LogWarning("Price tag not found for property: " + property.name);
+        }
+    }
+
+    private void DeactivateAllPriceTags()
+    {
+        // Deactivate all price tags on the screen
+        foreach (var kvp in priceTags)
+        {
+            kvp.Value.gameObject.SetActive(false);
+        }
+    }
+
+    private void ActivatePriceTagPrefab(int playerIndex)
+    {
+        // Instantiate and activate the price tag prefab based on the player's index
+        // Replace "YourPrefabName" with the name of your prefab
+        GameObject priceTagPrefab = Resources.Load<GameObject>("YourPrefabName_Player" + playerIndex);
+        if (priceTagPrefab != null)
+        {
+            GameObject priceTagInstance = Instantiate(priceTagPrefab, canvasTransform);
+            priceTagInstance.SetActive(true);
+        }
+        else
+        {
+            Debug.LogWarning("Price tag prefab not found for player index: " + playerIndex);
+        }
+    }
+
 
     public PropertyData GetPropertyByWaypointIndex(int JSONwaypointIndex)
     {
@@ -230,11 +290,8 @@ public class PropertyManager : MonoBehaviour
         {
             for (int i = 0; i < property.stageImages.Count; i++)
             {
-                // Assign the image to its corresponding stage
+
                 GameObject stageImage = property.stageImages[i];
-                // You can set the position, rotation, scale, or other properties of the image here
-                // For example, you can use stageImage.transform.position to set its position
-                // You may need to adjust this code based on your specific requirements
                 Debug.Log("Stage Image for stage " + i + " associated with property " + property.name);
                 
             }

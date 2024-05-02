@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     private static TextMeshProUGUI[] playerMoney;
     private PlayerController playerController;
     public static GameManager Instance;
+
+    
     void Awake()
     {
         Instance = this; // Assign the current instance to the static property
