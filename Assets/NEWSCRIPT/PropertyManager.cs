@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine.UI;
+using TMPro;
 
 public class PropertyManager : MonoBehaviour
 {
@@ -37,6 +38,7 @@ public class PropertyManager : MonoBehaviour
         public List<GameObject> stageImages = new List<GameObject>();
         public List<GameObject> rentTagImages = new List<GameObject>();
 
+        public TextMeshProUGUI rentText;
         // public List<GameObject> stageImages;
         
         public bool owned;
@@ -58,6 +60,7 @@ public class PropertyManager : MonoBehaviour
             stageIndexes.Clear();
             stageImages.Clear();  
             rentTagImages.Clear();   
+
 
             for (int i = 0; i < 5; i++)
             {
@@ -258,12 +261,32 @@ public class PropertyManager : MonoBehaviour
         }
     }
     
-
+    public void DeactivateOldStageImages(PropertyData property)
+    {
+        // Ensure the property has stage images
+        if (property.stageImages != null && property.stageImages.Count > 0)
+        {
+            // Iterate through each stage image
+            foreach (GameObject stageImage in property.stageImages)
+            {
+                // Deactivate the stage image
+                stageImage.SetActive(false);
+            }
+            Debug.Log("Old stage images deactivated for property: " + property.name);
+        }
+        else
+        {
+            Debug.LogWarning("No stage images found for property: " + property.name);
+        }
+    }
 
     private void LoadRentTagImages(PropertyData property)
     {
         // Get the list of all color variations available for rent tag images
         string[] colors = new string[] { "pink", "turquois", "green", "purple" };
+
+
+        
 
         // Iterate through each color
         foreach (string color in colors)
@@ -273,13 +296,16 @@ public class PropertyManager : MonoBehaviour
 
             // Load the rent tag image prefab from the Resources folder
             GameObject rentTagImagePrefab = Resources.Load<GameObject>(rentTagImagePath);
+            
 
             if (rentTagImagePrefab != null)
             {
                 // Create a GameObject for the rent tag image
                 GameObject rentTagImageInstance = Instantiate(rentTagImagePrefab);
                 rentTagImageInstance.transform.SetParent(canvasTransform, false);
+                
                 rentTagImageInstance.SetActive(false);
+                // rentTagImageInstance.GetComponent<Canvas>().sortingOrder = 50;
 
                 // Find the playerID corresponding to this color
                 int playerID = FindPlayerIDByColor(color);
@@ -287,8 +313,7 @@ public class PropertyManager : MonoBehaviour
                 if (playerID != -1)
                 {
                     // Assign ownerID to the property
-                    property.ownerID = playerID;
-                    Debug.Log("Assigned playerID " + playerID + " with color " + color + " to property " + property.name);
+                    property.ownerID = playerID;                
                 }
                 else
                 {
@@ -297,12 +322,21 @@ public class PropertyManager : MonoBehaviour
 
                 // Add the rent tag image instance to the property's rentTagImages list
                 property.rentTagImages.Add(rentTagImageInstance);
+                
             }
             else
             {
                 Debug.LogWarning("Rent tag image not found at path: " + rentTagImagePath);
             }
         }
+
+        string rentTextPath = "RentTagImages/RentText_" + property.JSONwaypointIndex;
+        TextMeshProUGUI rentTextPrefab = Resources.Load<TextMeshProUGUI>(rentTextPath);
+
+        TextMeshProUGUI rentTextInstance = Instantiate(rentTextPrefab);
+        rentTextInstance.transform.SetParent(canvasTransform, false);
+        property.rentText = rentTextInstance;
+        rentTextInstance.gameObject.SetActive(false);
     }
 
 
@@ -319,7 +353,52 @@ public class PropertyManager : MonoBehaviour
         return -1; // Return -1 if color is not found
     }
 
-    
+    public void ActivateRentTagImage(PropertyData property)
+    {
+        foreach (GameObject rentTagImage in property.rentTagImages)
+        {
+            rentTagImage.SetActive(false);
+        }
+        // Get the color associated with the player ID
+        string color = playerIDToColor[property.ownerID];
+
+        // Find the rent tag image corresponding to the color
+        foreach (GameObject rentTagImage in property.rentTagImages)
+        {
+            // Get the color variation of the rent tag image
+            string rentTagColor = rentTagImage.name.Split('_')[1]; // Assuming the name format is "PriceTags_color_waypointIndex"
+
+            // Compare the color variation with the player's color
+            if (rentTagColor.Equals(color))
+            {
+                // Activate the rent tag image
+                rentTagImage.SetActive(true);
+                Debug.Log("Rent tag image activated for color: " + color);
+                return; // Exit the loop once the rent tag image is activated
+            }
+        }
+
+        Debug.LogWarning("Rent tag image not found for color: " + color);
+    }
+
+    public void UpdateRentText(PropertyData property, int stageIndex)
+    {
+        // Ensure the rent text is not null
+        if (property.rentText != null)
+        {
+            // Update the rent text with the rent price for the current stage
+            property.rentText.text = property.rentPrices[stageIndex].ToString(); // Assuming rentPrices are already initialized in InitializePrices method
+
+            // Activate the rent text
+            property.rentText.gameObject.SetActive(true);
+        }
+        else
+        {
+            Debug.LogWarning("Rent text not found for property: " + property.name);
+        }
+    }
+
+
 
 
 }

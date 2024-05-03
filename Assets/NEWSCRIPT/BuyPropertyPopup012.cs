@@ -151,21 +151,11 @@ public class BuyPropertyPopup012 : MonoBehaviour
 
                         gameObject.SetActive(false); 
 
-                        DeactivateOldStageImages(currentProperty);
+                        propertyManager.DeactivateOldStageImages(currentProperty);
                         currentProperty.stageImages[stageIndex].SetActive(true);
+                        propertyManager.ActivateRentTagImage(currentProperty);
+                        propertyManager.UpdateRentText(currentProperty, stageIndex);
 
-                        DeactivateAllRentTagImages(currentProperty);
-
-                        ActivateRentTagImage(currentProperty);
-
-                        // string color = propertyManager.GetColorForPlayer(currentProperty.ownerID);
-                        // ActivateRentTagImage(currentProperty, color);
-
-                        // ActivateRentTagImage(currentProperty);
-                        // currentProperty.rentTagImage.SetActive(true);
-                        
-
-            
                         Debug.Log("JSONwaypointIndex = "+ currentProperty.JSONwaypointIndex + "+" + "currentStageIndex = " + currentProperty.currentStageIndex);
                         Debug.Log("Image Count " + currentProperty.stageImages.Count);
                         playerController.buyPropertyDecisionMade = true;
@@ -202,25 +192,6 @@ public class BuyPropertyPopup012 : MonoBehaviour
     }
     
 
-    private void DeactivateOldStageImages(PropertyManager.PropertyData property)
-    {
-        // Ensure the property has stage images
-        if (property.stageImages != null && property.stageImages.Count > 0)
-        {
-            // Iterate through each stage image
-            foreach (GameObject stageImage in property.stageImages)
-            {
-                // Deactivate the stage image
-                stageImage.SetActive(false);
-            }
-            Debug.Log("Old stage images deactivated for property: " + property.name);
-        }
-        else
-        {
-            Debug.LogWarning("No stage images found for property: " + property.name);
-        }
-    }
-
     IEnumerator BuyConfirmationTimer()
     {
         yield return new WaitForSeconds(buyConfirmationTime);
@@ -241,38 +212,8 @@ public class BuyPropertyPopup012 : MonoBehaviour
         Debug.Log("buyPropertyDecisionMade set to : " + playerController.buyPropertyDecisionMade);
         
     }
-
-    private void DeactivateAllRentTagImages(PropertyManager.PropertyData property)
-    {
-        foreach (GameObject rentTagImage in property.rentTagImages)
-        {
-            rentTagImage.SetActive(false);
-        }
-    }
     
-    private void ActivateRentTagImage(PropertyManager.PropertyData property)
-    {
-        // Get the color associated with the player ID
-        string color = propertyManager.playerIDToColor[property.ownerID];
 
-        // Find the rent tag image corresponding to the color
-        foreach (GameObject rentTagImage in property.rentTagImages)
-        {
-            // Get the color variation of the rent tag image
-            string rentTagColor = rentTagImage.name.Split('_')[1]; // Assuming the name format is "PriceTags_color_waypointIndex"
-
-            // Compare the color variation with the player's color
-            if (rentTagColor.Equals(color))
-            {
-                // Activate the rent tag image
-                rentTagImage.SetActive(true);
-                Debug.Log("Rent tag image activated for color: " + color);
-                return; // Exit the loop once the rent tag image is activated
-            }
-        }
-
-        Debug.LogWarning("Rent tag image not found for color: " + color);
-    }
 
 
 }
