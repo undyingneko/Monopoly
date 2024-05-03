@@ -5,13 +5,7 @@ using UnityEngine.UI;
 
 public class PropertyManager : MonoBehaviour
 {
-    public SpriteRenderer propertySpriteRenderer;
 
-    public Color pinkColor;
-    public Color turquoiseColor;
-    public Color greenColor;
-    public Color purpleColor;
-    public Color neutralColor;
 
 
     [SerializeField]
@@ -35,6 +29,7 @@ public class PropertyManager : MonoBehaviour
         public List<int> rentPrices = new List<int>(); // Stores rent prices for each stage
         public List<int> stageIndexes = new List<int>();
         public List<GameObject> stageImages = new List<GameObject>();
+        public List<GameObject> rentTagImages = new List<GameObject>();
 
         // public List<GameObject> stageImages;
         
@@ -55,7 +50,8 @@ public class PropertyManager : MonoBehaviour
             stagePrices.Clear();
             rentPrices.Clear();
             stageIndexes.Clear();
-            stageImages.Clear();    
+            stageImages.Clear();  
+            rentTagImages.Clear();   
 
             for (int i = 0; i < 5; i++)
             {
@@ -127,7 +123,6 @@ public class PropertyManager : MonoBehaviour
     }
     private void Start()
     {
-        ChangePropertyColors();
 
         if (canvasTransform == null)
         {
@@ -177,6 +172,7 @@ public class PropertyManager : MonoBehaviour
                 {
                     property.InitializePrices();
                     LoadStageImagesForProperty(property);
+                    LoadRentTagImages(property);
                 }
             }
             else
@@ -256,32 +252,61 @@ public class PropertyManager : MonoBehaviour
         }
     }
     
-    void ChangePropertyColors()
-    {
-        // Find all properties with different tags
-        GameObject[] pinkProperties = GameObject.FindGameObjectsWithTag("Pink");
-        GameObject[] turquoiseProperties = GameObject.FindGameObjectsWithTag("Turquoise");
-        GameObject[] greenProperties = GameObject.FindGameObjectsWithTag("Green");
-        GameObject[] purpleProperties = GameObject.FindGameObjectsWithTag("Purple");
-        GameObject[] neutralProperties = GameObject.FindGameObjectsWithTag("Neutral");
 
-        // Change the color of properties based on their tags
-        ChangeColorForProperties(pinkProperties, pinkColor);
-        ChangeColorForProperties(turquoiseProperties, turquoiseColor);
-        ChangeColorForProperties(greenProperties, greenColor);
-        ChangeColorForProperties(purpleProperties, purpleColor);
-        ChangeColorForProperties(neutralProperties, neutralColor);
-    }
-    
-    void ChangeColorForProperties(GameObject[] properties, Color color)
+    private void LoadRentTagImages(PropertyData property)
     {
-        foreach (GameObject property in properties)
+        // Get the color of the property
+        string color = GetColorForProperty(property);
+
+        // Construct the path to the rent tag image based on the color and JSON waypoint index
+        string rentTagImagePath = "RentTagImages/PriceTags_" + color + "_" + property.JSONwaypointIndex;
+
+        // Load the rent tag image prefab from the Resources folder
+        GameObject rentTagImagePrefab = Resources.Load<GameObject>(rentTagImagePath);
+
+        if (rentTagImagePrefab != null)
         {
-            // Get the SpriteRenderer component of the property
-            SpriteRenderer renderer = property.GetComponent<SpriteRenderer>();
+            // Iterate through each rent price
+            for (int i = 0; i < property.rentPrices.Count; i++)
+            {
+                // Create a GameObject for the rent tag image
+                GameObject rentTagImageInstance = Instantiate(rentTagImagePrefab);
+                rentTagImageInstance.transform.SetParent(canvasTransform, false);
+                // rentTagImageInstance.SetActive(false);
 
-            // Change the color of the SpriteRenderer component
-            renderer.color = color;
+                // Add the rent tag image instance to the property's rentTagImages list
+                property.rentTagImages.Add(rentTagImageInstance);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Rent tag image not found at path: " + rentTagImagePath);
         }
     }
+
+
+    public string GetColorForProperty(PropertyData property)
+    {
+        // Check the ownerID and return the corresponding color name
+        switch (property.ownerID)
+        {
+            case 1:
+                Debug.Log("Color for property " + property.name + ": Pink");
+                return "pink";
+            case 2:
+                Debug.Log("Color for property " + property.name + ": Turquoise");
+                return "turquois";
+            case 3:
+                Debug.Log("Color for property " + property.name + ": Green");
+                return "green";
+            case 4:
+                Debug.Log("Color for property " + property.name + ": Purple");
+                return "purple";
+            default:
+                Debug.Log("Color for property " + property.name + ": Neutral");
+                return "neutral";
+        }
+    }
+
+
 }
