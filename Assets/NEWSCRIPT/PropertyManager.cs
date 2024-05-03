@@ -5,7 +5,13 @@ using UnityEngine.UI;
 
 public class PropertyManager : MonoBehaviour
 {
-
+    public Dictionary<int, string> playerIDToColor  = new Dictionary<int, string>
+    {
+        { 1, "pink" },
+        { 2, "turquois" },
+        { 3, "green" },
+        { 4, "purple" }
+    };
 
 
     [SerializeField]
@@ -253,60 +259,67 @@ public class PropertyManager : MonoBehaviour
     }
     
 
+
     private void LoadRentTagImages(PropertyData property)
     {
-        // Get the color of the property
-        string color = GetColorForProperty(property);
+        // Get the list of all color variations available for rent tag images
+        string[] colors = new string[] { "pink", "turquois", "green", "purple" };
 
-        // Construct the path to the rent tag image based on the color and JSON waypoint index
-        string rentTagImagePath = "RentTagImages/PriceTags_" + color + "_" + property.JSONwaypointIndex;
-
-        // Load the rent tag image prefab from the Resources folder
-        GameObject rentTagImagePrefab = Resources.Load<GameObject>(rentTagImagePath);
-
-        if (rentTagImagePrefab != null)
+        // Iterate through each color
+        foreach (string color in colors)
         {
-            // Iterate through each rent price
-            for (int i = 0; i < property.rentPrices.Count; i++)
+            // Construct the path to the rent tag image based on the color and JSON waypoint index
+            string rentTagImagePath = "RentTagImages/PriceTags_" + color + "_" + property.JSONwaypointIndex;
+
+            // Load the rent tag image prefab from the Resources folder
+            GameObject rentTagImagePrefab = Resources.Load<GameObject>(rentTagImagePath);
+
+            if (rentTagImagePrefab != null)
             {
                 // Create a GameObject for the rent tag image
                 GameObject rentTagImageInstance = Instantiate(rentTagImagePrefab);
                 rentTagImageInstance.transform.SetParent(canvasTransform, false);
-                // rentTagImageInstance.SetActive(false);
+                rentTagImageInstance.SetActive(false);
+
+                // Find the playerID corresponding to this color
+                int playerID = FindPlayerIDByColor(color);
+
+                if (playerID != -1)
+                {
+                    // Assign ownerID to the property
+                    property.ownerID = playerID;
+                    Debug.Log("Assigned playerID " + playerID + " with color " + color + " to property " + property.name);
+                }
+                else
+                {
+                    Debug.LogWarning("Player ID not found for color: " + color);
+                }
 
                 // Add the rent tag image instance to the property's rentTagImages list
                 property.rentTagImages.Add(rentTagImageInstance);
             }
-        }
-        else
-        {
-            Debug.LogWarning("Rent tag image not found at path: " + rentTagImagePath);
+            else
+            {
+                Debug.LogWarning("Rent tag image not found at path: " + rentTagImagePath);
+            }
         }
     }
 
 
-    public string GetColorForProperty(PropertyData property)
+    // Helper method to find playerID by color
+    private int FindPlayerIDByColor(string color)
     {
-        // Check the ownerID and return the corresponding color name
-        switch (property.ownerID)
+        foreach (var entry in playerIDToColor)
         {
-            case 1:
-                Debug.Log("Color for property " + property.name + ": Pink");
-                return "pink";
-            case 2:
-                Debug.Log("Color for property " + property.name + ": Turquoise");
-                return "turquois";
-            case 3:
-                Debug.Log("Color for property " + property.name + ": Green");
-                return "green";
-            case 4:
-                Debug.Log("Color for property " + property.name + ": Purple");
-                return "purple";
-            default:
-                Debug.Log("Color for property " + property.name + ": Neutral");
-                return "neutral";
+            if (entry.Value == color)
+            {
+                return entry.Key;
+            }
         }
+        return -1; // Return -1 if color is not found
     }
+
+    
 
 
 }

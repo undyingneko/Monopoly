@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour
 
             players[i].AssignTeamID(teamID); // Assign team ID to the player
             players[i].AssignPlayerID(i + 1); // Assign player ID
+            
         }
 
         StartCoroutine(StartTurnCoroutine());

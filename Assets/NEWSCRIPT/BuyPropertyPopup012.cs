@@ -6,6 +6,7 @@ using Unity.Properties;
 
 public class BuyPropertyPopup012 : MonoBehaviour
 {
+
     public TextMeshProUGUI BuyPropertyPopup_propertyNameText;
     public TextMeshProUGUI[] BuyPropertyPopup_stagePriceTexts;
     public Button[] BuyPropertyPopup_buyButtons;
@@ -152,8 +153,15 @@ public class BuyPropertyPopup012 : MonoBehaviour
 
                         DeactivateOldStageImages(currentProperty);
                         currentProperty.stageImages[stageIndex].SetActive(true);
+
                         DeactivateAllRentTagImages(currentProperty);
+
                         ActivateRentTagImage(currentProperty);
+
+                        // string color = propertyManager.GetColorForPlayer(currentProperty.ownerID);
+                        // ActivateRentTagImage(currentProperty, color);
+
+                        // ActivateRentTagImage(currentProperty);
                         // currentProperty.rentTagImage.SetActive(true);
                         
 
@@ -241,50 +249,31 @@ public class BuyPropertyPopup012 : MonoBehaviour
             rentTagImage.SetActive(false);
         }
     }
-
-
-
-private void ActivateRentTagImage(PropertyManager.PropertyData property)
-{
-    // Deactivate all rent tag images
-    foreach (GameObject rentTagImage in property.rentTagImages)
+    
+    private void ActivateRentTagImage(PropertyManager.PropertyData property)
     {
-        rentTagImage.SetActive(false);
+        // Get the color associated with the player ID
+        string color = propertyManager.playerIDToColor[property.ownerID];
+
+        // Find the rent tag image corresponding to the color
+        foreach (GameObject rentTagImage in property.rentTagImages)
+        {
+            // Get the color variation of the rent tag image
+            string rentTagColor = rentTagImage.name.Split('_')[1]; // Assuming the name format is "PriceTags_color_waypointIndex"
+
+            // Compare the color variation with the player's color
+            if (rentTagColor.Equals(color))
+            {
+                // Activate the rent tag image
+                rentTagImage.SetActive(true);
+                Debug.Log("Rent tag image activated for color: " + color);
+                return; // Exit the loop once the rent tag image is activated
+            }
+        }
+
+        Debug.LogWarning("Rent tag image not found for color: " + color);
     }
-
-    // Get the color corresponding to the property's ownerID
-    string color = propertyManager.GetColorForProperty(property);
-
-    Debug.Log("All rent tag images deactivated for property: " + property.name);
-    // bool anyRentTagActivated = false;
-
-    // Find and activate the rent tag image corresponding to the color
-    foreach (GameObject rentTagImage in property.rentTagImages)
-    {
-        // Extract the color from the rent tag image name
-        string[] parts = rentTagImage.name.Split('_');
-
-        // Check if the color matches
-        // if (parts.Length >= 3 && parts[2] == color)
-        // {
-            rentTagImage.SetActive(true);
-            // anyRentTagActivated = true;
-            Debug.Log("Rent tag image activated for property: " + property.name + ", with color: " + color);
-            break; // Exit the loop once the correct rent tag image is found and activated
-        // }
-    }
-
-    // Log a warning if no rent tag image was activated
-    // if (!anyRentTagActivated)
-    // {
-    //     Debug.LogWarning("No rent tag image activated for property: " + property.name);
-    // }
-}
-
-
-
-
-
 
 
 }
+
