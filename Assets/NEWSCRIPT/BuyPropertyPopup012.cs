@@ -14,6 +14,7 @@ public class BuyPropertyPopup012 : MonoBehaviour
     public Button BuyPropertyPopup_closeButton; // Reference to the close button
    
     private PlayerController playerController;
+    private PlayerController currentPlayer;
 
     private PropertyManager.PropertyData currentProperty;
     private bool buyingStage; // Flag to track if the player is in the process of buying a stage
@@ -28,9 +29,28 @@ public class BuyPropertyPopup012 : MonoBehaviour
 
     private void Start()
     {
-        
+        // GameManager gameManager = FindObjectOfType<GameManager>();
         playerController = FindObjectOfType<PlayerController>();
         gameManager = FindObjectOfType<GameManager>();
+        if (gameManager == null)
+        {
+            Debug.LogError("GameManager not found!");
+            return; // Exit the method if GameManager is not found to avoid null reference errors
+        }
+        int currentPlayerIndex = GameManager.currentPlayerIndex;
+
+        if (currentPlayerIndex >= 0 && currentPlayerIndex < gameManager.players.Length)
+        {
+            currentPlayer = gameManager.players[currentPlayerIndex];
+            if (currentPlayer == null)
+            {
+                Debug.LogError("Current player not found!");
+            }
+        }
+        else
+        {
+            Debug.LogError("Invalid currentPlayerIndex in GameManager!");
+        }
         propertyManager = PropertyManager.Instance;
         ownedByTeammateText.gameObject.SetActive(false);
         
@@ -52,6 +72,13 @@ public class BuyPropertyPopup012 : MonoBehaviour
             playerController.isBuyPopUpActive = true;
             buyConfirmationCoroutine = StartCoroutine(BuyConfirmationTimer());
             BuyPropertyPopup_closeButton.onClick.AddListener(Decline); // Add a listener to the close button
+
+            for (int i = 0; i < BuyPropertyPopup_buyButtons.Length; i++)
+            {
+                BuyPropertyPopup_buyButtons[i].gameObject.SetActive(false);
+                BuyPropertyPopup_buyButtons[i].interactable = false;
+            }
+
             for (int i = 0; i < BuyPropertyPopup_buyButtons.Length; i++)
             {
                 int index = i; // Store the current index in a local variable to avoid closure issues
@@ -80,11 +107,18 @@ public class BuyPropertyPopup012 : MonoBehaviour
 
     public void Display012(PropertyManager.PropertyData property)
     {
+        if (property == null)
+        {
+            Debug.LogError("PropertyData object is null!");
+            return;
+        }
         currentProperty = property;
         Debug.Log ("currentProperty name:"+ currentProperty.name);
 
         BuyPropertyPopup_propertyNameText.text = property.name;
         // property.stageImageInstances.Clear();
+    
+        
 
         // Ensure the length of the stagePriceTexts array matches the number of prices in the property
         for (int i = 0; i < BuyPropertyPopup_stagePriceTexts.Length; i++)
@@ -95,12 +129,14 @@ public class BuyPropertyPopup012 : MonoBehaviour
                 {
                     // If the player owns the property and the current stage is already bought or lower, display an "Owned" mark
                     BuyPropertyPopup_stagePriceTexts[i].text = "Owned";
+                    BuyPropertyPopup_buyButtons[i].interactable = false;
                     BuyPropertyPopup_buyButtons[i].gameObject.SetActive(false);
                 }
                 else
                 {
                     // If the player doesn't own the property or the current stage is not bought, display the price and enable the buy button
                     BuyPropertyPopup_stagePriceTexts[i].text = "Price: " + property.stagePrices[i].ToString();
+                    BuyPropertyPopup_buyButtons[i].interactable = true;
                     BuyPropertyPopup_buyButtons[i].gameObject.SetActive(true);
                 }
             }
@@ -111,7 +147,16 @@ public class BuyPropertyPopup012 : MonoBehaviour
                 BuyPropertyPopup_buyButtons[i].gameObject.SetActive(false);
             }
         }
-
+        if (currentProperty.owned && currentProperty.teamownerID == currentPlayer.teamID)
+        {
+            ownedByTeammateText.gameObject.SetActive(true);
+            ownedByTeammateText.text = "Owned by your teammate";
+            Debug.Log("ownedByTeammateText set to active");
+        }
+        else
+        {
+            ownedByTeammateText.gameObject.SetActive(false);
+        }
         // Start the buy confirmation timer coroutine
         buyConfirmationCoroutine = StartCoroutine(BuyConfirmationTimer());
     }
@@ -124,10 +169,10 @@ public class BuyPropertyPopup012 : MonoBehaviour
             buyingStage = true;
             int stagePrice = currentProperty.stagePrices[stageIndex];
             
-            GameManager gameManager = FindObjectOfType<GameManager>();
+            
             if (gameManager != null && currentPlayerIndex >= 0 && currentPlayerIndex < gameManager.players.Length)
             {
-                PlayerController currentPlayer = gameManager.players[currentPlayerIndex];
+                // PlayerController currentPlayer = gameManager.players[currentPlayerIndex];
                 if (currentPlayer != null)
                 {
                     if (currentPlayer.Money >= stagePrice)
@@ -143,38 +188,13 @@ public class BuyPropertyPopup012 : MonoBehaviour
                             currentProperty.teamownerID = currentPlayer.teamID;
                             currentPlayer.ownedProperties.Add(currentProperty);
                             // currentPlayer.UpdatePropertyOwnership(stageIndex);
-                        }
-                        else if (currentProperty.teamownerID == currentPlayer.teamID)
-                        {
-                            // Property is owned by a teammate
-                            ownedByTeammateText.gameObject.SetActive(true);
-                            ownedByTeammateText.text = "Owned by your teammate";
-                            Debug.Log("ownedByTeammateText set to active");
-                        }
-                        else
-                        {
-                            ownedByTeammateText.gameObject.SetActive(false);
-                        }                       
+                        }                    
 
                         if (stageIndex >= currentProperty.currentStageIndex)
                         {
                             currentProperty.currentStageIndex = stageIndex;
                             currentProperty.nextStageIndex = stageIndex + 1;
                         }     
-                        Debug.Log("currentStageIndex: " + currentProperty.currentStageIndex);
-                        Debug.Log("Current Property Name: " + currentProperty.name);
-                        Debug.Log("Current Property Owned: " + currentProperty.owned);
-                        Debug.Log("Current Property OwnerID: " + currentProperty.ownerID);
-                        Debug.Log("Current Property TeamOwnerID: " + currentProperty.teamownerID);
-                        Debug.Log("Current Property CurrentStageIndex: " + currentProperty.currentStageIndex);
-                        Debug.Log("Current Property NextStageIndex: " + currentProperty.nextStageIndex);
-                        Debug.Log("Current Property JSONwaypointIndex: " + currentProperty.JSONwaypointIndex);
-                                        
-
-                        
-                         // Add property to player's properties list
-
-                        
 
                         Debug.Log("Property bought successfully.");
 
@@ -205,7 +225,8 @@ public class BuyPropertyPopup012 : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("GameManager not found or invalid currentPlayerIndex.");
+                Debug.LogWarning("GameManager reference is null in BuyStage method!");
+                return;
             }
 
             // Stop the buy confirmation timer coroutine if needed
