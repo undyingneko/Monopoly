@@ -72,16 +72,16 @@ public class PlayerController : MonoBehaviour
         teamNumberText.text = "Team: " + teamID.ToString();
     }
 
-    public void UpdatePropertyOwnership(int propertystageIndex)
-    {
-        for (int i = 0; i <= propertystageIndex; i++)
-        {
-            for (int j = 0; j <= i; j++)
-            {
-                properties[j].owned = true;
-            }
-        }
-    }
+    // public void UpdatePropertyOwnership(int propertystageIndex)
+    // {
+    //     for (int i = 0; i <= propertystageIndex; i++)
+    //     {
+    //         for (int j = 0; j <= i; j++)
+    //         {
+    //             property.stageIndexes[i].owned = true;
+    //         }
+    //     }
+    // }
 
   
     void Start()
@@ -137,7 +137,7 @@ public class PlayerController : MonoBehaviour
         originalSortingOrder = spriteRenderer.sortingOrder;
 
     }
-    private void InstantiateBuyPropertyPopup(PropertyManager.PropertyData property)
+    private void InstantiateBuyPropertyPopup012(PropertyManager.PropertyData property)
     {
         // Find the Canvas GameObject
         Canvas canvas = FindObjectOfType<Canvas>();
@@ -461,17 +461,18 @@ public class PlayerController : MonoBehaviour
             if (!property.owned && property.nextStageIndex < property.stagePrices.Count && property.stagePrices[property.nextStageIndex] <= Money)
             {
                 // Instantiate the buy property popup
-                InstantiateBuyPropertyPopup(property);
+                InstantiateBuyPropertyPopup012(property);
             }
             else if (property.owned)
             {
                 PlayerController ownerPlayer = FindPlayerByID(property.ownerID);
                 PlayerController ownerTeam = FindTeamByID(property.teamownerID);
-                if (ownerPlayer != null && ownerTeam.teamID == this.teamID)
+                // if (ownerPlayer != null && ownerPlayer.playerID == this.playerID)
+                if (ownerPlayer != null && ownerPlayer.teamID == this.teamID)
                 {
                     if (property.nextStageIndex < property.stagePrices.Count && property.stagePrices[property.nextStageIndex] <= Money)
                     {
-                        InstantiateBuyPropertyPopup(property);
+                        InstantiateBuyPropertyPopup012(property);
                     }
                     else
                     {

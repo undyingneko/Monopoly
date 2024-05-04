@@ -182,6 +182,7 @@ public class PropertyManager : MonoBehaviour
                     property.InitializePrices();
                     LoadStageImagesForProperty(property);
                     LoadRentTagImages(property);
+                    property.currentStageIndex = 0;
                 }
             }
             else
@@ -285,9 +286,6 @@ public class PropertyManager : MonoBehaviour
         // Get the list of all color variations available for rent tag images
         string[] colors = new string[] { "pink", "turquois", "green", "purple" };
 
-
-        
-
         // Iterate through each color
         foreach (string color in colors)
         {
@@ -308,17 +306,17 @@ public class PropertyManager : MonoBehaviour
                 // rentTagImageInstance.GetComponent<Canvas>().sortingOrder = 50;
 
                 // Find the playerID corresponding to this color
-                int playerID = FindPlayerIDByColor(color);
+                // int playerID = FindPlayerIDByColor(color);
 
-                if (playerID != -1)
-                {
-                    // Assign ownerID to the property
-                    property.ownerID = playerID;                
-                }
-                else
-                {
-                    Debug.LogWarning("Player ID not found for color: " + color);
-                }
+                // if (playerID != -1)
+                // {
+                //     // Assign ownerID to the property
+                //     property.ownerID = playerID;                
+                // }
+                // else
+                // {
+                //     Debug.LogWarning("Player ID not found for color: " + color);
+                // }
 
                 // Add the rent tag image instance to the property's rentTagImages list
                 property.rentTagImages.Add(rentTagImageInstance);
@@ -340,18 +338,18 @@ public class PropertyManager : MonoBehaviour
     }
 
 
-    // Helper method to find playerID by color
-    private int FindPlayerIDByColor(string color)
-    {
-        foreach (var entry in playerIDToColor)
-        {
-            if (entry.Value == color)
-            {
-                return entry.Key;
-            }
-        }
-        return -1; // Return -1 if color is not found
-    }
+    // // Helper method to find playerID by color
+    // private int FindPlayerIDByColor(string color)
+    // {
+    //     foreach (var entry in playerIDToColor)
+    //     {
+    //         if (entry.Value == color)
+    //         {
+    //             return entry.Key;
+    //         }
+    //     }
+    //     return -1; // Return -1 if color is not found
+    // }
 
     public void ActivateRentTagImage(PropertyData property)
     {

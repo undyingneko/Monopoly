@@ -6,7 +6,8 @@ using Unity.Properties;
 
 public class BuyPropertyPopup012 : MonoBehaviour
 {
-
+    [SerializeField]
+    private TextMeshProUGUI ownedByTeammateText;
     public TextMeshProUGUI BuyPropertyPopup_propertyNameText;
     public TextMeshProUGUI[] BuyPropertyPopup_stagePriceTexts;
     public Button[] BuyPropertyPopup_buyButtons;
@@ -27,9 +28,11 @@ public class BuyPropertyPopup012 : MonoBehaviour
 
     private void Start()
     {
+        
         playerController = FindObjectOfType<PlayerController>();
         gameManager = FindObjectOfType<GameManager>();
         propertyManager = PropertyManager.Instance;
+        ownedByTeammateText.gameObject.SetActive(false);
         
         // propertyManager.LoadAllStageImages();
 
@@ -78,6 +81,7 @@ public class BuyPropertyPopup012 : MonoBehaviour
     public void Display012(PropertyManager.PropertyData property)
     {
         currentProperty = property;
+        Debug.Log ("currentProperty name:"+ currentProperty.name);
 
         BuyPropertyPopup_propertyNameText.text = property.name;
         // property.stageImageInstances.Clear();
@@ -129,23 +133,48 @@ public class BuyPropertyPopup012 : MonoBehaviour
                     if (currentPlayer.Money >= stagePrice)
                     {
                         currentPlayer.Money -= stagePrice; // Deduct money
+                        currentPlayer.UpdateMoneyText(); // Update money UI
                         Debug.Log("Money deducted successfully. Remaining money: " + currentPlayer.Money);
                         
-                        currentProperty.owned = true; // Set property ownership                
-                        currentProperty.ownerID = currentPlayer.playerID;                        
-                        currentProperty.teamownerID = currentPlayer.teamID;
+                        if (!currentProperty.owned) // Check if property is not owned
+                        {
+                            currentProperty.owned = true; // Set property ownership                
+                            currentProperty.ownerID = currentPlayer.playerID;                        
+                            currentProperty.teamownerID = currentPlayer.teamID;
+                            currentPlayer.ownedProperties.Add(currentProperty);
+                            // currentPlayer.UpdatePropertyOwnership(stageIndex);
+                        }
+                        else if (currentProperty.teamownerID == currentPlayer.teamID)
+                        {
+                            // Property is owned by a teammate
+                            ownedByTeammateText.gameObject.SetActive(true);
+                            ownedByTeammateText.text = "Owned by your teammate";
+                            Debug.Log("ownedByTeammateText set to active");
+                        }
+                        else
+                        {
+                            ownedByTeammateText.gameObject.SetActive(false);
+                        }                       
 
-                        if (stageIndex > currentProperty.currentStageIndex)
+                        if (stageIndex >= currentProperty.currentStageIndex)
                         {
                             currentProperty.currentStageIndex = stageIndex;
                             currentProperty.nextStageIndex = stageIndex + 1;
                         }     
-                        Debug.Log("currentStageIndex: " + currentProperty.currentStageIndex);                  
+                        Debug.Log("currentStageIndex: " + currentProperty.currentStageIndex);
+                        Debug.Log("Current Property Name: " + currentProperty.name);
+                        Debug.Log("Current Property Owned: " + currentProperty.owned);
+                        Debug.Log("Current Property OwnerID: " + currentProperty.ownerID);
+                        Debug.Log("Current Property TeamOwnerID: " + currentProperty.teamownerID);
+                        Debug.Log("Current Property CurrentStageIndex: " + currentProperty.currentStageIndex);
+                        Debug.Log("Current Property NextStageIndex: " + currentProperty.nextStageIndex);
+                        Debug.Log("Current Property JSONwaypointIndex: " + currentProperty.JSONwaypointIndex);
+                                        
 
-                        currentPlayer.UpdateMoneyText(); // Update money UI
-                        currentPlayer.ownedProperties.Add(currentProperty); // Add property to player's properties list
+                        
+                         // Add property to player's properties list
 
-                        currentPlayer.UpdatePropertyOwnership(stageIndex);
+                        
 
                         Debug.Log("Property bought successfully.");
 
@@ -165,8 +194,6 @@ public class BuyPropertyPopup012 : MonoBehaviour
                     else
                     {
                         Debug.LogWarning("Insufficient funds to buy the property.");
-                        // playerController.EndBuyPropertyInteraction();
-                        // playerController.EndTurn();
                         playerController.buyPropertyDecisionMade = true;
                         Debug.Log("buyPropertyDecisionMade set to : " + playerController.buyPropertyDecisionMade);
                     }
@@ -186,10 +213,10 @@ public class BuyPropertyPopup012 : MonoBehaviour
             {
                 StopCoroutine(buyConfirmationCoroutine);
             }
-            // playerController.EndBuyPropertyInteraction();
         }
         Debug.Log ("currentPlayerIndex:"+ GameManager.currentPlayerIndex);
     }
+
     
 
     IEnumerator BuyConfirmationTimer()
