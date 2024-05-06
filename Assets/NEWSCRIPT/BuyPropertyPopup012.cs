@@ -23,7 +23,7 @@ public class BuyPropertyPopup012 : MonoBehaviour
     private Coroutine buyConfirmationCoroutine; // Coroutine reference for buy confirmation timer
     private GameManager gameManager;
     private PropertyManager propertyManager;
-    public Transform canvasTransform;
+    // public Transform canvasTransform;
     public GameObject stageImagePrefab;
 
 
@@ -118,7 +118,16 @@ public class BuyPropertyPopup012 : MonoBehaviour
         BuyPropertyPopup_propertyNameText.text = property.name;
         // property.stageImageInstances.Clear();
     
-        
+        if (currentProperty.owned && currentProperty.teamownerID == currentPlayer.teamID && currentProperty.ownerID != currentPlayer.playerID)
+        {
+            ownedByTeammateText.gameObject.SetActive(true);
+            ownedByTeammateText.text = "Owned by your teammate";
+            Debug.Log("ownedByTeammateText set to active");
+        }
+        else
+        {
+            ownedByTeammateText.gameObject.SetActive(false);
+        }       
 
         // Ensure the length of the stagePriceTexts array matches the number of prices in the property
         for (int i = 0; i < BuyPropertyPopup_stagePriceTexts.Length; i++)
@@ -147,16 +156,7 @@ public class BuyPropertyPopup012 : MonoBehaviour
                 BuyPropertyPopup_buyButtons[i].gameObject.SetActive(false);
             }
         }
-        if (currentProperty.owned && currentProperty.teamownerID == currentPlayer.teamID)
-        {
-            ownedByTeammateText.gameObject.SetActive(true);
-            ownedByTeammateText.text = "Owned by your teammate";
-            Debug.Log("ownedByTeammateText set to active");
-        }
-        else
-        {
-            ownedByTeammateText.gameObject.SetActive(false);
-        }
+
         // Start the buy confirmation timer coroutine
         buyConfirmationCoroutine = StartCoroutine(BuyConfirmationTimer());
     }
