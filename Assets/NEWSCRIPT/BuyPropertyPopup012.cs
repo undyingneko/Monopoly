@@ -43,20 +43,6 @@ public class BuyPropertyPopup012 : MonoBehaviour
             return; // Exit the method if GameManager is not found to avoid null reference errors
         }
 
-        // int currentPlayerIndex = GameManager.currentPlayerIndex;
-        // if (currentPlayerIndex >= 0 && currentPlayerIndex < gameManager.players.Length)
-        // {
-        //     currentPlayer = gameManager.players[currentPlayerIndex];
-        //     if (currentPlayer == null)
-        //     {
-        //         Debug.LogError("Current player not found!");
-        //     }
-        // }
-        // else
-        // {
-        //     Debug.LogError("Invalid currentPlayerIndex in GameManager!");
-        // }
-
         propertyManager = PropertyManager.Instance;
         // ownedByTeammateText.gameObject.SetActive(false);
 
@@ -66,26 +52,6 @@ public class BuyPropertyPopup012 : MonoBehaviour
             Debug.LogError("PropertyManager reference is not set in BuyPropertyPopup012!");
             return;
         }
-
-        // if (currentProperty != null && currentPlayer != null)
-        // {
-        //     if (currentProperty.owned && currentProperty.teamownerID == currentPlayer.teamID && currentProperty.ownerID != currentPlayer.playerID)
-        //     {
-        //         // ownedByTeammateText.gameObject.SetActive(true);
-        //         // ownedByTeammateText.text = "Owned by your teammate";
-        //         ownedByTeammateText.text = "Owned by your teammate";
-        //         Debug.Log("ownedByTeammateText set to active");
-        //     }
-        //     else
-        //     {
-        //         // ownedByTeammateText.gameObject.SetActive(false);
-        //         ownedByTeammateText.text = "";
-        //     }
-        // }
-        // else
-        // {
-        //     Debug.LogError("currentProperty or currentPlayer is null!");
-        // }
     }
 
     private void OnEnable()
@@ -108,7 +74,6 @@ public class BuyPropertyPopup012 : MonoBehaviour
             {
                 int index = i; // Store the current index in a local variable to avoid closure issues
                 BuyPropertyPopup_buyButtons[i].onClick.AddListener(() => BuyStage(index, GameManager.currentPlayerIndex));
-
             }
         }
         else
@@ -160,8 +125,6 @@ public class BuyPropertyPopup012 : MonoBehaviour
         Destroy(gameObject);
     }
 
-
-
     public void Display012(PropertyManager.PropertyData property)
     {
         if (property == null)
@@ -175,33 +138,6 @@ public class BuyPropertyPopup012 : MonoBehaviour
         BuyPropertyPopup_propertyNameText.text = property.name;
         // property.stageImageInstances.Clear();  
 
-        // if (currentPlayer == null)
-        // {
-        //     // Find the current player only when it's not already set
-        //     GameManager gameManager = FindObjectOfType<GameManager>();
-        //     if (gameManager == null)
-        //     {
-        //         Debug.LogError("GameManager not found!");
-        //         return;
-        //     }
-
-        //     int currentPlayerIndex = GameManager.currentPlayerIndex;
-        //     if (currentPlayerIndex >= 0 && currentPlayerIndex < gameManager.players.Length)
-        //     {
-        //         currentPlayer = gameManager.players[currentPlayerIndex];
-        //         if (currentPlayer == null)
-        //         {
-        //             Debug.LogError("Current player not found!");
-        //             return;
-        //         }
-        //     }
-        //     else
-        //     {
-        //         Debug.LogError("Invalid currentPlayerIndex in GameManager!");
-        //         return;
-        //     }
-        // }
-
         // Check if the current player and property are valid
         if (currentPlayer == null || currentProperty == null)
         {
@@ -212,23 +148,21 @@ public class BuyPropertyPopup012 : MonoBehaviour
         {
             if (currentProperty.owned && currentProperty.teamownerID == currentPlayer.teamID && currentProperty.ownerID != currentPlayer.playerID)
             {
-                // ownedByTeammateText.gameObject.SetActive(true);
+                ownedByTeammateText.gameObject.SetActive(true);
                 // ownedByTeammateText.text = "Owned by your teammate";
-                ownedByTeammateText.text = "Owned by your teammate";
-                Debug.Log("ownedByTeammateText set to active");
+                // ownedByTeammateText.text = "Owned by your teammate";
+                // Debug.Log("ownedByTeammateText set to active");
             }
             else
             {
-                // ownedByTeammateText.gameObject.SetActive(false);
-                ownedByTeammateText.text = "";
+                ownedByTeammateText.gameObject.SetActive(false);
+                // ownedByTeammateText.text = "";
             }
         }
         else
         {
             Debug.LogError("currentProperty or currentPlayer is null!");
         }
-
-
         // Ensure the length of the stagePriceTexts array matches the number of prices in the property
         for (int i = 0; i < BuyPropertyPopup_stagePriceTexts.Length; i++)
         {
