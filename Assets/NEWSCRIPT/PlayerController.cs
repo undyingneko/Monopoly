@@ -47,6 +47,10 @@ public class PlayerController : MonoBehaviour
     
     private BuyPropertyPopup012 buyPropertyPopup012Prefab;
     public string buyPropertyPopup012PrefabPath = "BuyPropertyPopup012Prefab"; // Path to the prefab in the Resources folder
+
+    public string buyoutPopupPrefabPath = "BuyoutPopupPrefab"; // The path to the RentMessagePrefab relative to the Resources folder
+    private BuyOutPopUp buyoutPopupPrefab;
+
     public GameObject NoNoneyMessagePrefab;
     
     private PropertyManager propertyManager;
@@ -62,8 +66,14 @@ public class PlayerController : MonoBehaviour
     
     [SerializeField]
     private string rentMessagePrefabPath = "RentMessagePrefab"; // The path to the RentMessagePrefab relative to the Resources folder
-
     private GameObject RentMessagePrefab; 
+
+  
+    
+     
+
+
+
 
     public void AssignPlayerID(int id)
     {
@@ -171,6 +181,29 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void InstantiateBuyoutPopup(PropertyManager.PropertyData property)
+    {
+        Canvas canvas = FindObjectOfType<Canvas>();
+        if (canvas == null)
+        {
+            Debug.LogError("Canvas GameObject not found.");
+            return;
+        }
+        // Instantiate the buyout popup prefab
+        BuyOutPopUp buyoutPopupInstance = Instantiate(buyoutPopupPrefab, canvasTransform);
+        if (buyoutPopupInstance != null)
+        {
+            Debug.Log("Buy property popup instantiated successfully.");
+
+            // Display the property data in the popup
+            buyoutPopupInstance.DisplayBuyOut(property);
+        }
+        else
+        {
+            Debug.LogError("Failed to instantiate the buy property popup.");
+            return;
+        }
+    }
 
     private void RollDiceOnClick()
     {
@@ -510,6 +543,8 @@ public class PlayerController : MonoBehaviour
                     rentMessageText.text = "You pay a rent of $" + rentPriceToDeduct;
                     yield return new WaitForSeconds(2f);
                     Destroy(rentMessageObject);
+                    
+                    InstantiateBuyoutPopup(property);
 
                     currentPlayerController.buyPropertyDecisionMade = true;
                     yield break;
