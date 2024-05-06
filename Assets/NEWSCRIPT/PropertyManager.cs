@@ -33,7 +33,8 @@ public class PropertyManager : MonoBehaviour
         // public int numberOfStages;
 
         public List<int> stagePrices = new List<int>(); // Stores prices for each stage
-        public List<int> rentPrices = new List<int>(); // Stores rent prices for each stage
+        public List<int> rentPrices = new List<int>(); 
+        public List<int> buyoutPrices = new List<int>();// Stores rent prices for each stage
         public List<int> stageIndexes = new List<int>();
         public List<GameObject> stageImages = new List<GameObject>();
         public List<GameObject> rentTagImages = new List<GameObject>();
@@ -47,7 +48,7 @@ public class PropertyManager : MonoBehaviour
 
         public int buyoutMultiplier;
         public int buyoutCount;
-        public int buyoutPrice;
+ 
         public int currentStageIndex; // Track the highest stage index that the player owns
         public int nextStageIndex;
 
@@ -71,6 +72,12 @@ public class PropertyManager : MonoBehaviour
                 rentPrices.Add(rentPrice);
                 stageIndexes.Add(i);
             }
+            for (int i = 0; i < 5; i++)
+            {
+                int buyoutPrice = CalculateBuyoutPrice(i);
+                // Add buyout price to the list
+                buyoutPrices.Add(buyoutPrice);
+            }
         }
         
         private int CalculateStagePrice(int stageIndex)
@@ -92,19 +99,19 @@ public class PropertyManager : MonoBehaviour
             }
         }
 
-        // public int CalculateBuyoutPrice(int stageIndex)
-        // {
-        //     int basePrice = prices[stageIndex];
-        //     buyoutPrice = basePrice;
+        private int CalculateBuyoutPrice(int stageIndex)
+        {
+            int basePrice = stagePrices[stageIndex];
+            int buyoutPrice = basePrice;
 
-        //     // Calculate buyout price based on buyout count
-        //     for (int i = 0; i < buyoutCount; i++)
-        //     {
-        //         buyoutPrice *= 2;
-        //     }
+            // Calculate buyout price based on buyout count
+            for (int i = 0; i < buyoutCount; i++)
+            {
+                buyoutPrice *= 2;
+            }
 
-        //     return buyoutPrice;
-        // }        
+            return buyoutPrice;
+        }        
     }
 
 
