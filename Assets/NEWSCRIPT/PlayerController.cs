@@ -267,29 +267,29 @@ public class PlayerController : MonoBehaviour
         int[] diceValues = new int[2];
 
         //-----------------------
-        for (int i = 0; i <= 20; i++)
-        {
-            for (int j = 0; j < diceImages.Length; j++)
-            {
-                int randomDiceSide = Random.Range(0, 6);
-                diceImages[j].sprite = diceSides[randomDiceSide];
-                diceValues[j] = randomDiceSide + 1;
-            }
-            yield return new WaitForSeconds(0.05f);
-        }
-        //---------------------
-        // For testing purposes, set the dice values to double 6
-        // diceValues[0] = 4;
-        // diceValues[1] = 4;
         // for (int i = 0; i <= 20; i++)
         // {
         //     for (int j = 0; j < diceImages.Length; j++)
         //     {
-        //         diceImages[j].sprite = diceSides[3]; // Use the sprite for dice side 6
+        //         int randomDiceSide = Random.Range(0, 6);
+        //         diceImages[j].sprite = diceSides[randomDiceSide];
+        //         diceValues[j] = randomDiceSide + 1;
         //     }
-
         //     yield return new WaitForSeconds(0.05f);
-        // }      
+        // }
+        //---------------------
+        // For testing purposes, set the dice values to double 6
+        diceValues[0] = 1;
+        diceValues[1] = 2;
+        for (int i = 0; i <= 20; i++)
+        {
+            for (int j = 0; j < diceImages.Length; j++)
+            {
+                diceImages[j].sprite = diceSides[3]; // Use the sprite for dice side 6
+            }
+
+            yield return new WaitForSeconds(0.05f);
+        }      
         //---------------------
 
         int sum = diceValues[0] + diceValues[1];
