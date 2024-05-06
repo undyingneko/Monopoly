@@ -596,11 +596,15 @@ public class PlayerController : MonoBehaviour
         playerMoveText.gameObject.SetActive(false);
         rollButton.gameObject.SetActive(false);
         spriteRenderer.sortingOrder = originalSortingOrder;
-        gameManager.NextTurn();
+        StartCoroutine(DelayedNextTurn());
         
 
     }
-
+    private IEnumerator DelayedNextTurn()
+    {
+        yield return new WaitForSeconds(1f); // Wait for 1 second
+        gameManager.NextTurn(); // Call NextTurn after waiting
+    }
     public void StartTurn()
     {
         isTurn = true;

@@ -25,6 +25,11 @@ public class TileScript : MonoBehaviour
 
     private void OnMouseDown()
     {
+        BuyPropertyPopup012 buyPopup = FindObjectOfType<BuyPropertyPopup012>();
+        if (buyPopup != null && buyPopup.isActiveAndEnabled)
+        {
+            return;
+        }
         CloseActivePopup();
         // Perform raycasting to detect mouse click
         RaycastHit hit;
