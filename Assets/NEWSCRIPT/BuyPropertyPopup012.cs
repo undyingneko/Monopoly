@@ -11,6 +11,7 @@ public class BuyPropertyPopup012 : MonoBehaviour
     public TextMeshProUGUI BuyPropertyPopup_propertyNameText;
     public TextMeshProUGUI[] BuyPropertyPopup_stagePriceTexts;
     public Button[] BuyPropertyPopup_buyButtons;
+    public TextMeshProUGUI[] BuyPropertyPopup_stageNumberTexts;
     public Button BuyPropertyPopup_closeButton; // Reference to the close button
 
     private PropertyManager propertyManager;
@@ -163,32 +164,73 @@ public class BuyPropertyPopup012 : MonoBehaviour
         {
             Debug.LogError("currentProperty or currentPlayer is null!");
         }
-        // Ensure the length of the stagePriceTexts array matches the number of prices in the property
-        for (int i = 0; i < BuyPropertyPopup_stagePriceTexts.Length; i++)
+
+        if (currentProperty.currentStageIndex < 2)
         {
-            if (i < property.stagePrices.Count)
+
+        // Ensure the length of the stagePriceTexts array matches the number of prices in the property
+            for (int i = 0; i < 3; i++)
             {
-                if (currentProperty.owned && i <= currentProperty.currentStageIndex)
+                if (i < property.stagePrices.Count)
                 {
-                    // If the player owns the property and the current stage is already bought or lower, display an "Owned" mark
-                    BuyPropertyPopup_stagePriceTexts[i].text = "Owned";
-                    BuyPropertyPopup_buyButtons[i].interactable = false;
-                    BuyPropertyPopup_buyButtons[i].gameObject.SetActive(false);
+                    if (i == 0)
+                    {
+                        // Display "LAND" for stage 0
+                        BuyPropertyPopup_stageNumberTexts[i].gameObject.SetActive(true);
+                        BuyPropertyPopup_stageNumberTexts[i].text = "LAND";
+                    }
+                    // else if (i == 4)
+                    // {
+                    //     // Display "HOTEL" for stage 5
+                    //     BuyPropertyPopup_stageNumberTexts[i].text = "HOTEL";
+                    // }
+                    else
+                    {
+                        // Display stage number for other stages
+                        BuyPropertyPopup_stageNumberTexts[i].gameObject.SetActive(true);
+                        BuyPropertyPopup_stageNumberTexts[i].text = "STAGE " + i; // Add 1 to stage index to display stage number
+                    } 
+                                
+                    if (currentProperty.owned && i <= currentProperty.currentStageIndex)
+                    {
+                        // If the player owns the property and the current stage is already bought or lower, display an "Owned" mark
+                        BuyPropertyPopup_stagePriceTexts[i].gameObject.SetActive(true);
+                        BuyPropertyPopup_stagePriceTexts[i].text = "Owned";
+                        BuyPropertyPopup_buyButtons[i].interactable = false;
+                        BuyPropertyPopup_buyButtons[i].gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        // If the player doesn't own the property or the current stage is not bought, display the price and enable the buy button
+                        BuyPropertyPopup_stagePriceTexts[i].gameObject.SetActive(true);
+                        BuyPropertyPopup_stagePriceTexts[i].text = "Price: " + property.stagePrices[i].ToString();
+                        BuyPropertyPopup_buyButtons[i].interactable = true;
+                        BuyPropertyPopup_buyButtons[i].gameObject.SetActive(true);
+                    }
                 }
                 else
                 {
-                    // If the player doesn't own the property or the current stage is not bought, display the price and enable the buy button
-                    BuyPropertyPopup_stagePriceTexts[i].text = "Price: " + property.stagePrices[i].ToString();
-                    BuyPropertyPopup_buyButtons[i].interactable = true;
-                    BuyPropertyPopup_buyButtons[i].gameObject.SetActive(true);
+                    // If there are more stagePriceTexts than prices, deactivate the extra buttons
+                    BuyPropertyPopup_stagePriceTexts[i].gameObject.SetActive(false);
+                    BuyPropertyPopup_buyButtons[i].gameObject.SetActive(false);
                 }
             }
-            else
-            {
-                // If there are more stagePriceTexts than prices, deactivate the extra buttons
-                BuyPropertyPopup_stagePriceTexts[i].gameObject.SetActive(false);
-                BuyPropertyPopup_buyButtons[i].gameObject.SetActive(false);
-            }
+        }
+        else if (currentProperty.currentStageIndex == 2)
+        {
+            BuyPropertyPopup_buyButtons[3].interactable = true;
+            BuyPropertyPopup_buyButtons[3].gameObject.SetActive(true);
+            BuyPropertyPopup_stagePriceTexts[3].gameObject.SetActive(true);
+            BuyPropertyPopup_stagePriceTexts[3].text = "Price: " + property.stagePrices[3].ToString();           
+            BuyPropertyPopup_stageNumberTexts[3].text = "STAGE " + 3;
+        }
+        else if (currentProperty.currentStageIndex == 3)
+        {
+            BuyPropertyPopup_buyButtons[4].interactable = true;
+            BuyPropertyPopup_buyButtons[4].gameObject.SetActive(true);
+            BuyPropertyPopup_stagePriceTexts[4].gameObject.SetActive(true);
+            BuyPropertyPopup_stagePriceTexts[4].text = "Price: " + property.stagePrices[4].ToString();  
+            BuyPropertyPopup_stageNumberTexts[4].text = "HOTEL";
         }
 
         // Start the buy confirmation timer coroutine
