@@ -60,7 +60,10 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private int originalSortingOrder = 0;
     
-    
+    [SerializeField]
+    private string rentMessagePrefabPath = "RentMessagePrefab"; // The path to the RentMessagePrefab relative to the Resources folder
+
+    private GameObject RentMessagePrefab; 
 
     public void AssignPlayerID(int id)
     {
@@ -135,7 +138,11 @@ public class PlayerController : MonoBehaviour
         UpdateMoneyText();
         spriteRenderer = GetComponent<SpriteRenderer>();
         originalSortingOrder = spriteRenderer.sortingOrder;
-
+        RentMessagePrefab = Resources.Load<GameObject>(rentMessagePrefabPath);
+        if (RentMessagePrefab == null)
+        {
+            Debug.LogError("Failed to load RentMessagePrefab from Resources folder at path: " + rentMessagePrefabPath);
+        }
     }
     private void InstantiateBuyPropertyPopup012(PropertyManager.PropertyData property)
     {
@@ -498,6 +505,12 @@ public class PlayerController : MonoBehaviour
                     ownerPlayer.Money += rentPriceToDeduct;
                     UpdateMoneyText();
                     ownerPlayer.UpdateMoneyText();
+                    GameObject rentMessageObject = Instantiate(RentMessagePrefab, canvasTransform);
+                    TextMeshProUGUI rentMessageText = rentMessageObject.GetComponentInChildren<TextMeshProUGUI>();
+                    rentMessageText.text = "You pay a rent of $" + rentPriceToDeduct;
+                    yield return new WaitForSeconds(2f);
+                    Destroy(rentMessageObject);
+
                     currentPlayerController.buyPropertyDecisionMade = true;
                     yield break;
                 }
