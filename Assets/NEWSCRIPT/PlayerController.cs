@@ -549,13 +549,10 @@ public class PlayerController : MonoBehaviour
                     GameObject rentMessageObject = Instantiate(RentMessagePrefab, canvasTransform);
                     TextMeshProUGUI rentMessageText = rentMessageObject.GetComponentInChildren<TextMeshProUGUI>();
                     rentMessageText.text = "You pay a rent of $" + rentPriceToDeduct;
-                    yield return new WaitForSeconds(2f);
+                    yield return new WaitForSeconds(1f);
                     Destroy(rentMessageObject);
                     
                     InstantiateBuyoutPopup(property);
-
-                    currentPlayerController.buyPropertyDecisionMade = true;
-                    yield break;
                 }
             }
             else

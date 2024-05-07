@@ -99,13 +99,13 @@ public class PropertyManager : MonoBehaviour
             }
         }
 
-        private int CalculateBuyoutPrice(int stageIndex)
+        public int CalculateBuyoutPrice(int stageIndex)
         {
             int basePrice = stagePrices[stageIndex];
             int buyoutPrice = basePrice;
 
             // Calculate buyout price based on buyout count
-            for (int i = 0; i < buyoutCount; i++)
+            for (int i = 0; i < (buyoutCount +1 ); i++)
             {
                 buyoutPrice *= 2;
             }

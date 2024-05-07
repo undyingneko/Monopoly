@@ -179,11 +179,7 @@ public class BuyPropertyPopup012 : MonoBehaviour
                         BuyPropertyPopup_stageNumberTexts[i].gameObject.SetActive(true);
                         BuyPropertyPopup_stageNumberTexts[i].text = "LAND";
                     }
-                    // else if (i == 4)
-                    // {
-                    //     // Display "HOTEL" for stage 5
-                    //     BuyPropertyPopup_stageNumberTexts[i].text = "HOTEL";
-                    // }
+
                     else
                     {
                         // Display stage number for other stages
