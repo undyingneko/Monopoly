@@ -60,13 +60,20 @@ public class GameManager : MonoBehaviour
     public void SetPlayers(PlayerController[] newPlayers)
     {
         players = newPlayers;
-    }   
+    }  
 
+    public PlayerController GetCurrentPlayerController()
+    {
+        // Return the PlayerController of the current player
+        return players[currentPlayerIndex];
+    }
+    
     public void NextTurn()
     {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.Length;
         players[currentPlayerIndex].StartTurn();
     }
+
 
 
 }

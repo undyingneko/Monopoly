@@ -17,7 +17,7 @@ public class BuyOutPopUp : MonoBehaviour
 
 
     private PropertyManager propertyManager;
-    private PlayerController playerController;
+    private PlayerController currentPlayerController;
 
 
     private PlayerController currentPlayer;
@@ -33,12 +33,16 @@ public class BuyOutPopUp : MonoBehaviour
     // public Transform canvasTransform;
     public GameObject stageImagePrefab;
 
+    public bool buyOutDecisionMade = false;
+    // public PlayerController buyoutPopup;
+
+
 
 
     private void Start()
     {
         // GameManager gameManager = FindObjectOfType<GameManager>();
-        playerController = FindObjectOfType<PlayerController>();
+        // playerController = FindObjectOfType<PlayerController>();
         gameManager = FindObjectOfType<GameManager>();
         if (gameManager == null)
         {
@@ -59,7 +63,7 @@ public class BuyOutPopUp : MonoBehaviour
 
     private void OnEnable()
     {
-        playerController = FindObjectOfType<PlayerController>();
+        currentPlayerController = FindObjectOfType<PlayerController>();
 
         Transform propertyNameTextTransform = transform.Find("PropertyNameText");
         if (propertyNameTextTransform != null)
@@ -113,17 +117,13 @@ public class BuyOutPopUp : MonoBehaviour
             Debug.LogError("Stage number text not found");
         }
 
-
-        
-        
-        if (playerController != null)
+        if (currentPlayerController != null)
         {
             Debug.Log("Popup enabled");
-            playerController.isBuyPopUpActive = true;
+            currentPlayerController.isBuyPopUpActive = true;
             buyConfirmationCoroutine = StartCoroutine(BuyConfirmationTimer());
             closeButton.onClick.AddListener(Decline); // Add a listener to the close button
             buyButton.onClick.AddListener(() => BuyOut(GameManager.currentPlayerIndex));
-            
         }
         else
         {
@@ -159,16 +159,16 @@ public class BuyOutPopUp : MonoBehaviour
         else
         {
             Debug.LogError("Invalid currentPlayerIndex in GameManager!");
-        } 
-
-
-   
+        }  
     }
 
     private void OnDisable()
-    {   Debug.Log("Popup disabled");
-        playerController = FindObjectOfType<PlayerController>();
-        playerController.isBuyPopUpActive = false;
+
+    {   
+        currentPlayerController = FindObjectOfType<PlayerController>();
+        currentPlayerController.isBuyPopUpActive = false;
+        Debug.Log("Popup disabled");
+        // currentPlayerController = FindObjectOfType<PlayerController>();
         // Stop the buy confirmation timer when the panel is disabled
         if (buyConfirmationCoroutine != null)
         {
@@ -253,7 +253,7 @@ public class BuyOutPopUp : MonoBehaviour
                 {
                     if (currentPlayer.Money >= buyoutPrice)
                     {
-                        PlayerController ownerPlayer = playerController.FindPlayerByID(currentProperty.ownerID);
+                        PlayerController ownerPlayer = currentPlayerController.FindPlayerByID(currentProperty.ownerID);
                         currentPlayer.Money -= buyoutPrice; 
                         ownerPlayer.Money += buyoutPrice;
                         
@@ -280,15 +280,15 @@ public class BuyOutPopUp : MonoBehaviour
                         propertyManager.ActivateRentTagImage(currentProperty);
                         // propertyManager.UpdateRentText(currentProperty, stageIndex);
 
-                        playerController.buyOutDecisionMade = true;
-                        Debug.Log("buyOutDecisionMade set to : " + playerController.buyOutDecisionMade);
+                        buyOutDecisionMade = true;
+                        Debug.Log("buyOutDecisionMade set to : " + buyOutDecisionMade);
                         
                     }
                     else
                     {
                         Debug.LogWarning("Insufficient funds to buy the property.");
-                        playerController.buyOutDecisionMade = true;
-                        Debug.Log("buyOutDecisionMade set to : " + playerController.buyOutDecisionMade);
+                        buyOutDecisionMade = true;
+                        Debug.Log("buyOutDecisionMade set to : " + buyOutDecisionMade);
                     }
                 }
                 else
@@ -320,8 +320,8 @@ public class BuyOutPopUp : MonoBehaviour
         // Close the popup after the confirmation time if no purchase is made
         gameObject.SetActive(false);
         // playerController.EndBuyPropertyInteraction();
-        playerController.buyOutDecisionMade = true;
-        Debug.Log("buyOutDecisionMade set to : " + playerController.buyOutDecisionMade);
+        buyOutDecisionMade = true;
+        Debug.Log("buyOutDecisionMade set to : " + buyOutDecisionMade);
     }
 
     public void Decline()
@@ -329,8 +329,8 @@ public class BuyOutPopUp : MonoBehaviour
         // Close the popup immediately when the close button is pressed
         gameObject.SetActive(false);
         // playerController.EndBuyPropertyInteraction();
-        playerController.buyOutDecisionMade = true;
-        Debug.Log("buyOutDecisionMade set to : " + playerController.buyOutDecisionMade);
+        buyOutDecisionMade = true;
+        Debug.Log("buyOutDecisionMade set to : " + buyOutDecisionMade);
         
     }
     

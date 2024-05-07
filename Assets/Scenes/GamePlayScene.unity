@@ -401,10 +401,8 @@ MonoBehaviour:
   buyoutPopupPrefabPath: buyoutPopupPrefab
   properties: []
   ownedProperties: []
-  isBuyPopUpActive: 0
-  buyPropertyDecisionMade: 0
-  buyOutDecisionMade: 0
   MessagePrefabPath: MessagePrefab
+  isBuyPopUpActive: 0
 --- !u!1 &32433897
 GameObject:
   m_ObjectHideFlags: 0
@@ -6901,10 +6899,8 @@ MonoBehaviour:
   buyoutPopupPrefabPath: buyoutPopupPrefab
   properties: []
   ownedProperties: []
-  isBuyPopUpActive: 0
-  buyPropertyDecisionMade: 0
-  buyOutDecisionMade: 0
   MessagePrefabPath: MessagePrefab
+  isBuyPopUpActive: 0
 --- !u!224 &796936501 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1990012070946674768, guid: cb5ffece145f9f24e8f90a4a880a3512, type: 3}
@@ -7187,10 +7183,8 @@ MonoBehaviour:
   buyoutPopupPrefabPath: buyoutPopupPrefab
   properties: []
   ownedProperties: []
-  isBuyPopUpActive: 0
-  buyPropertyDecisionMade: 0
-  buyOutDecisionMade: 0
   MessagePrefabPath: MessagePrefab
+  isBuyPopUpActive: 0
 --- !u!1 &825779757
 GameObject:
   m_ObjectHideFlags: 0
@@ -15122,10 +15116,8 @@ MonoBehaviour:
   buyoutPopupPrefabPath: buyoutPopupPrefab
   properties: []
   ownedProperties: []
-  isBuyPopUpActive: 0
-  buyPropertyDecisionMade: 0
-  buyOutDecisionMade: 0
   MessagePrefabPath: MessagePrefab
+  isBuyPopUpActive: 0
 --- !u!224 &1678094945 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4367771360729529318, guid: 5ae18d0d861d1fc418a2530fc5a1f523, type: 3}
