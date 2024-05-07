@@ -8,11 +8,13 @@ public class BuyOutPopUp : MonoBehaviour
 {
     [SerializeField]
     private TextMeshProUGUI ownedByTeammateText;
-    public TextMeshProUGUI BuyOutPopUp_propertyNameText;
-    public TextMeshProUGUI[] BuyOutPopUp_stageBuyOutPriceTexts;
-    public Button[] BuyOutPopUp_buyButtons;
-    public TextMeshProUGUI[] BuyOutPopUp_stageNumberTexts;
-    public Button BuyOutPopUp_closeButton; // Reference to the close button
+    public TextMeshProUGUI propertyNameText;
+    public Button closeButton;
+
+    public TextMeshProUGUI[] stageBuyOutPriceTexts;
+    public Button[] buyButtons;
+    public TextMeshProUGUI[] stageNumberTexts;
+     // Reference to the close button
 
     private PropertyManager propertyManager;
     private PlayerController playerController;
@@ -50,31 +52,105 @@ public class BuyOutPopUp : MonoBehaviour
         // Ensure that the PropertyManager reference is not null
         if (propertyManager == null)
         {
-            Debug.LogError("PropertyManager reference is not set in BuyOutPopUp012!");
+            Debug.LogError("PropertyManager reference is not set");
             return;
         }
+
+
+
+
+
+
+
+
     }
 
     private void OnEnable()
     {
         playerController = FindObjectOfType<PlayerController>();
+
+        Transform propertyNameTextTransform = transform.Find("PropertyNameText");
+        if (propertyNameTextTransform != null)
+        {
+            propertyNameText = propertyNameTextTransform.GetComponent<TextMeshProUGUI>();
+            
+        }
+        else
+        {
+            Debug.LogError("PropertyNameText not found in the instantiated prefab.");
+        }
+
+        Transform closeButtonTransform = transform.Find("CloseButton");
+        if (closeButtonTransform != null)
+        {
+            closeButton = closeButtonTransform.GetComponent<Button>();
+        }
+        else
+        {
+            Debug.LogError("CloseButton not found in the instantiated prefab.");
+        }    
+        for (int i = 0; i < stageBuyOutPriceTexts.Length; i++)
+        {
+            // Find the stage buyout price text within the instantiated prefab
+            string stageBuyOutPriceTextName = "stageBuyOutPriceText" + i;
+            Transform stageBuyOutPriceTextTransform = transform.Find(stageBuyOutPriceTextName);
+            // Assign the TextMeshProUGUI component if found
+            if (stageBuyOutPriceTextTransform != null)
+            {
+                stageBuyOutPriceTexts[i] = stageBuyOutPriceTextTransform.GetComponent<TextMeshProUGUI>();
+                stageBuyOutPriceTextTransform.gameObject.SetActive(false);
+            }
+            else
+            {
+                Debug.LogError("Stage buyout price text not found for index " + i + " in the instantiated prefab.");
+            }
+
+            // Find the buy button within the instantiated prefab
+            string buyButtonName = "BuyButton" + i;
+            Transform buyButtonTransform = transform.Find(buyButtonName);
+            // Assign the Button component if found
+            if (buyButtonTransform != null)
+            {
+                buyButtons[i] = buyButtonTransform.GetComponent<Button>();
+                buyButtonTransform.gameObject.SetActive(false);
+            }
+            else
+            {
+                Debug.LogError("Buy button not found for index " + i + " in the instantiated prefab.");
+            }
+
+            // Find the stage number text within the instantiated prefab
+            string stageNumberTextName = "StageNumberText" + i;
+            Transform stageNumberTextTransform = transform.Find(stageNumberTextName);
+            // Assign the TextMeshProUGUI component if found
+            if (stageNumberTextTransform != null)
+            {
+                stageNumberTexts[i] = stageNumberTextTransform.GetComponent<TextMeshProUGUI>();
+                stageNumberTextTransform.gameObject.SetActive(false);
+            }
+            else
+            {
+                Debug.LogError("Stage number text not found for index " + i + " in the instantiated prefab.");
+            }
+        }  
+        
         if (playerController != null)
         {
             Debug.Log("Popup enabled");
             playerController.isBuyPopUpActive = true;
             buyConfirmationCoroutine = StartCoroutine(BuyConfirmationTimer());
-            BuyOutPopUp_closeButton.onClick.AddListener(Decline); // Add a listener to the close button
+            closeButton.onClick.AddListener(Decline); // Add a listener to the close button
 
-            for (int i = 0; i < BuyOutPopUp_buyButtons.Length; i++)
+            for (int i = 0; i < buyButtons.Length; i++)
             {
-                BuyOutPopUp_buyButtons[i].gameObject.SetActive(false);
-                BuyOutPopUp_buyButtons[i].interactable = false;
+                buyButtons[i].gameObject.SetActive(false);
+                buyButtons[i].interactable = false;
             }
 
-            for (int i = 0; i < BuyOutPopUp_buyButtons.Length; i++)
+            for (int i = 0; i < buyButtons.Length; i++)
             {
                 int index = i; // Store the current index in a local variable to avoid closure issues
-                BuyOutPopUp_buyButtons[i].onClick.AddListener(() => BuyStage(index, GameManager.currentPlayerIndex));
+                buyButtons[i].onClick.AddListener(() => BuyStage(index, GameManager.currentPlayerIndex));
             }
         }
         else
@@ -111,7 +187,10 @@ public class BuyOutPopUp : MonoBehaviour
         else
         {
             Debug.LogError("Invalid currentPlayerIndex in GameManager!");
-        }      
+        } 
+
+
+   
     }
 
     private void OnDisable()
@@ -136,7 +215,7 @@ public class BuyOutPopUp : MonoBehaviour
         currentProperty = property;
         Debug.Log ("currentProperty name:"+ currentProperty.name);
 
-        BuyOutPopUp_propertyNameText.text = property.name;
+        propertyNameText.text = property.name;
         // property.stageImageInstances.Clear();  
 
         // Check if the current player and property are valid
@@ -145,25 +224,6 @@ public class BuyOutPopUp : MonoBehaviour
             Debug.LogError("Current player or property is null!");
             return;
         }
-        if (currentProperty != null && currentPlayer != null)
-        {
-            if (currentProperty.owned && currentProperty.teamownerID == currentPlayer.teamID && currentProperty.ownerID != currentPlayer.playerID)
-            {
-                ownedByTeammateText.gameObject.SetActive(true);
-                // ownedByTeammateText.text = "Owned by your teammate";
-                // ownedByTeammateText.text = "Owned by your teammate";
-                // Debug.Log("ownedByTeammateText set to active");
-            }
-            else
-            {
-                ownedByTeammateText.gameObject.SetActive(false);
-                // ownedByTeammateText.text = "";
-            }
-        }
-        else
-        {
-            Debug.LogError("currentProperty or currentPlayer is null!");
-        }
 
         if (currentProperty.currentStageIndex < 2)
         {
@@ -171,66 +231,61 @@ public class BuyOutPopUp : MonoBehaviour
         // Ensure the length of the stagePriceTexts array matches the number of prices in the property
             for (int i = 0; i < 3; i++)
             {
-                if (i < property.stagePrices.Count)
+                if (i < property.buyoutPrices.Count)
                 {
                     if (i == 0)
                     {
                         // Display "LAND" for stage 0
-                        BuyOutPopUp_stageNumberTexts[i].gameObject.SetActive(true);
-                        BuyOutPopUp_stageNumberTexts[i].text = "LAND";
+                        stageNumberTexts[i].gameObject.SetActive(true);
+                        stageNumberTexts[i].text = "LAND";
                     }
-                    // else if (i == 4)
-                    // {
-                    //     // Display "HOTEL" for stage 5
-                    //     BuyOutPopUp_stageNumberTexts[i].text = "HOTEL";
-                    // }
                     else
                     {
                         // Display stage number for other stages
-                        BuyOutPopUp_stageNumberTexts[i].gameObject.SetActive(true);
-                        BuyOutPopUp_stageNumberTexts[i].text = "STAGE " + i; // Add 1 to stage index to display stage number
+                        stageNumberTexts[i].gameObject.SetActive(true);
+                        stageNumberTexts[i].text = "STAGE " + i; // Add 1 to stage index to display stage number
                     } 
                                 
                     if (currentProperty.owned && i <= currentProperty.currentStageIndex)
                     {
                         // If the player owns the property and the current stage is already bought or lower, display an "Owned" mark
-                        BuyOutPopUp_stageBuyOutPriceTexts[i].gameObject.SetActive(true);
-                        BuyOutPopUp_stageBuyOutPriceTexts[i].text = "Owned";
-                        BuyOutPopUp_buyButtons[i].interactable = false;
-                        BuyOutPopUp_buyButtons[i].gameObject.SetActive(false);
+                        stageBuyOutPriceTexts[i].gameObject.SetActive(true);
+                        stageBuyOutPriceTexts[i].text = "Owned";
+                        buyButtons[i].interactable = false;
+                        buyButtons[i].gameObject.SetActive(false);
                     }
                     else
                     {
                         // If the player doesn't own the property or the current stage is not bought, display the price and enable the buy button
-                        BuyOutPopUp_stageBuyOutPriceTexts[i].gameObject.SetActive(true);
-                        BuyOutPopUp_stageBuyOutPriceTexts[i].text = "Price: " + property.stagePrices[i].ToString();
-                        BuyOutPopUp_buyButtons[i].interactable = true;
-                        BuyOutPopUp_buyButtons[i].gameObject.SetActive(true);
+                        stageBuyOutPriceTexts[i].gameObject.SetActive(true);
+                        stageBuyOutPriceTexts[i].text = "Price: " + property.buyoutPrices[i].ToString();
+                        buyButtons[i].interactable = true;
+                        buyButtons[i].gameObject.SetActive(true);
                     }
                 }
                 else
                 {
                     // If there are more stageBuyOutPriceTexts than prices, deactivate the extra buttons
-                    BuyOutPopUp_stageBuyOutPriceTexts[i].gameObject.SetActive(false);
-                    BuyOutPopUp_buyButtons[i].gameObject.SetActive(false);
+                    stageBuyOutPriceTexts[i].gameObject.SetActive(false);
+                    buyButtons[i].gameObject.SetActive(false);
                 }
             }
         }
         else if (currentProperty.currentStageIndex == 2)
         {
-            BuyOutPopUp_buyButtons[3].interactable = true;
-            BuyOutPopUp_buyButtons[3].gameObject.SetActive(true);
-            BuyOutPopUp_stageBuyOutPriceTexts[3].gameObject.SetActive(true);
-            BuyOutPopUp_stageBuyOutPriceTexts[3].text = "Price: " + property.stagePrices[3].ToString();           
-            BuyOutPopUp_stageNumberTexts[3].text = "STAGE " + 3;
+            buyButtons[3].interactable = true;
+            buyButtons[3].gameObject.SetActive(true);
+            stageBuyOutPriceTexts[3].gameObject.SetActive(true);
+            stageBuyOutPriceTexts[3].text = "Price: " + property.buyoutPrices[3].ToString();           
+            stageNumberTexts[3].text = "STAGE " + 3;
         }
         else if (currentProperty.currentStageIndex == 3)
         {
-            BuyOutPopUp_buyButtons[4].interactable = true;
-            BuyOutPopUp_buyButtons[4].gameObject.SetActive(true);
-            BuyOutPopUp_stageBuyOutPriceTexts[4].gameObject.SetActive(true);
-            BuyOutPopUp_stageBuyOutPriceTexts[4].text = "Price: " + property.stagePrices[4].ToString();  
-            BuyOutPopUp_stageNumberTexts[4].text = "HOTEL";
+            buyButtons[4].interactable = true;
+            buyButtons[4].gameObject.SetActive(true);
+            stageBuyOutPriceTexts[4].gameObject.SetActive(true);
+            stageBuyOutPriceTexts[4].text = "Price: " + property.buyoutPrices[4].ToString();  
+            stageNumberTexts[4].text = "HOTEL";
         }
 
         // Start the buy confirmation timer coroutine
@@ -243,7 +298,7 @@ public class BuyOutPopUp : MonoBehaviour
         if (!buyingStage)
         {
             buyingStage = true;
-            int stagePrice = currentProperty.stagePrices[stageIndex];
+            int buyoutPrice = currentProperty.buyoutPrices[stageIndex];
             
             
             if (gameManager != null && currentPlayerIndex >= 0 && currentPlayerIndex < gameManager.players.Length)
@@ -251,38 +306,36 @@ public class BuyOutPopUp : MonoBehaviour
                 // PlayerController currentPlayer = gameManager.players[currentPlayerIndex];
                 if (currentPlayer != null)
                 {
-                    if (currentPlayer.Money >= stagePrice)
+                    if (currentPlayer.Money >= buyoutPrice)
                     {
-                        currentPlayer.Money -= stagePrice; // Deduct money
-                        currentPlayer.UpdateMoneyText(); // Update money UI
-                        Debug.Log("Money deducted successfully. Remaining money: " + currentPlayer.Money);
+                        PlayerController ownerPlayer = playerController.FindPlayerByID(currentProperty.ownerID);
+                        currentPlayer.Money -= buyoutPrice; 
+                        ownerPlayer.Money += buyoutPrice;
                         
-                        if (!currentProperty.owned) // Check if property is not owned
-                        {
-                            currentProperty.owned = true; // Set property ownership                
-                            currentProperty.ownerID = currentPlayer.playerID;                        
-                            currentProperty.teamownerID = currentPlayer.teamID;
-                            currentPlayer.ownedProperties.Add(currentProperty);
-                            // currentPlayer.UpdatePropertyOwnership(stageIndex);
-                        }                    
+                       
+                        currentPlayer.UpdateMoneyText();
+                        ownerPlayer.UpdateMoneyText();
 
-                        if (stageIndex >= currentProperty.currentStageIndex)
-                        {
-                            currentProperty.currentStageIndex = stageIndex;
-                            currentProperty.nextStageIndex = stageIndex + 1;
-                        }     
+                        Debug.Log("Money deducted successfully. Remaining money: " + currentPlayer.Money);
+                        Debug.Log("Money added successfully. Remaining money: " + ownerPlayer.Money);
 
-                        Debug.Log("Property bought successfully.");
+                        ownerPlayer.ownedProperties.Remove(currentProperty);
+                        currentPlayer.ownedProperties.Add(currentProperty);
+
+                        currentProperty.ownerID = currentPlayer.playerID;
+                        currentProperty.teamownerID = currentPlayer.teamID; 
+
+                        currentProperty.buyoutCount += 1;
+
+                        Debug.Log("Property bought out successfully.");
 
                         gameObject.SetActive(false); 
 
-                        propertyManager.DeactivateOldStageImages(currentProperty);
-                        currentProperty.stageImages[stageIndex].SetActive(true);
+                        // propertyManager.DeactivateOldStageImages(currentProperty);
+                        // currentProperty.stageImages[stageIndex].SetActive(true);
                         propertyManager.ActivateRentTagImage(currentProperty);
-                        propertyManager.UpdateRentText(currentProperty, stageIndex);
+                        // propertyManager.UpdateRentText(currentProperty, stageIndex);
 
-                        Debug.Log("JSONwaypointIndex = "+ currentProperty.JSONwaypointIndex + "+" + "currentStageIndex = " + currentProperty.currentStageIndex);
-                        Debug.Log("Image Count " + currentProperty.stageImages.Count);
                         playerController.buyPropertyDecisionMade = true;
                         Debug.Log("buyPropertyDecisionMade set to : " + playerController.buyPropertyDecisionMade);
                         

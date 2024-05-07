@@ -12,12 +12,12 @@ GameObject:
   - component: {fileID: 8097367496767926742}
   - component: {fileID: 3219347017317614709}
   m_Layer: 5
-  m_Name: BuyPropertyPopup_stagePriceTexts4
+  m_Name: stageBuyOutPriceText3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1617583208932969156
 RectTransform:
   m_ObjectHideFlags: 0
@@ -146,12 +146,12 @@ GameObject:
   - component: {fileID: 2579156991694960888}
   - component: {fileID: 4014376919565594112}
   m_Layer: 5
-  m_Name: BuyPropertyPopup_stagePriceTexts3
+  m_Name: stageBuyOutPriceText2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7094311059114345166
 RectTransform:
   m_ObjectHideFlags: 0
@@ -280,12 +280,12 @@ GameObject:
   - component: {fileID: 6528906579715905033}
   - component: {fileID: 5547899554546242699}
   m_Layer: 5
-  m_Name: BuyPropertyPopup_stagePriceTexts5
+  m_Name: stageBuyOutPriceText4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1000298477528581826
 RectTransform:
   m_ObjectHideFlags: 0
@@ -414,12 +414,12 @@ GameObject:
   - component: {fileID: 5768573684293102693}
   - component: {fileID: 8193440558505161388}
   m_Layer: 5
-  m_Name: Stage4
+  m_Name: StageNumberText4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6939523581462378628
 RectTransform:
   m_ObjectHideFlags: 0
@@ -548,7 +548,7 @@ GameObject:
   - component: {fileID: 655531960227762713}
   - component: {fileID: 3295771986349976592}
   m_Layer: 5
-  m_Name: BuyPropertyPopup_propertyNameText
+  m_Name: PropertyNameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -683,12 +683,12 @@ GameObject:
   - component: {fileID: 7122412537142450859}
   - component: {fileID: 242891886003309477}
   m_Layer: 5
-  m_Name: BuyPropertyPopup_buyButtons1
+  m_Name: BuyButton0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6616090075454730639
 RectTransform:
   m_ObjectHideFlags: 0
@@ -804,12 +804,12 @@ GameObject:
   - component: {fileID: 8230958896558534860}
   - component: {fileID: 4332458049647474304}
   m_Layer: 5
-  m_Name: BuyPropertyPopup_buyButtons5
+  m_Name: BuyButton4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8770632830530315105
 RectTransform:
   m_ObjectHideFlags: 0
@@ -924,12 +924,12 @@ GameObject:
   - component: {fileID: 5345289773706175383}
   - component: {fileID: 8865666607074918592}
   m_Layer: 5
-  m_Name: Stage1
+  m_Name: StageNumberText1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &553786977776921819
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1059,12 +1059,12 @@ GameObject:
   - component: {fileID: 7907882822187530406}
   - component: {fileID: 8452841932900068828}
   m_Layer: 5
-  m_Name: BuyPropertyPopup_buyButtons3
+  m_Name: BuyButton2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &825263489306909850
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1254,12 +1254,12 @@ GameObject:
   - component: {fileID: 7368595971394811273}
   - component: {fileID: 4407742097766886867}
   m_Layer: 5
-  m_Name: Stage2
+  m_Name: StageNumberText2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4730053778305541741
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1464,7 +1464,7 @@ GameObject:
   - component: {fileID: 1751000926693981139}
   - component: {fileID: 8043200136522793238}
   m_Layer: 5
-  m_Name: BuyOutPopUp
+  m_Name: buyoutPopupPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1561,26 +1561,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ownedByTeammateText: {fileID: 6977126618214970440}
-  BuyPropertyPopup_propertyNameText: {fileID: 3295771986349976592}
-  BuyPropertyPopup_stagePriceTexts:
-  - {fileID: 1587165969597844210}
-  - {fileID: 2635298637795039258}
-  - {fileID: 4014376919565594112}
-  - {fileID: 3219347017317614709}
-  - {fileID: 5547899554546242699}
-  BuyPropertyPopup_buyButtons:
-  - {fileID: 242891886003309477}
-  - {fileID: 8028209947430384271}
-  - {fileID: 8452841932900068828}
-  - {fileID: 2632027297707740074}
-  - {fileID: 4332458049647474304}
-  BuyPropertyPopup_stageNumberTexts:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  BuyPropertyPopup_closeButton: {fileID: 2750290047990657772}
+  propertyNameText: {fileID: 0}
+  closeButton: {fileID: 0}
+  stageBuyOutPriceTexts: []
+  buyButtons: []
+  stageNumberTexts: []
   stageImagePrefab: {fileID: 0}
 --- !u!1 &4685473072858377945
 GameObject:
@@ -1594,12 +1579,12 @@ GameObject:
   - component: {fileID: 429005687743206247}
   - component: {fileID: 1587165969597844210}
   m_Layer: 5
-  m_Name: BuyPropertyPopup_stagePriceTexts1
+  m_Name: stageBuyOutPriceText0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1480927175428624737
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1729,7 +1714,7 @@ GameObject:
   - component: {fileID: 4258553065841496002}
   - component: {fileID: 2750290047990657772}
   m_Layer: 5
-  m_Name: 'BuyPropertyPopup_closeButton '
+  m_Name: CloseButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1865,7 +1850,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4811817697229622362
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1994,12 +1979,12 @@ GameObject:
   - component: {fileID: 5487460774075516698}
   - component: {fileID: 4726615061923950796}
   m_Layer: 5
-  m_Name: Stage3
+  m_Name: StageNumberText3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &565611322801541405
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2128,12 +2113,12 @@ GameObject:
   - component: {fileID: 8069546236585316916}
   - component: {fileID: 2635298637795039258}
   m_Layer: 5
-  m_Name: BuyPropertyPopup_stagePriceTexts2
+  m_Name: stageBuyOutPriceText1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6117676100466326068
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2401,7 +2386,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &3938204357949334266
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2535,7 +2520,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6164214829582576782
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2669,7 +2654,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &3864819526527925651
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2798,12 +2783,12 @@ GameObject:
   - component: {fileID: 1743678172296156549}
   - component: {fileID: 2936589980405345651}
   m_Layer: 5
-  m_Name: Stage5
+  m_Name: StageNumberText5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6091755745270357040
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2933,12 +2918,12 @@ GameObject:
   - component: {fileID: 8074054865162519333}
   - component: {fileID: 2632027297707740074}
   m_Layer: 5
-  m_Name: BuyPropertyPopup_buyButtons4
+  m_Name: BuyButton3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4456190108234577509
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3054,12 +3039,12 @@ GameObject:
   - component: {fileID: 1144219200621826919}
   - component: {fileID: 8028209947430384271}
   m_Layer: 5
-  m_Name: BuyPropertyPopup_buyButtons2
+  m_Name: BuyButton1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &9167134517363425702
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3179,7 +3164,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8532557459014926268
 RectTransform:
   m_ObjectHideFlags: 0

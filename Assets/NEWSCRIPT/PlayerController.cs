@@ -48,7 +48,7 @@ public class PlayerController : MonoBehaviour
     private BuyPropertyPopup012 buyPropertyPopup012Prefab;
     public string buyPropertyPopup012PrefabPath = "BuyPropertyPopup012Prefab"; // Path to the prefab in the Resources folder
 
-    public string buyoutPopupPrefabPath = "BuyoutPopupPrefab"; // The path to the RentMessagePrefab relative to the Resources folder
+    public string buyoutPopupPrefabPath = "buyoutPopupPrefab"; // The path to the RentMessagePrefab relative to the Resources folder
     private BuyOutPopUp buyoutPopupPrefab;
 
     public GameObject NoNoneyMessagePrefab;
@@ -120,7 +120,15 @@ public class PlayerController : MonoBehaviour
         {
             Debug.LogError("Failed to load popup prefab.");
         }
-
+        buyoutPopupPrefab = Resources.Load<BuyOutPopUp>("buyoutPopupPrefab");
+        if (buyoutPopupPrefab != null)
+        {
+            Debug.Log("Buyout popup prefab loaded successfully.");
+        }
+        else
+        {
+            Debug.LogError("Failed to load buyout popup prefab.");
+        }
         NoNoneyMessagePrefab = Resources.Load<GameObject>("NoNoneyMessagePrefab");
         if (NoNoneyMessagePrefab == null)
         {
@@ -190,7 +198,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
         // Instantiate the buyout popup prefab
-        BuyOutPopUp buyoutPopupInstance = Instantiate(buyoutPopupPrefab, canvasTransform);
+        BuyOutPopUp buyoutPopupInstance = Instantiate(buyoutPopupPrefab, canvas.transform);
         if (buyoutPopupInstance != null)
         {
             Debug.Log("Buy property popup instantiated successfully.");
@@ -584,7 +592,7 @@ public class PlayerController : MonoBehaviour
     }
 
     // Method to find player object by ID
-    private PlayerController FindPlayerByID(int ID)
+    public PlayerController FindPlayerByID(int ID)
     {
         PlayerController[] players = FindObjectsOfType<PlayerController>();
         foreach (PlayerController player in players)
@@ -597,7 +605,7 @@ public class PlayerController : MonoBehaviour
         return null;
     }
     
-    private PlayerController FindTeamByID(int ID)
+    public PlayerController FindTeamByID(int ID)
     {
         PlayerController[] players = FindObjectsOfType<PlayerController>();
         foreach (PlayerController player in players)
