@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3374688422067098966}
   - component: {fileID: 7923208904064628673}
   m_Layer: 5
-  m_Name: 'rentMessageText '
+  m_Name: 'MessageText '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -146,7 +146,7 @@ GameObject:
   - component: {fileID: 1063848633708708806}
   - component: {fileID: 5112598583813983188}
   m_Layer: 5
-  m_Name: RentMessagePrefab
+  m_Name: MessagePrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

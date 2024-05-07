@@ -48,10 +48,10 @@ public class PlayerController : MonoBehaviour
     private BuyPropertyPopup012 buyPropertyPopup012Prefab;
     public string buyPropertyPopup012PrefabPath = "BuyPropertyPopup012Prefab"; // Path to the prefab in the Resources folder
 
-    public string buyoutPopupPrefabPath = "buyoutPopupPrefab"; // The path to the RentMessagePrefab relative to the Resources folder
+    public string buyoutPopupPrefabPath = "buyoutPopupPrefab"; // The path to the MessagePrefab relative to the Resources folder
     private BuyOutPopUp buyoutPopupPrefab;
 
-    public GameObject NoNoneyMessagePrefab;
+
     
     private PropertyManager propertyManager;
 
@@ -60,13 +60,14 @@ public class PlayerController : MonoBehaviour
     
     public bool isBuyPopUpActive = false;
     public bool buyPropertyDecisionMade = false;
+    public bool buyOutDecisionMade = false;
 
     private SpriteRenderer spriteRenderer;
     private int originalSortingOrder = 0;
     
     [SerializeField]
-    private string rentMessagePrefabPath = "RentMessagePrefab"; // The path to the RentMessagePrefab relative to the Resources folder
-    private GameObject RentMessagePrefab; 
+    private string MessagePrefabPath = "MessagePrefab"; // The path to the MessagePrefab relative to the Resources folder
+    private GameObject MessagePrefab; 
 
   
     
@@ -129,11 +130,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.LogError("Failed to load buyout popup prefab.");
         }
-        NoNoneyMessagePrefab = Resources.Load<GameObject>("NoNoneyMessagePrefab");
-        if (NoNoneyMessagePrefab == null)
-        {
-            Debug.LogError("NoNoneyMessagePrefab not found in Resources folder.");
-        }
+
 
         properties = propertyManager.properties;
         if (propertyManager == null)
@@ -156,10 +153,11 @@ public class PlayerController : MonoBehaviour
         UpdateMoneyText();
         spriteRenderer = GetComponent<SpriteRenderer>();
         originalSortingOrder = spriteRenderer.sortingOrder;
-        RentMessagePrefab = Resources.Load<GameObject>(rentMessagePrefabPath);
-        if (RentMessagePrefab == null)
+
+        MessagePrefab = Resources.Load<GameObject>(MessagePrefabPath);
+        if (MessagePrefab == null)
         {
-            Debug.LogError("Failed to load RentMessagePrefab from Resources folder at path: " + rentMessagePrefabPath);
+            Debug.LogError("Failed to load MessagePrefab from Resources folder at path: " + MessagePrefabPath);
         }
     }
     private void InstantiateBuyPropertyPopup012(PropertyManager.PropertyData property)
@@ -485,108 +483,140 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator LandOnProperty()
     {
+        // Check if propertyManager or waypoints array is null
         PropertyManager.PropertyData property = propertyManager.GetPropertyByWaypointIndex(currentPosition);
-        // Debug.Log("Number of stage images after landing " + property.name + ": " + property.stageImages.Count);
-        Debug.Log("Inside LandOnProperty method.");
-        // Check if propertyManager is null
         if (propertyManager == null)
         {
             Debug.LogError("propertyManager is null.");
             yield break;
         }
 
-        // Check if waypoints array is null
         if (waypoints == null)
         {
             Debug.LogError("waypoints array is null.");
             yield break;
         }
 
-        if (property != null)
+        if (property == null)
         {
-            // Check if the property is unowned and the player has enough money to buy it
-            
-            if (!property.owned && property.nextStageIndex < property.stagePrices.Count && property.stagePrices[property.nextStageIndex] <= Money)
+            Debug.LogWarning("Property is null. No popup will be displayed.");
+            currentPlayerController.buyPropertyDecisionMade = true;
+            yield break;
+        }
+
+        // Check if the property is unowned and the player has enough money to buy it
+        if (!property.owned && property.nextStageIndex <= 5 && property.stagePrices[property.nextStageIndex] <= Money)
+        {
+            // Instantiate the buy property popup
+            InstantiateBuyPropertyPopup012(property);
+        }
+        else if (property.owned && property.currentStageIndex < 5)
+        {
+            PlayerController ownerPlayer = FindPlayerByID(property.ownerID);
+
+            if (ownerPlayer != null && ownerPlayer.teamID == this.teamID)
             {
-                // Instantiate the buy property popup
-                InstantiateBuyPropertyPopup012(property);
-            }
-            else if (property.owned)
-            {
-                PlayerController ownerPlayer = FindPlayerByID(property.ownerID);
-                PlayerController ownerTeam = FindTeamByID(property.teamownerID);
-                // if (ownerPlayer != null && ownerPlayer.playerID == this.playerID)
-                if (ownerPlayer != null && ownerPlayer.teamID == this.teamID)
+                if (property.nextStageIndex <= property.stagePrices.Count && property.stagePrices[property.nextStageIndex] <= Money)
                 {
-                    if (property.nextStageIndex < property.stagePrices.Count && property.stagePrices[property.nextStageIndex] <= Money)
+                    InstantiateBuyPropertyPopup012(property);
+                }
+                else if (Money < property.stagePrices[property.nextStageIndex])
+                {
+                    ShowMessage("Not enough money to acquire this property!");
+                    currentPlayerController.buyPropertyDecisionMade = true;
+                    yield break;
+                }
+            }
+            else if (ownerPlayer != null && ownerPlayer.teamID != this.teamID)
+            {
+                int rentPriceToDeduct = property.rentPrices[property.currentStageIndex];
+                Money -= rentPriceToDeduct;
+                ownerPlayer.Money += rentPriceToDeduct;
+                UpdateMoneyText();
+                ownerPlayer.UpdateMoneyText();
+
+                GameObject rentMessageObject = Instantiate(MessagePrefab, canvasTransform);
+                TextMeshProUGUI RentMessageText = rentMessageObject.GetComponentInChildren<TextMeshProUGUI>();
+                RentMessageText.text = "You pay a rent of $" + rentPriceToDeduct;
+                yield return new WaitForSeconds(1f);
+                Destroy(rentMessageObject);
+                yield return new WaitForSeconds(1f);
+
+
+                if (property.currentStageIndex < 4)
+                {
+                    if (property.buyoutPrices[property.currentStageIndex] <= Money )
+                    {
+                        InstantiateBuyoutPopup(property);
+                    }
+                    else if (property.buyoutPrices[property.currentStageIndex] > Money)
+                    {
+                        ShowMessage("Not enough money to acquire this property!");
+                        yield return new WaitForSeconds(2f);
+                        currentPlayerController.buyPropertyDecisionMade = true;
+                        yield break;                    
+                    }
+
+                    yield return new WaitUntil(() => currentPlayerController.buyOutDecisionMade);
+                    yield return new WaitForSeconds(1f);
+
+                    if (property.stagePrices[property.nextStageIndex] <= Money)
                     {
                         InstantiateBuyPropertyPopup012(property);
                     }
                     else
                     {
-                        if (Money < property.stagePrices[property.nextStageIndex])
-                        {
-                            GameObject NoMoneyMessageObject = Instantiate(NoNoneyMessagePrefab, canvasTransform);
-                            TextMeshProUGUI messageText = NoMoneyMessageObject.GetComponent<TextMeshProUGUI>();
-                            messageText.text = "Not enough money to acquire this property!";
-
-                            // Hide the message after 2 seconds
-                            yield return StartCoroutine(HideMessageAfterDelay(NoMoneyMessageObject, 2f));
-                            yield return new WaitForSeconds(2f);
-                            currentPlayerController.buyPropertyDecisionMade = true;
-                            yield break;
-                        }
+                        ShowMessage("Not enough money to acquire this property!");
+                        yield return new WaitForSeconds(2f);
+                        currentPlayerController.buyPropertyDecisionMade = true;
+                        yield break;
                     }
                 }
-                else
+                
+                else if (property.currentStageIndex == 4)
                 {
-                    // Pay rent to the owner if the property is owned by another team
-                    int rentPriceToDeduct = property.rentPrices[property.currentStageIndex]; 
-                    Money -= rentPriceToDeduct;
-                    ownerPlayer.Money += rentPriceToDeduct;
-                    UpdateMoneyText();
-                    ownerPlayer.UpdateMoneyText();
-                    GameObject rentMessageObject = Instantiate(RentMessagePrefab, canvasTransform);
-                    TextMeshProUGUI rentMessageText = rentMessageObject.GetComponentInChildren<TextMeshProUGUI>();
-                    rentMessageText.text = "You pay a rent of $" + rentPriceToDeduct;
-                    yield return new WaitForSeconds(1f);
-                    Destroy(rentMessageObject);
-                    
-                    InstantiateBuyoutPopup(property);
-                }
-            }
-            else
-            {
-                // Player doesn't have enough money to buy the property
-                if (Money < property.rentPrices[property.nextStageIndex])
-                {
-                    GameObject NoMoneyMessageObject = Instantiate(NoNoneyMessagePrefab, canvasTransform);
-                    TextMeshProUGUI messageText = NoMoneyMessageObject.GetComponent<TextMeshProUGUI>();
-                    messageText.text = "Not enough money to acquire this property!";
-
-                    // Hide the message after 2 seconds
-                    yield return StartCoroutine(HideMessageAfterDelay(NoMoneyMessageObject, 2f));
+                    ShowMessage("You can't buy out the hotel");
                     yield return new WaitForSeconds(2f);
                     currentPlayerController.buyPropertyDecisionMade = true;
-                    yield break;
                 }
             }
         }
-        else
-        {
-            Debug.LogWarning("Property is null. No popup will be displayed.");
-            // EndTurn();
-            currentPlayerController.buyPropertyDecisionMade = true;
-            yield break;
-        }
+        // else
+        // {
+        //     // Player doesn't have enough money to buy the property
+        //     if (property.nextStageIndex >= 0 && property.nextStageIndex <= property.rentPrices.Count && Money < property.rentPrices[property.nextStageIndex])
+        //     {
+        //         ShowMessage("Not enough money to acquire this property!");
+        //         yield return new WaitForSeconds(2f);
+        //         currentPlayerController.buyPropertyDecisionMade = true;
+        //         yield break;
+        //     }
+        //     else
+        //     {
+        //         Debug.LogError("Rent price data is missing for property.");
+        //     }
+        // }
     }
 
-    private IEnumerator HideMessageAfterDelay(GameObject NoMoneyMessageObject, float delay)
+    // private void ShowMessage(string message)
+    // {
+    //     GameObject messageObject = Instantiate(MessagePrefab, canvasTransform);
+    //     TextMeshProUGUI messageText = messageObject.GetComponent<TextMeshProUGUI>();
+    //     messageText.text = message;
+    //     Destroy(messageObject, 2f);
+    // }
+    private void ShowMessage(string message)
     {
-        yield return new WaitForSeconds(delay);
-        Destroy(NoMoneyMessageObject);
-        
+        GameObject messageObject = Instantiate(MessagePrefab, canvasTransform);
+        TextMeshProUGUI messageText = messageObject.GetComponentInChildren<TextMeshProUGUI>();
+        messageText.text = message;
+        Destroy(messageObject, 2f);
+
     }
+
+
+
+
 
     // Method to find player object by ID
     public PlayerController FindPlayerByID(int ID)
