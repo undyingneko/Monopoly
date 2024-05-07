@@ -31,7 +31,7 @@ public class BuyPropertyPopup012 : MonoBehaviour
     // public Transform canvasTransform;
     public GameObject stageImagePrefab;
 
-    public bool buyPropertyDecisionMade = false;
+    
     // public PlayerController buyPropertyPopup;
 
     private void Start()
@@ -282,15 +282,15 @@ public class BuyPropertyPopup012 : MonoBehaviour
 
                         Debug.Log("JSONwaypointIndex = "+ currentProperty.JSONwaypointIndex + "+" + "currentStageIndex = " + currentProperty.currentStageIndex);
                         Debug.Log("Image Count " + currentProperty.stageImages.Count);
-                        buyPropertyDecisionMade = true;
-                        Debug.Log("buyPropertyDecisionMade set to : " + buyPropertyDecisionMade);
+                        gameManager.buyPropertyDecisionMade = true;
+                        Debug.Log("gameManager.buyPropertyDecisionMade set to : " + gameManager.buyPropertyDecisionMade);
                         
                     }
                     else
                     {
                         Debug.LogWarning("Insufficient funds to buy the property.");
-                        buyPropertyDecisionMade = true;
-                        Debug.Log("buyPropertyDecisionMade set to : " + buyPropertyDecisionMade);
+                        gameManager.buyPropertyDecisionMade = true;
+                        Debug.Log("gameManager.buyPropertyDecisionMade set to : " + gameManager.buyPropertyDecisionMade);
                     }
                 }
                 else
@@ -322,8 +322,8 @@ public class BuyPropertyPopup012 : MonoBehaviour
         // Close the popup after the confirmation time if no purchase is made
         gameObject.SetActive(false);
         // playerController.EndBuyPropertyInteraction();
-        buyPropertyDecisionMade = true;
-        Debug.Log("buyPropertyDecisionMade set to : " + buyPropertyDecisionMade);
+        gameManager.buyPropertyDecisionMade = true;
+        Debug.Log("gameManager.buyPropertyDecisionMade set to : " + gameManager.buyPropertyDecisionMade);
     }
 
     public void Decline()
@@ -331,8 +331,8 @@ public class BuyPropertyPopup012 : MonoBehaviour
         // Close the popup immediately when the close button is pressed
         gameObject.SetActive(false);
         // playerController.EndBuyPropertyInteraction();
-        buyPropertyDecisionMade = true;
-        Debug.Log("buyPropertyDecisionMade set to : " + buyPropertyDecisionMade);
+        gameManager.buyPropertyDecisionMade = true;
+        Debug.Log("gameManager.buyPropertyDecisionMade set to : " + gameManager.buyPropertyDecisionMade);
         
     }
     

@@ -33,7 +33,7 @@ public class BuyOutPopUp : MonoBehaviour
     // public Transform canvasTransform;
     public GameObject stageImagePrefab;
 
-    public bool buyOutDecisionMade = false;
+    
     // public PlayerController buyoutPopup;
 
 
@@ -280,15 +280,15 @@ public class BuyOutPopUp : MonoBehaviour
                         propertyManager.ActivateRentTagImage(currentProperty);
                         // propertyManager.UpdateRentText(currentProperty, stageIndex);
 
-                        buyOutDecisionMade = true;
-                        Debug.Log("buyOutDecisionMade set to : " + buyOutDecisionMade);
+                        gameManager.buyOutDecisionMade = true;
+                        Debug.Log("gameManager.buyOutDecisionMade set to : " + gameManager.buyOutDecisionMade);
                         
                     }
                     else
                     {
                         Debug.LogWarning("Insufficient funds to buy the property.");
-                        buyOutDecisionMade = true;
-                        Debug.Log("buyOutDecisionMade set to : " + buyOutDecisionMade);
+                        gameManager.buyOutDecisionMade = true;
+                        Debug.Log("gameManager.buyOutDecisionMade set to : " + gameManager.buyOutDecisionMade);
                     }
                 }
                 else
@@ -320,8 +320,8 @@ public class BuyOutPopUp : MonoBehaviour
         // Close the popup after the confirmation time if no purchase is made
         gameObject.SetActive(false);
         // playerController.EndBuyPropertyInteraction();
-        buyOutDecisionMade = true;
-        Debug.Log("buyOutDecisionMade set to : " + buyOutDecisionMade);
+        gameManager.buyOutDecisionMade = true;
+        Debug.Log("gameManager.buyOutDecisionMade set to : " + gameManager.buyOutDecisionMade);
     }
 
     public void Decline()
@@ -329,8 +329,8 @@ public class BuyOutPopUp : MonoBehaviour
         // Close the popup immediately when the close button is pressed
         gameObject.SetActive(false);
         // playerController.EndBuyPropertyInteraction();
-        buyOutDecisionMade = true;
-        Debug.Log("buyOutDecisionMade set to : " + buyOutDecisionMade);
+        gameManager.buyOutDecisionMade = true;
+        Debug.Log("gameManager.buyOutDecisionMade set to : " + gameManager.buyOutDecisionMade);
         
     }
     

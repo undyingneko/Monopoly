@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     private static TextMeshProUGUI[] playerMoney;
     private PlayerController playerController;
     public static GameManager Instance;
+    public bool buyPropertyDecisionMade = false;
+    public bool buyOutDecisionMade = false;
 
     
     void Awake()
@@ -67,7 +69,7 @@ public class GameManager : MonoBehaviour
         // Return the PlayerController of the current player
         return players[currentPlayerIndex];
     }
-    
+
     public void NextTurn()
     {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.Length;
