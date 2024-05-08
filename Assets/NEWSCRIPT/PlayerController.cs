@@ -94,48 +94,68 @@ public class PlayerController : MonoBehaviour
     private string CardPrefabPath = "CardPrefab";
     private GameObject CardPrefab; 
 
-    public bool hasGetOutOfJailCard = false;
-
-    public List<string> cards;
-    // private List<string> cards = new List<string> 
-    private List<string> cardDescriptions = new List<string>
+    public List<Card> cardDeck = new List<Card>();
+    [System.Serializable]
+    public class Card
     {
-        // "Collect a Birthday Gift of $15 from each",
-        "Get out of jail Ticket"
-        // "Go Collect Dinner Ticket",
-        // "Festival Ticket",
-        // "Jump Further to Start",
+        public string name;
+        public string description;
 
-        // "Demolish one avenue and leave it ownerless.",
-        // "Power cut 1 opponent avenue",
-        // "Force one opponent to sell one property of your choice from their holdings",
-        // "You win a lottery of $200,000.",
-        // "No tax for the next time",
-        // "You don't have to pay fee for the next time",
-        // "Go 1 space forward",
+        public Card(string name, string description)
+        {
+            this.name = name;
+            this.description = description;
+        }
+    }
 
 
-        // "Go to jail",
-        // "Pay Dog Shit Fee of $50,000.",
-        // "Jump Back To Start",
-        // "An earthquake has destroyed 1 of your avenues",
-        // "You have to sell one property of your choice from your holdings",
-        // "Pay Tax!!!",
-        // "Go back 1 space"
-        // // Add other cards here...
-    };
+    public bool hasGetOutOfJailCard = false;
+    public bool hasFreeRentTicket = false;
+
+    void PopulateCardDeck()
+    {
+        // Add your cards to the card deck
+        cardDeck.Add(new Card("Get out of Jail Ticket", "You can use this card to get out of jail once."));
+        cardDeck.Add(new Card("Birthday Gift", "Collect a Birthday Gift of $15 from each player."));
+        // Add more cards as needed
+    }
+    // // private List<string> cards = new List<string> 
+    // private List<string> cardDescriptions = new List<string>
+    // {
+    //     // "Collect a Birthday Gift of $15 from each",
+    //     // "Get out of jail Free Ticket",
+    //     "Free Dinner Ticket"
+    //     // "Festival Ticket",
+    //     // "Jump Further to Start",
+
+    //     // "Demolish one avenue and leave it ownerless.",
+    //     // "Power cut 1 opponent avenue",
+    //     // "Force one opponent to sell one property of your choice from their holdings",
+    //     // "You win a lottery of $200,000.",
+    //     // "No tax for the next time",
+    //     // "You don't have to pay fee for the next time",
+    //     // "Go 1 space forward",
+
+
+    //     // "Go to jail",
+    //     // "Pay Dog Shit Fee of $50,000.",
+    //     // "Jump Back To Start",
+    //     // "An earthquake has destroyed 1 of your avenues",
+    //     // "You have to sell one property of your choice from your holdings",
+    //     // "Pay Tax!!!",
+    //     // "Go back 1 space"
+    //     // // Add other cards here...
+    // };
 
 
 
-
-  
     void Start()
     {   
         // currentPlayerController = FindObjectOfType<PlayerController>();
         propertyManager = PropertyManager.Instance;
         gameManager = FindObjectOfType<GameManager>();
 
-        rollButton.onClick.AddListener(RollDiceOnClick);
+        rollButton.onClick.AddListener(StartRollDiceCoroutine);
         diceSides = Resources.LoadAll<Sprite>("DiceSides/");
         transform.position = waypoints[waypointIndex].transform.position;
         
@@ -196,6 +216,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.LogError("Failed to load MessagePrefab from Resources folder at path: " + MessagePrefabPath);
         }
+        PopulateCardDeck();
         
     }
     private void InstantiateBuyPropertyPopup012(PropertyManager.PropertyData property)
@@ -250,7 +271,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void RollDiceOnClick()
+    public IEnumerator RollDiceOnClick()
     {
         if (!GameManager.GameOver && isTurn && coroutineAllowed)
         {
@@ -267,6 +288,8 @@ public class PlayerController : MonoBehaviour
                 hasGetOutOfJailCard = false;
                 turnsInJail = 0;
                 StartCoroutine(RollTheDice());
+                ShowMessage("You have used your Get out of jail Ticket");
+                yield return new WaitForSeconds(2f);
                 rollButton.gameObject.SetActive(false);
                 playerMoveText.gameObject.SetActive(false);
             }
@@ -282,6 +305,10 @@ public class PlayerController : MonoBehaviour
 
                 }
         }
+    }
+    private void StartRollDiceCoroutine()
+    {
+        StartCoroutine(RollDiceOnClick());
     }
 
     private IEnumerator RollDiceInJail()
@@ -406,6 +433,8 @@ public class PlayerController : MonoBehaviour
                 DisplayGoToJailText();
                 InJail = false;
                 hasGetOutOfJailCard = false; 
+                ShowMessage("You have used your Get out of jail Ticket");
+                yield return new WaitForSeconds(2f);
 
             }
             else
@@ -550,14 +579,17 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator DrawCard()
     {
-        string cardDescription = cardDescriptions[Random.Range(0, cardDescriptions.Count)];
+        Card drawnCard = cardDeck[Random.Range(0, cardDeck.Count)];
         GameObject cardObject = Instantiate(CardPrefab, canvasTransform);
 
         // Set the card description text
-        TextMeshProUGUI descriptionText = cardObject.GetComponentInChildren<TextMeshProUGUI>();
-        if (descriptionText != null)
+        // TextMeshProUGUI descriptionText = cardObject.GetComponentInChildren<TextMeshProUGUI>();
+        TextMeshProUGUI nameText = cardObject.transform.Find("NameText").GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI descriptionText = cardObject.transform.Find("DescriptionText").GetComponent<TextMeshProUGUI>();
+        if (nameText != null && descriptionText != null)
         {
-            descriptionText.text = cardDescription;
+            nameText.text = drawnCard.name;
+            descriptionText.text = drawnCard.description;
         }
         else
         {
@@ -566,7 +598,7 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(3f);
         Destroy(cardObject);
         yield return new WaitForSeconds(1f);
-        yield return StartCoroutine(ApplyCardEffects(cardDescription));    
+        yield return StartCoroutine(ApplyCardEffects(drawnCard.description));    
     }
 
     public IEnumerator ApplyCardEffects(string cardDescription)
@@ -592,9 +624,28 @@ public class PlayerController : MonoBehaviour
 
             yield return new WaitForSeconds(2f);
         }
+        if (cardDescription.Contains("Get out of jail Free Ticket"))
+        {
+            PlayerController currentPlayer = gameManager.GetCurrentPlayerController();
+            currentPlayer.hasGetOutOfJailCard = true;
 
+            if (currentPlayer.hasGetOutOfJailCard == true)
+            {
+                currentPlayer.ShowMessage("You got a Get out of jail Free Ticket to leave jail.");
+                yield return new WaitForSeconds(2f);
+            }              
+        }
 
-
+        if (cardDescription.Contains("Get out of jail Free Ticket"))
+        {
+            PlayerController currentPlayer = gameManager.GetCurrentPlayerController();
+            currentPlayer.hasFreeRentTicket = true;
+            if (currentPlayer.hasFreeRentTicket == true)
+            {
+                currentPlayer.ShowMessage("You got a Free Dinner Ticket");
+                yield return new WaitForSeconds(2f);              
+            }
+        }
 
         // Add similar logic for other card effects...
     }
