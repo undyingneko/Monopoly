@@ -23,11 +23,11 @@ public class PlayerController : MonoBehaviour
 
     private GameManager gameManager;
 
-    private bool loopCompleted = false;
+    // private bool loopCompleted = false;
     
     public Transform[] waypoints;
     [SerializeField]
-    private float moveSpeed = 1f;
+    // private float moveSpeed = 1f;
     [HideInInspector]
     public int waypointIndex = 0;
     public bool moveAllowed = false;
@@ -45,10 +45,11 @@ public class PlayerController : MonoBehaviour
     
     private BuyPropertyPopup012 buyPropertyPopup012Prefab;
     public string buyPropertyPopup012PrefabPath = "BuyPropertyPopup012Prefab"; // Path to the prefab in the Resources folder
+    private BuyPropertyPopup012 BuypopupInstance;
 
     public string buyoutPopupPrefabPath = "buyoutPopupPrefab"; // The path to the MessagePrefab relative to the Resources folder
     private BuyOutPopUp buyoutPopupPrefab;
-
+    private BuyOutPopUp buyoutPopupInstance;
     // private BuyPropertyPopup012 buyPopupInstance;
     // private BuyOutPopUp buyoutPopupInstance;
     
@@ -124,10 +125,10 @@ public class PlayerController : MonoBehaviour
         // cardDeck.Add(new Card("Go to Jail", "Go directly to Jail. Do not pass 'Go,' do not collect $300,000"));
 
         // cardDeck.Add(new Card("Advance to Go", "Move your character to the \"Go\" space on the board and collect $300,000 from the bank."));
-        cardDeck.Add(new Card("Go Back to Go", "Go back to \"Go\" without passing 'Go,' without collecting $300,000"));
+        // cardDeck.Add(new Card("Go Back to Go", "Go back to \"Go\" without passing 'Go,' without collecting $300,000"));
 
         // cardDeck.Add(new Card("Advance 1 Space", "Advance 1 space on the board."));
-        // cardDeck.Add(new Card("Move Backward 1 Space", "Move your character back one space on the board."));
+        cardDeck.Add(new Card("Move Backward 1 Space", "Move your character back one space on the board."));
 
         // cardDeck.Add(new Card("Tax Exemption", "You are exempt from paying any taxes the next time."));
         // cardDeck.Add(new Card("Tax Levy",  "Pay a tax equal to 10% of the total value of your owned properties."));
@@ -237,7 +238,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // Instantiate the buy property popup and assign it to a variable
-        BuyPropertyPopup012 BuypopupInstance  = Instantiate(buyPropertyPopup012Prefab, canvas.transform);
+        BuypopupInstance  = Instantiate(buyPropertyPopup012Prefab, canvas.transform);
 
         if (BuypopupInstance  != null)
         {
@@ -263,7 +264,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
         // Instantiate the buyout popup prefab
-        BuyOutPopUp buyoutPopupInstance = Instantiate(buyoutPopupPrefab, canvas.transform);
+        buyoutPopupInstance = Instantiate(buyoutPopupPrefab, canvas.transform);
  
         if (buyoutPopupInstance != null)
         {
@@ -363,7 +364,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("current position before moving in jail" + currentPosition); 
             Debug.Log("sum= " + sum);
             MovePlayer(sum);
-            yield return new WaitUntil(() => gameManager.buyPropertyDecisionMade);
+            yield return new WaitUntil(() => gameManager.EndedAllInteraction);
             Debug.Log("current position after moving in jail" + currentPosition); 
             EndTurn();
             coroutineAllowed = false;
@@ -377,7 +378,8 @@ public class PlayerController : MonoBehaviour
                 InJail = false;
                 MovePlayer(diceValues[0] + diceValues[1]);
                 turnsInJail = 0;
-                yield return new WaitUntil(() => gameManager.buyPropertyDecisionMade);
+                WaitForPropertyDecision();
+                yield return new WaitUntil(() => gameManager.EndedAllInteraction);
                 EndTurn();
             
                 coroutineAllowed = false;
@@ -459,9 +461,9 @@ public class PlayerController : MonoBehaviour
         if (currentPosition == 12 || currentPosition == 20 || currentPosition == 23 || currentPosition == 28)
         {
             GameObject ChancePrefabInstance = Instantiate(ChancePrefab, canvasTransform);
-            yield return new WaitForSeconds(3f);
-            Destroy(ChancePrefabInstance);
             yield return new WaitForSeconds(2f);
+            Destroy(ChancePrefabInstance);
+            yield return new WaitForSeconds(0.5f);
             yield return StartCoroutine(DrawCard());
         }        
         // CheckForDoubles(diceValues);
@@ -490,8 +492,8 @@ public class PlayerController : MonoBehaviour
             
             if (consecutiveDoublesCount >= 3)
             {   
-                
-                yield return new WaitUntil(() => gameManager.buyPropertyDecisionMade);
+                WaitForPropertyDecision();
+                yield return new WaitUntil(() => gameManager.EndedAllInteraction);
                 consecutiveDoublesCount = 0;
                 waypointIndex = 8;
                 transform.position = waypoints[waypointIndex].position;
@@ -506,7 +508,7 @@ public class PlayerController : MonoBehaviour
             else
             {   
                 
-                yield return new WaitUntil(() => gameManager.buyPropertyDecisionMade);
+                yield return new WaitUntil(() => gameManager.EndedAllInteraction);
                 StartTurn();
                 
             }
@@ -516,7 +518,7 @@ public class PlayerController : MonoBehaviour
         {   
             consecutiveDoublesCount = 0;
             // MovePlayer(diceValues[0] + diceValues[1]);
-            yield return new WaitUntil(() => gameManager.buyPropertyDecisionMade);
+            yield return new WaitUntil(() => gameManager.EndedAllInteraction);
             EndTurn();
             yield break;
             // if (buyPropertyDecisionMade)
@@ -537,23 +539,38 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator MovePlayerCoroutine(int steps)
     {
-        int stepsRemaining = steps;
+        int stepsRemaining = Mathf.Abs(steps); // Ensure steps is positive
+        int direction = 1; // Default direction is forward
+
+        if (steps < 0)
+        {
+            direction = -1; // Change direction to backward if steps are negative
+        }
+
         while (stepsRemaining > 0)
         {
-            MoveForward();
+            currentPosition = (currentPosition + direction) % waypoints.Length; // Calculate the new position
+
+            // Move the player's game object to the new waypoint position
+            transform.position = waypoints[currentPosition].position;
+
             stepsRemaining--;
-            if (currentPosition == 0)
+
+            if (currentPosition == 0 && direction == 1)
             {
                 // Add $300,000 to the player's money
                 Money += 300000;
                 UpdateMoneyText(); // Update UI to reflect the new money amount
                 DisplayPlus300();
             }
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.3f);
         }
+
         // Update the current position
-        StartCoroutine(LandOnProperty());
+        yield return StartCoroutine(LandOnProperty());
     }
+
+
 
     public IEnumerator DrawCard()
     {
@@ -672,6 +689,17 @@ public class PlayerController : MonoBehaviour
                 yield return new WaitForSeconds(2f);
                 break;
 
+            case "Advance 1 Space":
+                StartCoroutine(MovePlayerCoroutine(1));
+                break;
+
+            case "Move Backward 1 Space":
+                yield return StartCoroutine(MovePlayerCoroutine(-1));
+                yield return new WaitUntil(() => gameManager.EndedAllInteraction);
+                break;
+
+
+
 
             case "Free Meal Ticket":
                 currentPlayer.hasFreeRentTicket = true;
@@ -720,7 +748,7 @@ public class PlayerController : MonoBehaviour
 
         if (property == null)
         {
-            gameManager.buyPropertyDecisionMade = true;
+            yield return new WaitUntil(() => gameManager.EndedAllInteraction);
             yield break;
         }
 
@@ -744,7 +772,7 @@ public class PlayerController : MonoBehaviour
                 {
                     ShowMessage("Not enough money to acquire this property!");
                     yield return new WaitForSeconds(2f);
-                    gameManager.buyPropertyDecisionMade = true;
+                    gameManager.EndedAllInteraction = true;
                     yield break;
                 }
             }
@@ -784,11 +812,11 @@ public class PlayerController : MonoBehaviour
                     {
                         ShowMessage("Not enough money to acquire this property!");
                         yield return new WaitForSeconds(2f);
-                        gameManager.buyPropertyDecisionMade = true;
+                        gameManager.EndedAllInteraction = true;
                         yield break;                    
                     }
                     
-                    yield return new WaitUntil(() => gameManager.buyOutDecisionMade);
+                    yield return new WaitUntil(() => gameManager.EndedAllInteraction);
                     yield return new WaitForSeconds(1f);
 
                     if (property.stagePrices[property.nextStageIndex] <= Money)
@@ -800,7 +828,8 @@ public class PlayerController : MonoBehaviour
                     {
                         ShowMessage("Not enough money to acquire this property!");
                         yield return new WaitForSeconds(2f);
-                        gameManager.buyPropertyDecisionMade = true;
+                        WaitForPropertyDecision();
+                        gameManager.EndedAllInteraction = true;
                         yield break;
                     }
                 }
@@ -809,7 +838,8 @@ public class PlayerController : MonoBehaviour
                 {
                     ShowMessage("You can't buy out the hotel");
                     yield return new WaitForSeconds(2f);
-                    gameManager.buyPropertyDecisionMade = true;
+                    WaitForPropertyDecision();
+                    gameManager.EndedAllInteraction = true;
                 }
             }
         }
@@ -923,8 +953,10 @@ public class PlayerController : MonoBehaviour
             spriteRenderer.sortingOrder = originalSortingOrder + 1;
             rollButton.gameObject.SetActive(true);
             playerMoveText.gameObject.SetActive(true);
+
             gameManager.buyPropertyDecisionMade = false;
-            gameManager.buyOutDecisionMade = false;    
+            gameManager.buyOutDecisionMade = false;
+            gameManager.EndedAllInteraction = false;    
         }
     }
 
@@ -944,6 +976,23 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
         Destroy(plus300Text.gameObject); // Destroy the Plus300Text object after 2 seconds
+    }
+
+    IEnumerator WaitForPropertyDecision()
+    {
+        while (BuypopupInstance != null || buyoutPopupInstance != null)
+        {
+            while (BuypopupInstance != null)
+            {
+                yield return new WaitUntil(() => gameManager.buyPropertyDecisionMade);
+            }
+            while (buyoutPopupInstance != null)
+            {
+                yield return new WaitUntil(() => gameManager.buyOutDecisionMade);
+            }
+
+            gameManager.EndedAllInteraction = true;
+        }
     }
 
 }

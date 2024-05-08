@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     public bool buyPropertyDecisionMade = false;
     public bool buyOutDecisionMade = false;
+    public bool EndedAllInteraction  = false;
+    
 
     
     void Awake()
