@@ -123,8 +123,8 @@ public class PlayerController : MonoBehaviour
         // cardDeck.Add(new Card("Get out of Jail Ticket", "You can use this card to get out of jail once."));
         // cardDeck.Add(new Card("Go to Jail", "Go directly to Jail. Do not pass 'Go,' do not collect $300,000"));
 
-        cardDeck.Add(new Card("Advance to Go", "Move your character to the \"Go\" space on the board and collect $300,000 from the bank."));
-        // cardDeck.Add(new Card("Go Back to Go", "Go back to \"Go\" without passing 'Go,' without collecting $300,000"));
+        // cardDeck.Add(new Card("Advance to Go", "Move your character to the \"Go\" space on the board and collect $300,000 from the bank."));
+        cardDeck.Add(new Card("Go Back to Go", "Go back to \"Go\" without passing 'Go,' without collecting $300,000"));
 
         // cardDeck.Add(new Card("Advance 1 Space", "Advance 1 space on the board."));
         // cardDeck.Add(new Card("Move Backward 1 Space", "Move your character back one space on the board."));
@@ -537,55 +537,21 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator MovePlayerCoroutine(int steps)
     {
-        int remainingSteps = steps;
-
-        while (remainingSteps > 0)
+        int stepsRemaining = steps;
+        while (stepsRemaining > 0)
         {
-            float stepDistance = moveSpeed * Time.deltaTime;
-            Vector2 targetPosition = waypoints[(waypointIndex + 1) % waypoints.Length].position;
-            float distanceToNextWaypoint = Vector2.Distance(transform.position, targetPosition);
-
-            transform.position = Vector2.MoveTowards(transform.position, targetPosition, stepDistance);
-
-  
-            if (distanceToNextWaypoint < stepDistance)
+            MoveForward();
+            stepsRemaining--;
+            if (currentPosition == 0)
             {
-
-                waypointIndex = (waypointIndex + 1) % waypoints.Length;
-                remainingSteps--;
-
-                if (waypointIndex == 0)
-                {
-                    // Ensure the loopCompleted flag is false before adding money
-                    if (!loopCompleted)
-                    {
-                        Money += 300000;
-                        DisplayPlus300();
-                        UpdateMoneyText();
-
-                        // Set the loopCompleted flag to true to prevent multiple additions
-                        loopCompleted = true;
-                    }
-                }
-                else
-                {
-                    // Reset the loopCompleted flag if the player is not at waypoint 0
-                    loopCompleted = false;
-                }
-                // if (waypointIndex == 0)
-                // {
-                //     // Ensure the loopCompleted flag is false before adding money
-                //     Money += 300;
-                //     DisplayPlus300();
-                //     UpdateMoneyText();
-                // }
+                // Add $300,000 to the player's money
+                Money += 300000;
+                UpdateMoneyText(); // Update UI to reflect the new money amount
+                DisplayPlus300();
             }
-    
-            yield return null;
+            yield return new WaitForSeconds(0.1f);
         }
-
         // Update the current position
-        currentPosition = (currentPosition + steps) % waypoints.Length;
         StartCoroutine(LandOnProperty());
     }
 
@@ -679,7 +645,7 @@ public class PlayerController : MonoBehaviour
                 {
                     // Move the player to the next waypoint
                     currentPlayer.MoveForward();
-                    yield return new WaitForSeconds(0.5f); // Adjust the delay as needed
+                    yield return new WaitForSeconds(0.3f); // Adjust the delay as needed
                 }
 
                 // Add $300 from the bank
@@ -689,7 +655,22 @@ public class PlayerController : MonoBehaviour
                 yield return new WaitForSeconds(2f);
                 break;
 
-
+            case "Go Back to Go":
+                // Calculate the number of steps needed to move backward to the "Go" space
+                int stepsToGoBackward = currentPosition;
+                
+                // Move the player backward one tile at a time until reaching the "Go" space
+                for (int i = 0; i < stepsToGoBackward; i++)
+                {
+                    // Move the player backward
+                    currentPlayer.MoveBackward();
+                    
+                    // Delay between tile movements (adjust as needed)
+                    yield return new WaitForSeconds(0.3f);
+                }
+                currentPlayer.ShowMessage("Your character has moved back to 'Go'");
+                yield return new WaitForSeconds(2f);
+                break;
 
 
             case "Free Meal Ticket":
@@ -712,6 +693,12 @@ public class PlayerController : MonoBehaviour
         currentPosition = (currentPosition + 1) % waypoints.Length;
 
         // Move the player's game object to the new waypoint position
+        transform.position = waypoints[currentPosition].position;
+    }
+
+    public void MoveBackward()
+    {
+        currentPosition = (currentPosition - 1 + waypoints.Length) % waypoints.Length;
         transform.position = waypoints[currentPosition].position;
     }
 
