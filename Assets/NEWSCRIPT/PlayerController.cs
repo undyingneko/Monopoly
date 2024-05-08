@@ -66,8 +66,11 @@ public class PlayerController : MonoBehaviour
     private string MessagePrefabPath = "MessagePrefab";
     private GameObject MessagePrefab; 
 
+    [SerializeField]
+    private string ChancePrefabPath = "ChancePrefab";
+    private GameObject ChancePrefab; 
+
     public bool isBuyPopUpActive = false;
- 
 
     public void AssignPlayerID(int id)
     {
@@ -108,7 +111,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
     public bool hasGetOutOfJailCard = false;
     public bool hasFreeRentTicket = false;
 
@@ -136,23 +138,15 @@ public class PlayerController : MonoBehaviour
         cardDeck.Add(new Card("Free Dinner Ticket", "You've received a Free Dinner Ticket. Your meal will be complimentary next time."));
 
         cardDeck.Add(new Card("Property Seizure", "Force one opponent to sell one property of your choice from their holdings."));
+        cardDeck.Add(new Card("Natural Disaster: Food Stall Ruined",  "An earthquake has destroyed 1 of your food stalls at the festival "));
+        cardDeck.Add(new Card("Forced Property Sale", "You must sell one property of your choice from your holdings."));
 
-        
-
-
-
-
-
-
-        
+        cardDeck.Add(new Card("Firework Spectacle", "Select one of your stalls to host a firework display, turning it into a hot spot and increasing its value."));     
     }
     // // private List<string> cards = new List<string> 
     // private List<string> cardDescriptions = new List<string>
     // {
-    //     // "Festival Ticket",
-    //     // "An earthquake has destroyed 1 of your avenues",
-    //     // "You have to sell one property of your choice from your holdings",
- 
+    //     // "Firework",
     // };
 
 
@@ -222,8 +216,13 @@ public class PlayerController : MonoBehaviour
         CardPrefab = Resources.Load<GameObject>(CardPrefabPath);
         if (CardPrefab == null)
         {
-            Debug.LogError("Failed to load MessagePrefab from Resources folder at path: " + MessagePrefabPath);
+            Debug.LogError("Failed to load CardPrefabPath from Resources folder at path: " + MessagePrefabPath);
         }
+        ChancePrefab = Resources.Load<GameObject>(ChancePrefabPath);
+        if (ChancePrefab == null)
+        {
+            Debug.LogError("Failed to load ChancePrefabPath from Resources folder at path: " + MessagePrefabPath);
+        }  
         PopulateCardDeck();
         
     }
@@ -459,7 +458,12 @@ public class PlayerController : MonoBehaviour
         
         if (currentPosition == 12 || currentPosition == 20 || currentPosition == 23 || currentPosition == 28)
         {
-            yield return StartCoroutine(DrawCard());   
+            GameObject ChancePrefabInstance = Instantiate(ChancePrefab, canvasTransform);
+            // ShowMessage("Amusement Park");
+            yield return new WaitForSeconds(2f);
+            Destroy(ChancePrefabInstance);
+            yield return new WaitForSeconds(2f);
+            yield return StartCoroutine(DrawCard());
         }        
         // CheckForDoubles(diceValues);
         
@@ -468,6 +472,7 @@ public class PlayerController : MonoBehaviour
         coroutineAllowed = true; 
 
     }
+
 
     public void HackRollDice(int[] diceValues)
     {
@@ -674,7 +679,6 @@ public class PlayerController : MonoBehaviour
 
         if (property == null)
         {
-            Debug.LogWarning("Property is null. No popup will be displayed.");
             gameManager.buyPropertyDecisionMade = true;
             yield break;
         }
