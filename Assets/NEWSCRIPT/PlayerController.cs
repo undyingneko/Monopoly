@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector]
     public int waypointIndex = 0;
     public bool moveAllowed = false;
-    public int Money = 2000;
+    public int Money = 2000000;
     public TextMeshProUGUI plus300TextPrefab;
     public TextMeshProUGUI moneyText;
     public TextMeshProUGUI playerMoveText;
@@ -114,37 +114,45 @@ public class PlayerController : MonoBehaviour
 
     void PopulateCardDeck()
     {
-        // Add your cards to the card deck
+        cardDeck.Add(new Card("Birthday Gift", "Collect a Birthday Gift of $15000 from each player."));
+        cardDeck.Add(new Card("Lottery Win: $200,000", "Congratulations! You have won a lottery prize of $200,000.")); 
+        cardDeck.Add(new Card( "Dog Poop Cleanup Fee", "Pay a fee of $50,000 for dog poop cleanup."));
+
         cardDeck.Add(new Card("Get out of Jail Ticket", "You can use this card to get out of jail once."));
-        cardDeck.Add(new Card("Birthday Gift", "Collect a Birthday Gift of $15 from each player."));
-        // Add more cards as needed
+        cardDeck.Add(new Card("Go to Jail", "Go directly to Jail. Do not pass 'Go,' do not collect $300,000"));
+
+        cardDeck.Add(new Card("Advance to Go", "Move your character to the \"Go\" space on the board and collect $300 from the bank."));
+        cardDeck.Add(new Card("Go Back to Go", "Go back to \"Go\" without passing 'Go,' without collecting $300,000"));
+
+        cardDeck.Add(new Card("Advance 1 Space", "Advance 1 space on the board."));
+        cardDeck.Add(new Card("Move Backward 1 Space", "Move your character back one space on the board."));
+
+        cardDeck.Add(new Card("Tax Exemption", "You are exempt from paying any taxes the next time."));
+        cardDeck.Add(new Card("Tax Levy",  "Pay a tax equal to 10% of the total value of your owned properties."));
+
+        cardDeck.Add(new Card("Avenue Demolition", "Demolish one avenue and leave it ownerless."));
+
+        cardDeck.Add(new Card("Generous Treat", "Select one food stall of the opponent. Any player landing on this stall is treated to a complimentary meal for one turn, no payment necessary."));
+        cardDeck.Add(new Card("Free Dinner Ticket", "You've received a Free Dinner Ticket. Your meal will be complimentary next time."));
+
+        cardDeck.Add(new Card("Property Seizure", "Force one opponent to sell one property of your choice from their holdings."));
+
+        
+
+
+
+
+
+
+        
     }
     // // private List<string> cards = new List<string> 
     // private List<string> cardDescriptions = new List<string>
     // {
-    //     // "Collect a Birthday Gift of $15 from each",
-    //     // "Get out of jail Free Ticket",
-    //     "Free Dinner Ticket"
     //     // "Festival Ticket",
-    //     // "Jump Further to Start",
-
-    //     // "Demolish one avenue and leave it ownerless.",
-    //     // "Power cut 1 opponent avenue",
-    //     // "Force one opponent to sell one property of your choice from their holdings",
-    //     // "You win a lottery of $200,000.",
-    //     // "No tax for the next time",
-    //     // "You don't have to pay fee for the next time",
-    //     // "Go 1 space forward",
-
-
-    //     // "Go to jail",
-    //     // "Pay Dog Shit Fee of $50,000.",
-    //     // "Jump Back To Start",
     //     // "An earthquake has destroyed 1 of your avenues",
     //     // "You have to sell one property of your choice from your holdings",
-    //     // "Pay Tax!!!",
-    //     // "Go back 1 space"
-    //     // // Add other cards here...
+ 
     // };
 
 
@@ -200,7 +208,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.LogError("waypoints array is not properly assigned or is empty. Assign it in the Unity Editor or via script.");
         }  
-        Money = 2000;
+        Money = 2000000;
         UpdateMoneyText();
         spriteRenderer = GetComponent<SpriteRenderer>();
         originalSortingOrder = spriteRenderer.sortingOrder;
@@ -547,7 +555,7 @@ public class PlayerController : MonoBehaviour
                     // Ensure the loopCompleted flag is false before adding money
                     if (!loopCompleted)
                     {
-                        Money += 300;
+                        Money += 300000;
                         DisplayPlus300();
                         UpdateMoneyText();
 
@@ -598,57 +606,54 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(3f);
         Destroy(cardObject);
         yield return new WaitForSeconds(1f);
-        yield return StartCoroutine(ApplyCardEffects(drawnCard.description));    
+        yield return StartCoroutine(ApplyCardEffects(drawnCard.name));    
     }
 
-    public IEnumerator ApplyCardEffects(string cardDescription)
+    public IEnumerator ApplyCardEffects(string cardName)
     {
-        // Implement logic to apply the effects based on the card description
-        // For example:
-        if (cardDescription.Contains("Birthday Gift"))
+        PlayerController currentPlayer = gameManager.GetCurrentPlayerController();
+
+        switch (cardName)
         {
-            PlayerController[] players = FindObjectsOfType<PlayerController>();
-            PlayerController currentPlayer = gameManager.GetCurrentPlayerController();
-            currentPlayer.Money += 45; // Increase money by $15
-            currentPlayer.UpdateMoneyText(); // Update UI to reflect the new money amount
-            currentPlayer.ShowMessage("Collect a Birthday Gift of $15 from each player");
-            foreach (PlayerController player in players)
-            {
-                if (player != currentPlayer) // Exclude the current player
+            case "Birthday Gift":
+                PlayerController[] players = FindObjectsOfType<PlayerController>();
+                currentPlayer.Money += 15000 * (players.Length - 1);
+                currentPlayer.UpdateMoneyText(); // Update UI to reflect the new money amount
+                currentPlayer.ShowMessage("Collect a Birthday Gift of $15,000 from each player");
+
+                
+                foreach (PlayerController player in players)
                 {
-                    player.Money -= 15; // Deduct $15 from the player
-                    player.UpdateMoneyText(); // Update UI to reflect the new money amount for the player
-                    player.ShowMessage("You gave $15 as a birthday gift");
+                    if (player != currentPlayer) // Exclude the current player
+                    {
+                        player.Money -= 15000; // Deduct $15 from the player
+                        player.UpdateMoneyText(); // Update UI to reflect the new money amount for the player
+                        player.ShowMessage("You gave $15,000 as a birthday gift");
+                    }
                 }
-            }
+                yield return new WaitForSeconds(2f);
+                break;
 
-            yield return new WaitForSeconds(2f);
-        }
-        if (cardDescription.Contains("Get out of jail Free Ticket"))
-        {
-            PlayerController currentPlayer = gameManager.GetCurrentPlayerController();
-            currentPlayer.hasGetOutOfJailCard = true;
-
-            if (currentPlayer.hasGetOutOfJailCard == true)
-            {
+            case "Get out of jail Free Ticket":
+                currentPlayer.hasGetOutOfJailCard = true;
                 currentPlayer.ShowMessage("You got a Get out of jail Free Ticket to leave jail.");
                 yield return new WaitForSeconds(2f);
-            }              
-        }
+                break;
 
-        if (cardDescription.Contains("Get out of jail Free Ticket"))
-        {
-            PlayerController currentPlayer = gameManager.GetCurrentPlayerController();
-            currentPlayer.hasFreeRentTicket = true;
-            if (currentPlayer.hasFreeRentTicket == true)
-            {
-                currentPlayer.ShowMessage("You got a Free Dinner Ticket");
-                yield return new WaitForSeconds(2f);              
-            }
-        }
+            case "Free Dinner Ticket":
+                currentPlayer.hasFreeRentTicket = true;
+                currentPlayer.ShowMessage("You've received a Free Dinner Ticket. Your meal will be complimentary next time.");
+                yield return new WaitForSeconds(2f);
+                break;
 
-        // Add similar logic for other card effects...
+            // Add similar cases for other card names...
+
+            default:
+                Debug.LogWarning("Unrecognized card name: " + cardName);
+                break;
+        }
     }
+
 
 
     private IEnumerator LandOnProperty()

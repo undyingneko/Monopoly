@@ -3,97 +3,97 @@
         {
             "name": "Vending Machine",
             "JSONwaypointIndex": 1,
-            "priceStallBase": 5
+            "priceStallBase": 5000
         },
         {
             "name": "Convenient Store",
             "JSONwaypointIndex": 2,
-            "priceStallBase": 6
+            "priceStallBase": 6000
         },
         {
             "name": "Bento Shop",
             "JSONwaypointIndex": 3,
-            "priceStallBase": 7
+            "priceStallBase": 7000
         },
         {
             "name": "Candy Apple Stall",
             "JSONwaypointIndex": 5,
-            "priceStallBase": 8
+            "priceStallBase": 8000
         },
         {
             "name": "Cotton Candy Stall",
             "JSONwaypointIndex": 6,
-            "priceStallBase": 9
+            "priceStallBase": 9000
         },
         {
             "name": "Mochi Shop",
             "JSONwaypointIndex": 7,
-            "priceStallBase": 10
+            "priceStallBase": 10000
         },
         {
             "name": "Takoyaki Stall",
             "JSONwaypointIndex": 9,
-            "priceStallBase": 12
+            "priceStallBase": 12000
         },
         {
             "name": "Ikayaki Stall",
             "JSONwaypointIndex": 10,
-            "priceStallBase": 14
+            "priceStallBase": 14000
         },
         {
             "name": "Karaage Chicken",
             "JSONwaypointIndex": 11,
-            "priceStallBase": 16
+            "priceStallBase": 16000
         },
         {
             "name": "Yakisoba Stall",
             "JSONwaypointIndex": 14,
-            "priceStallBase": 18
+            "priceStallBase": 18000
         },
         {
             "name": "Ramen Shop",
             "JSONwaypointIndex": 15,
-            "priceStallBase": 20
+            "priceStallBase": 20000
         },
         {
             "name": "French Patisserie Shop",
             "JSONwaypointIndex": 17,
-            "priceStallBase": 22
+            "priceStallBase": 22000
         },
         {
             "name": "Cat Café",
             "JSONwaypointIndex": 19,
-            "priceStallBase": 24
+            "priceStallBase": 24000
         },
         {
             "name": "Sake Bar",
             "JSONwaypointIndex": 21,
-            "priceStallBase": 26
+            "priceStallBase": 26000
         },
         {
             "name": "Karaoke Lounge",
             "JSONwaypointIndex": 22,
-            "priceStallBase": 28
+            "priceStallBase": 28000
         },
         {
             "name": "Buffet Restaurant",
             "JSONwaypointIndex": 26,
-            "priceStallBase": 30
+            "priceStallBase": 30000
         },
         {
             "name": "Dimsum Restaurant",
             "JSONwaypointIndex": 27,
-            "priceStallBase": 34
+            "priceStallBase": 34000
         },
         {
             "name": "Grill Restaurant",
             "JSONwaypointIndex": 29,
-            "priceStallBase": 36
+            "priceStallBase": 36000
         },
         {
             "name": "Sushi Restaurant",
             "JSONwaypointIndex": 30,
-            "priceStallBase": 40
+            "priceStallBase": 40000
         }
     ]
 }
