@@ -94,12 +94,14 @@ public class PlayerController : MonoBehaviour
     private string CardPrefabPath = "CardPrefab";
     private GameObject CardPrefab; 
 
+    public bool hasGetOutOfJailCard = false;
+
     public List<string> cards;
     // private List<string> cards = new List<string> 
     private List<string> cardDescriptions = new List<string>
     {
-        "Collect a Birthday Gift of $15 from each"
-        // "Get out of jail Ticket",
+        // "Collect a Birthday Gift of $15 from each",
+        "Get out of jail Ticket"
         // "Go Collect Dinner Ticket",
         // "Festival Ticket",
         // "Jump Further to Start",
@@ -252,9 +254,19 @@ public class PlayerController : MonoBehaviour
     {
         if (!GameManager.GameOver && isTurn && coroutineAllowed)
         {
-            if (InJail)
+            if (InJail && !hasGetOutOfJailCard)
             {
+
                 StartCoroutine(RollDiceInJail());
+                rollButton.gameObject.SetActive(false);
+                playerMoveText.gameObject.SetActive(false);
+            }
+            else if (InJail && hasGetOutOfJailCard)
+            {
+                InJail = false;
+                hasGetOutOfJailCard = false;
+                turnsInJail = 0;
+                StartCoroutine(RollTheDice());
                 rollButton.gameObject.SetActive(false);
                 playerMoveText.gameObject.SetActive(false);
             }
@@ -264,6 +276,11 @@ public class PlayerController : MonoBehaviour
                 rollButton.gameObject.SetActive(false);
                 playerMoveText.gameObject.SetActive(false);
             }
+                            if (hasGetOutOfJailCard)
+                {
+                    
+
+                }
         }
     }
 
@@ -338,6 +355,7 @@ public class PlayerController : MonoBehaviour
                 EndTurn();
             }
         }
+        
         coroutineAllowed = true; 
     }
 
@@ -383,13 +401,23 @@ public class PlayerController : MonoBehaviour
 
         if (currentPosition == 8)
         {
-            DisplayGoToJailText();
-            InJail = true;
-            consecutiveDoublesCount = 0;
-            EndTurn();
-            coroutineAllowed = false;
-            yield break;
-             // Exit the coroutine early if the player is in jail
+            if (hasGetOutOfJailCard)
+            {
+                DisplayGoToJailText();
+                InJail = false;
+                hasGetOutOfJailCard = false; 
+
+            }
+            else
+            {
+                DisplayGoToJailText();
+                InJail = true;
+                consecutiveDoublesCount = 0;
+                EndTurn();
+                coroutineAllowed = false;
+                yield break;
+                // Exit the coroutine early if the player is in jail
+            }
         }
         
         if (currentPosition == 12 || currentPosition == 20 || currentPosition == 23 || currentPosition == 28)
@@ -558,11 +586,16 @@ public class PlayerController : MonoBehaviour
                 {
                     player.Money -= 15; // Deduct $15 from the player
                     player.UpdateMoneyText(); // Update UI to reflect the new money amount for the player
+                    player.ShowMessage("You gave $15 as a birthday gift");
                 }
             }
 
             yield return new WaitForSeconds(2f);
         }
+
+
+
+
         // Add similar logic for other card effects...
     }
 
