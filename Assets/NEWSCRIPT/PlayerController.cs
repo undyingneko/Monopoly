@@ -63,8 +63,9 @@ public class PlayerController : MonoBehaviour
     private int originalSortingOrder = 0;
     
     [SerializeField]
-    private string MessagePrefabPath = "MessagePrefab"; // The path to the MessagePrefab relative to the Resources folder
+    private string MessagePrefabPath = "MessagePrefab";
     private GameObject MessagePrefab; 
+
     public bool isBuyPopUpActive = false;
  
 
@@ -88,6 +89,42 @@ public class PlayerController : MonoBehaviour
     //         }
     //     }
     // }
+
+    [SerializeField]
+    private string CardPrefabPath = "CardPrefab";
+    private GameObject CardPrefab; 
+
+    public List<string> cards;
+    // private List<string> cards = new List<string> 
+    private List<string> cardDescriptions = new List<string>
+    {
+        "Collect a Birthday Gift of $15 from each"
+        // "Get out of jail Ticket",
+        // "Go Collect Dinner Ticket",
+        // "Festival Ticket",
+        // "Jump Further to Start",
+
+        // "Demolish one avenue and leave it ownerless.",
+        // "Power cut 1 opponent avenue",
+        // "Force one opponent to sell one property of your choice from their holdings",
+        // "You win a lottery of $200,000.",
+        // "No tax for the next time",
+        // "You don't have to pay fee for the next time",
+        // "Go 1 space forward",
+
+
+        // "Go to jail",
+        // "Pay Dog Shit Fee of $50,000.",
+        // "Jump Back To Start",
+        // "An earthquake has destroyed 1 of your avenues",
+        // "You have to sell one property of your choice from your holdings",
+        // "Pay Tax!!!",
+        // "Go back 1 space"
+        // // Add other cards here...
+    };
+
+
+
 
   
     void Start()
@@ -151,6 +188,13 @@ public class PlayerController : MonoBehaviour
         {
             Debug.LogError("Failed to load MessagePrefab from Resources folder at path: " + MessagePrefabPath);
         }
+        
+        CardPrefab = Resources.Load<GameObject>(CardPrefabPath);
+        if (CardPrefab == null)
+        {
+            Debug.LogError("Failed to load MessagePrefab from Resources folder at path: " + MessagePrefabPath);
+        }
+        
     }
     private void InstantiateBuyPropertyPopup012(PropertyManager.PropertyData property)
     {
@@ -316,8 +360,8 @@ public class PlayerController : MonoBehaviour
         // }
         //---------------------
         // For testing purposes, set the dice values to double 6
-        diceValues[0] = 1;
-        diceValues[1] = 2;
+        diceValues[0] = 7;
+        diceValues[1] = 5;
         for (int i = 0; i <= 20; i++)
         {
             for (int j = 0; j < diceImages.Length; j++)
@@ -346,6 +390,11 @@ public class PlayerController : MonoBehaviour
             coroutineAllowed = false;
             yield break;
              // Exit the coroutine early if the player is in jail
+        }
+        
+        if (currentPosition == 12 || currentPosition == 20 || currentPosition == 23 || currentPosition == 28)
+        {
+            yield return StartCoroutine(DrawCard());   
         }        
         // CheckForDoubles(diceValues);
         
@@ -471,6 +520,52 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(LandOnProperty());
     }
 
+    public IEnumerator DrawCard()
+    {
+        string cardDescription = cardDescriptions[Random.Range(0, cardDescriptions.Count)];
+        GameObject cardObject = Instantiate(CardPrefab, canvasTransform);
+
+        // Set the card description text
+        TextMeshProUGUI descriptionText = cardObject.GetComponentInChildren<TextMeshProUGUI>();
+        if (descriptionText != null)
+        {
+            descriptionText.text = cardDescription;
+        }
+        else
+        {
+            Debug.LogError("Description text component not found on card prefab.");
+        }
+        yield return new WaitForSeconds(3f);
+        Destroy(cardObject);
+        yield return new WaitForSeconds(1f);
+        yield return StartCoroutine(ApplyCardEffects(cardDescription));    
+    }
+
+    public IEnumerator ApplyCardEffects(string cardDescription)
+    {
+        // Implement logic to apply the effects based on the card description
+        // For example:
+        if (cardDescription.Contains("Birthday Gift"))
+        {
+            PlayerController[] players = FindObjectsOfType<PlayerController>();
+            PlayerController currentPlayer = gameManager.GetCurrentPlayerController();
+            currentPlayer.Money += 45; // Increase money by $15
+            currentPlayer.UpdateMoneyText(); // Update UI to reflect the new money amount
+            currentPlayer.ShowMessage("Collect a Birthday Gift of $15 from each player");
+            foreach (PlayerController player in players)
+            {
+                if (player != currentPlayer) // Exclude the current player
+                {
+                    player.Money -= 15; // Deduct $15 from the player
+                    player.UpdateMoneyText(); // Update UI to reflect the new money amount for the player
+                }
+            }
+
+            yield return new WaitForSeconds(2f);
+        }
+        // Add similar logic for other card effects...
+    }
+
 
     private IEnumerator LandOnProperty()
     {
@@ -514,6 +609,7 @@ public class PlayerController : MonoBehaviour
                 else if (Money < property.stagePrices[property.nextStageIndex])
                 {
                     ShowMessage("Not enough money to acquire this property!");
+                    yield return new WaitForSeconds(2f);
                     gameManager.buyPropertyDecisionMade = true;
                     yield break;
                 }
@@ -632,9 +728,6 @@ public class PlayerController : MonoBehaviour
         }
         return null; // Return -1 if no player with the given ID is found
     }
-
-
-
 
     // You may want to check if the player has landed on a property here
     // and display the buy property popup if necessary
