@@ -364,7 +364,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("current position before moving in jail" + currentPosition); 
             Debug.Log("sum= " + sum);
             MovePlayer(sum);
-            yield return new WaitUntil(() => gameManager.EndedAllInteraction);
+            yield return StartCoroutine(WaitForPropertyDecision());
             Debug.Log("current position after moving in jail" + currentPosition); 
             EndTurn();
             coroutineAllowed = false;
@@ -378,8 +378,7 @@ public class PlayerController : MonoBehaviour
                 InJail = false;
                 MovePlayer(diceValues[0] + diceValues[1]);
                 turnsInJail = 0;
-                WaitForPropertyDecision();
-                yield return new WaitUntil(() => gameManager.EndedAllInteraction);
+                yield return StartCoroutine(WaitForPropertyDecision());
                 EndTurn();
             
                 coroutineAllowed = false;
@@ -492,8 +491,8 @@ public class PlayerController : MonoBehaviour
             
             if (consecutiveDoublesCount >= 3)
             {   
-                WaitForPropertyDecision();
-                yield return new WaitUntil(() => gameManager.EndedAllInteraction);
+
+                yield return StartCoroutine(WaitForPropertyDecision());
                 consecutiveDoublesCount = 0;
                 waypointIndex = 8;
                 transform.position = waypoints[waypointIndex].position;
@@ -508,7 +507,7 @@ public class PlayerController : MonoBehaviour
             else
             {   
                 
-                yield return new WaitUntil(() => gameManager.EndedAllInteraction);
+                yield return StartCoroutine(WaitForPropertyDecision());
                 StartTurn();
                 
             }
@@ -518,7 +517,7 @@ public class PlayerController : MonoBehaviour
         {   
             consecutiveDoublesCount = 0;
             // MovePlayer(diceValues[0] + diceValues[1]);
-            yield return new WaitUntil(() => gameManager.EndedAllInteraction);
+            yield return StartCoroutine(WaitForPropertyDecision());
             EndTurn();
             yield break;
             // if (buyPropertyDecisionMade)
@@ -695,7 +694,7 @@ public class PlayerController : MonoBehaviour
 
             case "Move Backward 1 Space":
                 yield return StartCoroutine(MovePlayerCoroutine(-1));
-                yield return new WaitUntil(() => gameManager.EndedAllInteraction);
+                yield return StartCoroutine(WaitForPropertyDecision());
                 break;
 
 
@@ -748,7 +747,7 @@ public class PlayerController : MonoBehaviour
 
         if (property == null)
         {
-            yield return new WaitUntil(() => gameManager.EndedAllInteraction);
+            yield return StartCoroutine(WaitForPropertyDecision());
             yield break;
         }
 
@@ -816,7 +815,7 @@ public class PlayerController : MonoBehaviour
                         yield break;                    
                     }
                     
-                    yield return new WaitUntil(() => gameManager.EndedAllInteraction);
+                    yield return StartCoroutine(WaitForPropertyDecision());
                     yield return new WaitForSeconds(1f);
 
                     if (property.stagePrices[property.nextStageIndex] <= Money)
@@ -828,7 +827,7 @@ public class PlayerController : MonoBehaviour
                     {
                         ShowMessage("Not enough money to acquire this property!");
                         yield return new WaitForSeconds(2f);
-                        WaitForPropertyDecision();
+                    
                         gameManager.EndedAllInteraction = true;
                         yield break;
                     }
@@ -990,9 +989,8 @@ public class PlayerController : MonoBehaviour
             {
                 yield return new WaitUntil(() => gameManager.buyOutDecisionMade);
             }
-
-            gameManager.EndedAllInteraction = true;
         }
+        gameManager.EndedAllInteraction = true;
     }
 
 }
