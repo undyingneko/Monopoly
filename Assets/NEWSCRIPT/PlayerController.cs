@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Properties;
 
 public class PlayerController : MonoBehaviour
 {
@@ -128,11 +129,11 @@ public class PlayerController : MonoBehaviour
         // cardDeck.Add(new Card("Go Back to Go", "Go back to \"Go\" without passing 'Go,' without collecting $300,000"));
 
         // cardDeck.Add(new Card("Advance 1 Space", "Advance 1 space on the board."));
-        cardDeck.Add(new Card("Move Backward 1 Space", "Move your character back one space on the board."));
+        // cardDeck.Add(new Card("Move Backward 1 Space", "Move your character back one space on the board."));
 
-        // cardDeck.Add(new Card("Tax Exemption", "You are exempt from paying any taxes the next time."));
         // cardDeck.Add(new Card("Tax Levy",  "Pay a tax equal to 10% of the total value of your owned properties."));
-
+        cardDeck.Add(new Card("Tax Exemption", "You are exempt from paying any taxes the next time."));
+        
         // cardDeck.Add(new Card("Avenue Demolition", "Demolish one avenue and leave it ownerless."));
 
         // cardDeck.Add(new Card("Generous Treat", "Select one food stall of the opponent. Any player landing on this stall is treated to a complimentary meal for one turn, no payment necessary."));
@@ -464,8 +465,24 @@ public class PlayerController : MonoBehaviour
             Destroy(ChancePrefabInstance);
             yield return new WaitForSeconds(0.5f);
             yield return StartCoroutine(DrawCard());
-        }        
-        // CheckForDoubles(diceValues);
+        }     
+
+        if (currentPosition == 31)
+        {
+            int totalPropertyValue = 0;
+            foreach (PropertyManager.PropertyData property in ownedProperties)
+            {
+                totalPropertyValue += property.stagePrices[property.currentStageIndex];
+            }
+            int taxAmount = (int)(totalPropertyValue * 0.1f);
+            Money -= taxAmount;
+            UpdateMoneyText();
+            ShowMessage($"You paid income tax of ${taxAmount}");
+            yield return new WaitForSeconds(2f);
+        }
+
+
+        
         
         yield return StartCoroutine(CheckForDoubles(diceValues));
 
@@ -690,12 +707,31 @@ public class PlayerController : MonoBehaviour
 
             case "Advance 1 Space":
                 StartCoroutine(MovePlayerCoroutine(1));
+                yield return StartCoroutine(WaitForPropertyDecision());
                 break;
 
             case "Move Backward 1 Space":
                 yield return StartCoroutine(MovePlayerCoroutine(-1));
                 yield return StartCoroutine(WaitForPropertyDecision());
                 break;
+
+            case "Tax Levy":
+                int totalPropertyValue = 0;
+
+                foreach (PropertyManager.PropertyData property in currentPlayer.ownedProperties)
+                {
+                    totalPropertyValue += property.stagePrices[property.currentStageIndex];
+                }
+
+                int taxAmount = (int)(totalPropertyValue * 0.1f);
+
+                currentPlayer.Money -= taxAmount;
+                currentPlayer.UpdateMoneyText();
+
+                currentPlayer.ShowMessage($"You paid a tax of ${taxAmount}");
+                yield return new WaitForSeconds(2f);
+                break;
+
 
 
 
