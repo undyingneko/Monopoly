@@ -217,7 +217,6 @@ public class PropertyManager : MonoBehaviour
                 return property;
             }
         }
-        Debug.LogWarning("No property found for waypoint index: " + JSONwaypointIndex);
         return null;
     }
 

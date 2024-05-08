@@ -116,32 +116,32 @@ public class PlayerController : MonoBehaviour
 
     void PopulateCardDeck()
     {
-        cardDeck.Add(new Card("Birthday Gift", "Collect a Birthday Gift of $15000 from each player."));
-        cardDeck.Add(new Card("Lottery Win: $200,000", "Congratulations! You have won a lottery prize of $200,000.")); 
-        cardDeck.Add(new Card( "Dog Poop Cleanup Fee", "Pay a fee of $50,000 for dog poop cleanup."));
+        // cardDeck.Add(new Card("Birthday Gift", "Collect a Birthday Gift of $15000 from each player."));
+        // cardDeck.Add(new Card("Lottery Win: $200,000", "Congratulations! You have won a lottery prize of $200,000.")); 
+        // cardDeck.Add(new Card( "Dog Poop Cleanup Fee", "Oops! You have to pay a fee of $50,000 for dog poop cleanup."));
 
-        cardDeck.Add(new Card("Get out of Jail Ticket", "You can use this card to get out of jail once."));
-        cardDeck.Add(new Card("Go to Jail", "Go directly to Jail. Do not pass 'Go,' do not collect $300,000"));
+        // cardDeck.Add(new Card("Get out of Jail Ticket", "You can use this card to get out of jail once."));
+        // cardDeck.Add(new Card("Go to Jail", "Go directly to Jail. Do not pass 'Go,' do not collect $300,000"));
 
-        cardDeck.Add(new Card("Advance to Go", "Move your character to the \"Go\" space on the board and collect $300 from the bank."));
-        cardDeck.Add(new Card("Go Back to Go", "Go back to \"Go\" without passing 'Go,' without collecting $300,000"));
+        cardDeck.Add(new Card("Advance to Go", "Move your character to the \"Go\" space on the board and collect $300,000 from the bank."));
+        // cardDeck.Add(new Card("Go Back to Go", "Go back to \"Go\" without passing 'Go,' without collecting $300,000"));
 
-        cardDeck.Add(new Card("Advance 1 Space", "Advance 1 space on the board."));
-        cardDeck.Add(new Card("Move Backward 1 Space", "Move your character back one space on the board."));
+        // cardDeck.Add(new Card("Advance 1 Space", "Advance 1 space on the board."));
+        // cardDeck.Add(new Card("Move Backward 1 Space", "Move your character back one space on the board."));
 
-        cardDeck.Add(new Card("Tax Exemption", "You are exempt from paying any taxes the next time."));
-        cardDeck.Add(new Card("Tax Levy",  "Pay a tax equal to 10% of the total value of your owned properties."));
+        // cardDeck.Add(new Card("Tax Exemption", "You are exempt from paying any taxes the next time."));
+        // cardDeck.Add(new Card("Tax Levy",  "Pay a tax equal to 10% of the total value of your owned properties."));
 
-        cardDeck.Add(new Card("Avenue Demolition", "Demolish one avenue and leave it ownerless."));
+        // cardDeck.Add(new Card("Avenue Demolition", "Demolish one avenue and leave it ownerless."));
 
-        cardDeck.Add(new Card("Generous Treat", "Select one food stall of the opponent. Any player landing on this stall is treated to a complimentary meal for one turn, no payment necessary."));
-        cardDeck.Add(new Card("Free Dinner Ticket", "You've received a Free Dinner Ticket. Your meal will be complimentary next time."));
+        // cardDeck.Add(new Card("Generous Treat", "Select one food stall of the opponent. Any player landing on this stall is treated to a complimentary meal for one turn, no payment necessary."));
+        // cardDeck.Add(new Card("Free Meal Ticket", "Receive a ticket for a complimentary meal at any food stall on your next visit."));
 
-        cardDeck.Add(new Card("Property Seizure", "Force one opponent to sell one property of your choice from their holdings."));
-        cardDeck.Add(new Card("Natural Disaster: Food Stall Ruined",  "An earthquake has destroyed 1 of your food stalls at the festival "));
-        cardDeck.Add(new Card("Forced Property Sale", "You must sell one property of your choice from your holdings."));
+        // cardDeck.Add(new Card("Property Seizure", "Force one opponent to sell one property of your choice from their holdings."));
+        // cardDeck.Add(new Card("Natural Disaster: Food Stall Ruined",  "An earthquake has destroyed 1 of your food stalls at the festival "));
+        // cardDeck.Add(new Card("Forced Property Sale", "You must sell one property of your choice from your holdings."));
 
-        cardDeck.Add(new Card("Firework Spectacle", "Select one of your stalls to host a firework display, turning it into a hot spot and increasing its value."));     
+        // cardDeck.Add(new Card("Firework Spectacle", "Select one of your stalls to host a firework display, turning it into a hot spot and increasing its value."));     
     }
     // // private List<string> cards = new List<string> 
     // private List<string> cardDescriptions = new List<string>
@@ -295,7 +295,7 @@ public class PlayerController : MonoBehaviour
                 hasGetOutOfJailCard = false;
                 turnsInJail = 0;
                 StartCoroutine(RollTheDice());
-                ShowMessage("You have used your Get out of jail Ticket");
+                ShowMessage("Your Get out of Jail Ticket has been redeemed! You are now released from jail without penalty.");
                 yield return new WaitForSeconds(2f);
                 rollButton.gameObject.SetActive(false);
                 playerMoveText.gameObject.SetActive(false);
@@ -459,8 +459,7 @@ public class PlayerController : MonoBehaviour
         if (currentPosition == 12 || currentPosition == 20 || currentPosition == 23 || currentPosition == 28)
         {
             GameObject ChancePrefabInstance = Instantiate(ChancePrefab, canvasTransform);
-            // ShowMessage("Amusement Park");
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(3f);
             Destroy(ChancePrefabInstance);
             yield return new WaitForSeconds(2f);
             yield return StartCoroutine(DrawCard());
@@ -581,7 +580,7 @@ public class PlayerController : MonoBehaviour
                 //     UpdateMoneyText();
                 // }
             }
-
+    
             yield return null;
         }
 
@@ -639,13 +638,61 @@ public class PlayerController : MonoBehaviour
                 yield return new WaitForSeconds(2f);
                 break;
 
+            case "Lottery Win":
+                currentPlayer.Money += 200000;
+                currentPlayer.UpdateMoneyText();
+                currentPlayer.ShowMessage("You have collected $200,000 from the bank.");
+                yield return new WaitForSeconds(2f);
+                break;
+
+            case "Dog Poop Cleanup Fee":
+                currentPlayer.Money -= 50000;
+                currentPlayer.UpdateMoneyText();
+                currentPlayer.ShowMessage("You paid a fee of $50,000 for dog poop cleanup.");
+                yield return new WaitForSeconds(2f);
+                break;
+
             case "Get out of jail Free Ticket":
                 currentPlayer.hasGetOutOfJailCard = true;
                 currentPlayer.ShowMessage("You got a Get out of jail Free Ticket to leave jail.");
                 yield return new WaitForSeconds(2f);
                 break;
 
-            case "Free Dinner Ticket":
+            case "Go to Jail":
+                currentPlayer.waypointIndex = 8;
+                transform.position = waypoints[waypointIndex].position; 
+                DisplayGoToJailText();
+                InJail = true;
+                currentPlayer.ShowMessage("You have been sent to jail.");
+                yield return new WaitForSeconds(2f);
+                break;
+
+            case "Advance to Go":
+                // Determine the number of steps needed to reach the "Go" space
+                int stepsToGo = (40 - currentPlayer.currentPosition) % 40;
+
+                // Calculate the target waypoint index
+                int targetWaypointIndex = (currentPlayer.currentPosition + stepsToGo) % 40;
+
+                // Slowly move the player to the "Go" space
+                while (currentPlayer.currentPosition != targetWaypointIndex)
+                {
+                    // Move the player to the next waypoint
+                    currentPlayer.MoveForward();
+                    yield return new WaitForSeconds(0.5f); // Adjust the delay as needed
+                }
+
+                // Add $300 from the bank
+                currentPlayer.Money += 300000;
+                currentPlayer.UpdateMoneyText(); // Update UI to reflect the new money amount
+                currentPlayer.ShowMessage("Your character has moved forward to 'Go' and collected $300,000 from the bank.");
+                yield return new WaitForSeconds(2f);
+                break;
+
+
+
+
+            case "Free Meal Ticket":
                 currentPlayer.hasFreeRentTicket = true;
                 currentPlayer.ShowMessage("You've received a Free Dinner Ticket. Your meal will be complimentary next time.");
                 yield return new WaitForSeconds(2f);
@@ -659,7 +706,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void MoveForward()
+    {
+        // Increment the current waypoint index to move the player forward
+        currentPosition = (currentPosition + 1) % waypoints.Length;
 
+        // Move the player's game object to the new waypoint position
+        transform.position = waypoints[currentPosition].position;
+    }
 
     private IEnumerator LandOnProperty()
     {
@@ -710,17 +764,28 @@ public class PlayerController : MonoBehaviour
             else if (ownerPlayer != null && ownerPlayer.teamID != this.teamID)
             {
                 int rentPriceToDeduct = property.rentPrices[property.currentStageIndex];
-                Money -= rentPriceToDeduct;
-                ownerPlayer.Money += rentPriceToDeduct;
-                UpdateMoneyText();
-                ownerPlayer.UpdateMoneyText();
-
                 GameObject rentMessageObject = Instantiate(MessagePrefab, canvasTransform);
                 TextMeshProUGUI RentMessageText = rentMessageObject.GetComponentInChildren<TextMeshProUGUI>();
                 RentMessageText.text = "You pay a rent of $" + rentPriceToDeduct;
                 yield return new WaitForSeconds(1f);
                 Destroy(rentMessageObject);
+
+                if (hasFreeRentTicket)
+                {
+                    hasFreeRentTicket = false;
+                    ShowMessage("Your Free Meal Ticket has been redeemed! Enjoy your complimentary meal.");
+                    yield return new WaitForSeconds(2f);
+                }
+                else
+                {
+                    Money -= rentPriceToDeduct;
+                    UpdateMoneyText();
+                }
+
                 yield return new WaitForSeconds(1f);
+
+                ownerPlayer.Money += rentPriceToDeduct;
+                ownerPlayer.UpdateMoneyText();
 
                 if (property.currentStageIndex < 4)
                 {
