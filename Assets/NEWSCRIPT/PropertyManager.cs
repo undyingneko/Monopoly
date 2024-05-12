@@ -80,7 +80,7 @@ public class PropertyManager : MonoBehaviour
             }
         }
         
-        private int CalculateStagePrice(int stageIndex)
+        public int CalculateStagePrice(int stageIndex)
         {
             switch (stageIndex)
             {
@@ -111,7 +111,7 @@ public class PropertyManager : MonoBehaviour
             }
 
             return buyoutPrice;
-        }        
+        } 
     }
 
 
@@ -343,20 +343,6 @@ public class PropertyManager : MonoBehaviour
         rentTextInstance.gameObject.SetActive(false);
     }
 
-
-    // // Helper method to find playerID by color
-    // private int FindPlayerIDByColor(string color)
-    // {
-    //     foreach (var entry in playerIDToColor)
-    //     {
-    //         if (entry.Value == color)
-    //         {
-    //             return entry.Key;
-    //         }
-    //     }
-    //     return -1; // Return -1 if color is not found
-    // }
-
     public void ActivateRentTagImage(PropertyData property)
     {
         foreach (GameObject rentTagImage in property.rentTagImages)
@@ -390,10 +376,9 @@ public class PropertyManager : MonoBehaviour
         // Ensure the rent text is not null
         if (property.rentText != null)
         {
-            // Update the rent text with the rent price for the current stage
-            property.rentText.text = property.rentPrices[stageIndex].ToString(); // Assuming rentPrices are already initialized in InitializePrices method
+            property.rentText.text = FormatPrice(property.rentPrices[stageIndex]);
 
-            // Activate the rent text
+            // property.rentText.text = property.rentPrices[stageIndex].ToString(); 
             property.rentText.gameObject.SetActive(true);
         }
         else
@@ -401,6 +386,23 @@ public class PropertyManager : MonoBehaviour
             Debug.LogWarning("Rent text not found for property: " + property.name);
         }
     }
+
+    public string FormatPrice(int price)
+    {
+        if (price >= 1000000)
+        {
+            return (price / 1000f).ToString("0,0K");
+        }
+        else if (price >= 1000)
+        {
+            return (price / 1000f).ToString("0.#") + "K";
+        }
+        else
+        {
+            return price.ToString();
+        }
+    } 
+
 
 
 

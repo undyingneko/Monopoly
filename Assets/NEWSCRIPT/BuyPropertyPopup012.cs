@@ -202,7 +202,7 @@ public class BuyPropertyPopup012 : MonoBehaviour
                     {
                         // If the player doesn't own the property or the current stage is not bought, display the price and enable the buy button
                         BuyPropertyPopup_stagePriceTexts[i].gameObject.SetActive(true);
-                        BuyPropertyPopup_stagePriceTexts[i].text = "Price: " + property.stagePrices[i].ToString();
+                        BuyPropertyPopup_stagePriceTexts[i].text = "Price: " + FormatStagePrice(i, property);
                         BuyPropertyPopup_buyButtons[i].interactable = true;
                         BuyPropertyPopup_buyButtons[i].gameObject.SetActive(true);
                     }
@@ -220,7 +220,7 @@ public class BuyPropertyPopup012 : MonoBehaviour
             BuyPropertyPopup_buyButtons[3].interactable = true;
             BuyPropertyPopup_buyButtons[3].gameObject.SetActive(true);
             BuyPropertyPopup_stagePriceTexts[3].gameObject.SetActive(true);
-            BuyPropertyPopup_stagePriceTexts[3].text = "Price: " + property.stagePrices[3].ToString();           
+            BuyPropertyPopup_stagePriceTexts[3].text = "Price: " + FormatStagePrice(3, property);         
             BuyPropertyPopup_stageNumberTexts[3].text = "STAGE " + 3;
         }
         else if (currentProperty.currentStageIndex == 3)
@@ -228,7 +228,7 @@ public class BuyPropertyPopup012 : MonoBehaviour
             BuyPropertyPopup_buyButtons[4].interactable = true;
             BuyPropertyPopup_buyButtons[4].gameObject.SetActive(true);
             BuyPropertyPopup_stagePriceTexts[4].gameObject.SetActive(true);
-            BuyPropertyPopup_stagePriceTexts[4].text = "Price: " + property.stagePrices[4].ToString();  
+            BuyPropertyPopup_stagePriceTexts[4].text = "Price: " + FormatStagePrice(4, property); 
             BuyPropertyPopup_stageNumberTexts[4].text = "HOTEL";
         }
 
@@ -337,7 +337,30 @@ public class BuyPropertyPopup012 : MonoBehaviour
     }
     
 
+    // private string FormatPrice(int price)
+    // {
+    //     if (price >= 1000000)
+    //     {
+    //         return (price / 1000f).ToString("0,0K");
+    //     }
+    //     else if (price >= 1000)
+    //     {
+    //         return (price / 1000f).ToString("0.#") + "K";
+    //     }
+    //     else
+    //     {
+    //         return price.ToString();
+    //     }
+    // }
 
+    private string FormatStagePrice(int stageIndex, PropertyManager.PropertyData property)
+    {
+        gameManager = FindObjectOfType<GameManager>();
+        int stagePrice = property.CalculateStagePrice(stageIndex);
+
+        string formattedstagePrice = gameManager.FormatPrice(stagePrice);
+        return formattedstagePrice;
+    }
 
 }
 

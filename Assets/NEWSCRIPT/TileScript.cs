@@ -17,10 +17,12 @@ public class TileScript : MonoBehaviour
 
     private PropertyManager propertyManager;
     private static GameObject activePopupInstance;
+    private GameManager gameManager;
 
     private void Start()
     {
         propertyManager = PropertyManager.Instance;
+        gameManager = FindObjectOfType<GameManager>();
     }
 
     private void OnMouseDown()
@@ -90,6 +92,7 @@ public class TileScript : MonoBehaviour
     }
     private void UpdatePopupContent(GameObject popupInstance, PropertyManager.PropertyData propertyData)
     {
+        gameManager = FindObjectOfType<GameManager>();
         // // Get references to the Text elements within the popup window
 
         TextMeshProUGUI Tilepopup_propertyNameText = popupInstance.transform.Find("Tilepopup_propertyNameText").GetComponent<TextMeshProUGUI>();
@@ -108,8 +111,13 @@ public class TileScript : MonoBehaviour
         if (propertyData.owned)
         {
             // If property is owned, display current rent price
-            Tilepopup_RentPrice.text = "Current Rent Price: " + propertyData.rentPrices[propertyData.currentStageIndex];
-            Tilepopup_BuyOutPrice.text = "Buy Out Price: " + propertyData.buyoutPrices[propertyData.currentStageIndex];
+            string formattedStagePrice = gameManager.FormatPrice(propertyData.rentPrices[propertyData.currentStageIndex]);
+            Tilepopup_RentPrice.text = "Current Rent Price: " + formattedStagePrice;
+
+            string formattedBuyOutPrice = gameManager.FormatPrice(propertyData.buyoutPrices[propertyData.currentStageIndex]);
+            Tilepopup_BuyOutPrice.text = "Buy Out Price: " + formattedBuyOutPrice;
+           
+            // Tilepopup_BuyOutPrice.text = "Buy Out Price: " + propertyData.buyoutPrices[propertyData.currentStageIndex];
         }
         else
         {
@@ -124,9 +132,14 @@ public class TileScript : MonoBehaviour
         // {
         //     stagePricesText += "Stage " + i + ": " + propertyData.prices[i] + "\n";
         // }
+        string formattedStage0Price = gameManager.FormatPrice(propertyData.stagePrices[0]);
+        priceStage0Text.text = "Price to buy Land: " + formattedStage0Price;
 
-        priceStage0Text.text = "Price to buy Land: " + propertyData.stagePrices[0];
-        priceStage4Text.text = "Price to buy Hotel: " + propertyData.stagePrices[4];
+        string formattedStage4Price = gameManager.FormatPrice(propertyData.stagePrices[4]);
+        priceStage4Text.text = "Price to buy Hotel: " + formattedStage4Price;
+
+        // priceStage0Text.text = "Price to buy Land: " + propertyData.stagePrices[0];
+        // priceStage4Text.text = "Price to buy Hotel: " + propertyData.stagePrices[4];
 
         // priceEachStageText.text = stagePricesText;    
         for (int i = 1; i <= 3; i++)
@@ -134,8 +147,12 @@ public class TileScript : MonoBehaviour
             if (i < propertyData.stagePrices.Count)
             {
                 TextMeshProUGUI stagePriceText = popupInstance.transform.Find("Tile_PriceStage" + i).GetComponent<TextMeshProUGUI>();
-                stagePriceText.text = "Price stage " + i + ": " + propertyData.stagePrices[i];
+                string formattedStagePrice = gameManager.FormatPrice(propertyData.stagePrices[i]);
+                stagePriceText.text = "Price stage " + i + ": " + formattedStagePrice;
                 stagePriceText.gameObject.SetActive(true);
+                // TextMeshProUGUI stagePriceText = popupInstance.transform.Find("Tile_PriceStage" + i).GetComponent<TextMeshProUGUI>();
+                // stagePriceText.text = "Price stage " + i + ": " + propertyData.stagePrices[i];
+                // stagePriceText.gameObject.SetActive(true);
             }
             else
             {

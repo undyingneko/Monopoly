@@ -77,7 +77,39 @@ public class GameManager : MonoBehaviour
         currentPlayerIndex = (currentPlayerIndex + 1) % players.Length;
         players[currentPlayerIndex].StartTurn();
     }
+    
+    // public string FormatPrice(int price)
+    // {
+    //     if (price >= 1000000)
+    //     {
+    //         return (price / 1000f).ToString("0,0K");
+    //     }
+    //     else if (price >= 1000)
+    //     {
+    //         return (price / 1000f).ToString("0.#") + "K";
+    //     }
+    //     else
+    //     {
+    //         return price.ToString();
+    //     }
+    // }
 
+    public string FormatPrice(int price)
+    {
+        if (price >= 1000000)
+        {
+            float millionValue = price / 1000000f;
+            return millionValue.ToString("0.##") + "M";
+        }
+        else if (price >= 1000)
+        {
+            return (price / 1000f).ToString("0.#") + "K";
+        }
+        else
+        {
+            return price.ToString();
+        }
+    }
 
 
 }

@@ -414,8 +414,8 @@ public class PlayerController : MonoBehaviour
         // }
         //---------------------
         // For testing purposes, set the dice values to double 6
-        diceValues[0] = 7;
-        diceValues[1] = 5;
+        diceValues[0] = 0;
+        diceValues[1] = 1;
         for (int i = 0; i <= 20; i++)
         {
             for (int j = 0; j < diceImages.Length; j++)
@@ -814,9 +814,13 @@ public class PlayerController : MonoBehaviour
             else if (ownerPlayer != null && ownerPlayer.teamID != this.teamID)
             {
                 int rentPriceToDeduct = property.rentPrices[property.currentStageIndex];
+
                 GameObject rentMessageObject = Instantiate(MessagePrefab, canvasTransform);
                 TextMeshProUGUI RentMessageText = rentMessageObject.GetComponentInChildren<TextMeshProUGUI>();
-                RentMessageText.text = "You pay a rent of $" + rentPriceToDeduct;
+
+                string formattedRent = FormatMoney(rentPriceToDeduct);
+                RentMessageText.text = "You pay a rent of $" + formattedRent;
+
                 yield return new WaitForSeconds(1f);
                 Destroy(rentMessageObject);
 
@@ -957,11 +961,27 @@ public class PlayerController : MonoBehaviour
     public void UpdateMoneyText()
     {
         // Update the text displayed on the moneyText object
-        moneyText.text = Money.ToString();
+        moneyText.text = FormatMoney(Money);
+        // moneyText.text = Money.ToString();
         Debug.Log("Money updated. Current money: " + Money);
     }
-
-
+    
+    public string FormatMoney(long amount)
+    {
+        if (amount >= 2000000)
+        {
+            float millionValue = amount / 1000000f;
+            return millionValue.ToString("0.#") + "M";
+        }
+        else if (amount >= 1000)
+        {
+            return (amount / 1000f).ToString("0.#") + "K";
+        }
+        else
+        {
+            return amount.ToString();
+        }
+    }
 
 
     public void EndTurn()

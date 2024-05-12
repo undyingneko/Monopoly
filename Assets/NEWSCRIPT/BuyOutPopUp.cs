@@ -204,25 +204,25 @@ public class BuyOutPopUp : MonoBehaviour
             if (currentProperty.currentStageIndex == 0)
             {
                 // Display "LAND" for stage 0
-                stageBuyOutPriceText.text = "Price: " + buyoutPrice.ToString(); 
+                stageBuyOutPriceText.text = "Price: " + FormatBuyoutPrice(currentProperty.currentStageIndex, currentProperty); 
                 stageNumberText.text = "LAND";
             }
             else if (currentProperty.currentStageIndex == 1)
             {
                 // Display "LAND" for stage 0
-                stageBuyOutPriceText.text = "Price: " + buyoutPrice.ToString(); 
+                stageBuyOutPriceText.text = "Price: " + FormatBuyoutPrice(currentProperty.currentStageIndex, currentProperty); 
                 stageNumberText.text = "STAGE 1";
             }          
         }
         else if (currentProperty.currentStageIndex == 2)
         {
 
-            stageBuyOutPriceText.text = "Price: " + buyoutPrice.ToString();           
+            stageBuyOutPriceText.text = "Price: " + FormatBuyoutPrice(currentProperty.currentStageIndex, currentProperty);           
             stageNumberText.text = "STAGE 3";
         }
         else if (currentProperty.currentStageIndex == 3)
         {
-            stageBuyOutPriceText.text = "Price: " + buyoutPrice.ToString();  
+            stageBuyOutPriceText.text = "Price: " + FormatBuyoutPrice(currentProperty.currentStageIndex, currentProperty);  
             stageNumberText.text = "HOTEL";
         }
         else
@@ -333,9 +333,29 @@ public class BuyOutPopUp : MonoBehaviour
         Debug.Log("gameManager.buyOutDecisionMade set to : " + gameManager.buyOutDecisionMade);
         
     }
-    
+    // private string FormatPrice(int price)
+    // {
+    //     if (price >= 1000000)
+    //     {
+    //         return (price / 1000f).ToString("0,0K");
+    //     }
+    //     else if (price >= 1000)
+    //     {
+    //         return (price / 1000f).ToString("0.#") + "K";
+    //     }
+    //     else
+    //     {
+    //         return price.ToString();
+    //     }
+    // }    
 
-
+    private string FormatBuyoutPrice (int stageIndex, PropertyManager.PropertyData property)
+    {
+        gameManager = FindObjectOfType<GameManager>();
+        int buyoutPrice = property.CalculateBuyoutPrice(stageIndex);
+        string formattedbuyoutPrice = gameManager.FormatPrice(buyoutPrice);
+        return formattedbuyoutPrice;
+    }
 
 }
 
