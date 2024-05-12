@@ -116,6 +116,9 @@ public class PlayerController : MonoBehaviour
     public bool hasGetOutOfJailCard = false;
     public bool hasFreeRentTicket = false;
 
+    public TMP_InputField dice1InputField;
+    public TMP_InputField dice2InputField;
+
     void PopulateCardDeck()
     {
         // cardDeck.Add(new Card("Birthday Gift", "Collect a Birthday Gift of $15000 from each player."));
@@ -226,6 +229,41 @@ public class PlayerController : MonoBehaviour
             Debug.LogError("Failed to load ChancePrefabPath from Resources folder at path: " + MessagePrefabPath);
         }  
         PopulateCardDeck();
+
+        //testing--
+
+
+        // GameObject inputField1Prefab = Resources.Load<GameObject>("InputField1Prefab");
+        // GameObject inputField2Prefab = Resources.Load<GameObject>("InputField2Prefab");
+
+        // if (inputField1Prefab == null ||inputField2Prefab == null )
+        // {
+        //     Debug.LogError("Input field prefab not found in Resources folder.");
+        //     return;
+        // }
+        // dice1InputField = Instantiate(inputField1Prefab, canvasTransform);
+        // dice2InputField = Instantiate(inputField2Prefab, canvasTransform);
+        // if(dice1InputField != null)
+        // {
+        //     Debug.Log("dice1InputField is assigned correctly.");
+        // }
+        // else
+        // {
+        //     Debug.LogError("dice1InputField is not assigned!");
+        // }
+
+        // // Check if dice2InputField is assigned
+        // if(dice2InputField != null)
+        // {
+        //     Debug.Log("dice2InputField is assigned correctly.");
+        // }
+        // else
+        // {
+        //     Debug.LogError("dice2InputField is not assigned!");
+        // }
+
+
+        // //------
         
     }
     private void InstantiateBuyPropertyPopup012(PropertyManager.PropertyData property)
@@ -296,7 +334,9 @@ public class PlayerController : MonoBehaviour
                 InJail = false;
                 hasGetOutOfJailCard = false;
                 turnsInJail = 0;
-                StartCoroutine(RollTheDice());
+                int diceValue1 = int.Parse(dice1InputField.text);
+                int diceValue2 = int.Parse(dice2InputField.text);           
+                StartCoroutine(RollTheDice(diceValue1 , diceValue1));
                 ShowMessage("Your Get out of Jail Ticket has been redeemed! You are now released from jail without penalty.");
                 yield return new WaitForSeconds(2f);
                 rollButton.gameObject.SetActive(false);
@@ -304,15 +344,13 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                StartCoroutine(RollTheDice());
+                int diceValue1 = int.Parse(dice1InputField.text); 
+                int diceValue2 = int.Parse(dice2InputField.text);
+                StartCoroutine(RollTheDice(diceValue1 , diceValue2));
                 rollButton.gameObject.SetActive(false);
                 playerMoveText.gameObject.SetActive(false);
             }
-                            if (hasGetOutOfJailCard)
-                {
-                    
 
-                }
         }
     }
     private void StartRollDiceCoroutine()
@@ -395,7 +433,7 @@ public class PlayerController : MonoBehaviour
         coroutineAllowed = true; 
     }
 
-    private IEnumerator RollTheDice()
+    private IEnumerator RollTheDice(int dice1Value, int dice2Value)
     {
         Debug.Log("inside roll dice normal");
         coroutineAllowed = false;
@@ -414,8 +452,8 @@ public class PlayerController : MonoBehaviour
         // }
         //---------------------
         // For testing purposes, set the dice values to double 6
-        diceValues[0] = 0;
-        diceValues[1] = 1;
+        diceValues[0] = dice1Value;
+        diceValues[1] = dice2Value;
         for (int i = 0; i <= 20; i++)
         {
             for (int j = 0; j < diceImages.Length; j++)
