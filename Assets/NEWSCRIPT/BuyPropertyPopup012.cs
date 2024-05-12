@@ -262,6 +262,7 @@ public class BuyPropertyPopup012 : MonoBehaviour
                             currentProperty.ownerID = currentPlayer.playerID;                        
                             currentProperty.teamownerID = currentPlayer.teamID;
                             currentPlayer.ownedProperties.Add(currentProperty);
+                            PlayerController.AddToTeamProperties(currentPlayer.teamID, currentProperty);
                             // currentPlayer.UpdatePropertyOwnership(stageIndex);
                         }                    
 

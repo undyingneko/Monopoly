@@ -59,7 +59,23 @@ public class PlayerController : MonoBehaviour
 
     public List<PropertyManager.PropertyData> properties;
     public List<PropertyManager.PropertyData> ownedProperties = new List<PropertyManager.PropertyData>();
-    
+
+    public List<PropertyManager.PropertyData> teamProperties = new List<PropertyManager.PropertyData>();
+
+    public static Dictionary<int, List<PropertyManager.PropertyData>> teamPropertiesDict = new Dictionary<int, List<PropertyManager.PropertyData>>();
+
+    // Method to add a property to the teamProperties list of a specific team
+    public static void AddToTeamProperties(int teamID, PropertyManager.PropertyData property)
+    {
+        if (!teamPropertiesDict.ContainsKey(teamID))
+        {
+            teamPropertiesDict[teamID] = new List<PropertyManager.PropertyData>();
+        }
+        teamPropertiesDict[teamID].Add(property);
+    }
+
+
+    public PropertyManager.PropertyData propertyToDemolish;  
 
     private SpriteRenderer spriteRenderer;
     private int originalSortingOrder = 0;
@@ -119,6 +135,8 @@ public class PlayerController : MonoBehaviour
     public TMP_InputField dice1InputField;
     public TMP_InputField dice2InputField;
 
+    
+
     void PopulateCardDeck()
     {
         // cardDeck.Add(new Card("Birthday Gift", "Collect a Birthday Gift of $15000 from each player."));
@@ -135,9 +153,9 @@ public class PlayerController : MonoBehaviour
         // cardDeck.Add(new Card("Move Backward 1 Space", "Move your character back one space on the board."));
 
         // cardDeck.Add(new Card("Tax Levy",  "Pay a tax equal to 10% of the total value of your owned properties."));
-        cardDeck.Add(new Card("Tax Exemption", "You are exempt from paying any taxes the next time."));
+        // cardDeck.Add(new Card("Tax Exemption", "You are exempt from paying any taxes the next time."));
         
-        // cardDeck.Add(new Card("Avenue Demolition", "Demolish one avenue and leave it ownerless."));
+        cardDeck.Add(new Card("Avenue Demolition", "Demolish one of the opponent's avenues, leaving it ownerless."));
 
         // cardDeck.Add(new Card("Generous Treat", "Select one food stall of the opponent. Any player landing on this stall is treated to a complimentary meal for one turn, no payment necessary."));
         // cardDeck.Add(new Card("Free Meal Ticket", "Receive a ticket for a complimentary meal at any food stall on your next visit."));
@@ -229,41 +247,6 @@ public class PlayerController : MonoBehaviour
             Debug.LogError("Failed to load ChancePrefabPath from Resources folder at path: " + MessagePrefabPath);
         }  
         PopulateCardDeck();
-
-        //testing--
-
-
-        // GameObject inputField1Prefab = Resources.Load<GameObject>("InputField1Prefab");
-        // GameObject inputField2Prefab = Resources.Load<GameObject>("InputField2Prefab");
-
-        // if (inputField1Prefab == null ||inputField2Prefab == null )
-        // {
-        //     Debug.LogError("Input field prefab not found in Resources folder.");
-        //     return;
-        // }
-        // dice1InputField = Instantiate(inputField1Prefab, canvasTransform);
-        // dice2InputField = Instantiate(inputField2Prefab, canvasTransform);
-        // if(dice1InputField != null)
-        // {
-        //     Debug.Log("dice1InputField is assigned correctly.");
-        // }
-        // else
-        // {
-        //     Debug.LogError("dice1InputField is not assigned!");
-        // }
-
-        // // Check if dice2InputField is assigned
-        // if(dice2InputField != null)
-        // {
-        //     Debug.Log("dice2InputField is assigned correctly.");
-        // }
-        // else
-        // {
-        //     Debug.LogError("dice2InputField is not assigned!");
-        // }
-
-
-        // //------
         
     }
     private void InstantiateBuyPropertyPopup012(PropertyManager.PropertyData property)
@@ -496,6 +479,37 @@ public class PlayerController : MonoBehaviour
             }
         }
         
+        // if (currentPosition == 12 || currentPosition == 20 || currentPosition == 23 || currentPosition == 28)
+        // {
+        //     GameObject ChancePrefabInstance = Instantiate(ChancePrefab, canvasTransform);
+        //     yield return new WaitForSeconds(2f);
+        //     Destroy(ChancePrefabInstance);
+        //     yield return new WaitForSeconds(0.5f);
+        //     yield return StartCoroutine(DrawCard());
+        // }     
+
+        // if (currentPosition == 31)
+        // {
+        //     int totalPropertyValue = 0;
+        //     foreach (PropertyManager.PropertyData property in ownedProperties)
+        //     {
+        //         totalPropertyValue += property.stagePrices[property.currentStageIndex];
+        //     }
+        //     int taxAmount = (int)(totalPropertyValue * 0.1f);
+        //     Money -= taxAmount;
+        //     UpdateMoneyText();
+        //     ShowMessage($"You paid income tax of ${taxAmount}");
+        //     yield return new WaitForSeconds(2f);
+        // }
+
+        yield return StartCoroutine(CheckPosition());
+        yield return StartCoroutine(CheckForDoubles(diceValues));
+
+        coroutineAllowed = true; 
+
+    }
+    private IEnumerator CheckPosition()
+    {
         if (currentPosition == 12 || currentPosition == 20 || currentPosition == 23 || currentPosition == 28)
         {
             GameObject ChancePrefabInstance = Instantiate(ChancePrefab, canvasTransform);
@@ -517,17 +531,8 @@ public class PlayerController : MonoBehaviour
             UpdateMoneyText();
             ShowMessage($"You paid income tax of ${taxAmount}");
             yield return new WaitForSeconds(2f);
-        }
-
-
-        
-        
-        yield return StartCoroutine(CheckForDoubles(diceValues));
-
-        coroutineAllowed = true; 
-
+        }   
     }
-
 
     public void HackRollDice(int[] diceValues)
     {
@@ -653,16 +658,17 @@ public class PlayerController : MonoBehaviour
     public IEnumerator ApplyCardEffects(string cardName)
     {
         PlayerController currentPlayer = gameManager.GetCurrentPlayerController();
-
+        // PlayerController[] players = null;
+        PlayerController[] players = FindObjectsOfType<PlayerController>();
         switch (cardName)
         {
             case "Birthday Gift":
-                PlayerController[] players = FindObjectsOfType<PlayerController>();
+                // players = FindObjectsOfType<PlayerController>();
+                
                 currentPlayer.Money += 15000 * (players.Length - 1);
                 currentPlayer.UpdateMoneyText(); // Update UI to reflect the new money amount
                 currentPlayer.ShowMessage("Collect a Birthday Gift of $15,000 from each player");
-
-                
+        
                 foreach (PlayerController player in players)
                 {
                     if (player != currentPlayer) // Exclude the current player
@@ -770,6 +776,59 @@ public class PlayerController : MonoBehaviour
                 yield return new WaitForSeconds(2f);
                 break;
 
+            // case "Avenue Demolition":
+            //     // Check if there are properties owned by other players
+            //     opponentProperties = new List<PropertyManager.PropertyData>();
+            //     foreach (PlayerController player in players)
+            //     {
+            //         if (player != currentPlayer) // Exclude the current player
+            //         {
+            //             opponentProperties.AddRange(player.ownedProperties);
+            //         }
+            //     }
+
+            //     // Check if there are opponent-owned properties available for demolition
+            //     if (opponentProperties.Count > 0)
+            //     {
+            //         // Select a random opponent-owned property for demolition
+            //         propertyToDemolish = opponentProperties[Random.Range(0, opponentProperties.Count)];
+
+            //         // Reset the property ownership
+            //         propertyToDemolish.owned = false;
+            //         propertyToDemolish.ownerID = -1; // Set ownerID to -1 (ownerless)
+            //         propertyToDemolish.teamownerID = -1; // Set teamownerID to -1 (ownerless)
+            //         currentPlayer.ownedProperties.Remove(propertyToDemolish); // Remove the property from the current player's owned properties
+            //         // if (propertyToDemolish.rentTagImages != null)
+            //         // {
+            //             // Destroy(propertyToDemolish.rentTagImages[currentStageIndex]);
+            //             propertyManager.DeactivateOldStageImages(propertyToDemolish);
+            //             propertyManager.DeactivateRentTagImage(propertyToDemolish);
+            //             propertyToDemolish.rentText.gameObject.SetActive(false);
+
+            //         // }
+
+            //         // // Destroy StageImages
+            //         // foreach (var stageImage in propertyToDemolish.stageImages)
+            //         // {
+            //         //     if (stageImage != null)
+            //         //     {
+            //         //         Destroy(stageImage.gameObject);
+            //         //     }
+            //         // }
+            //         // Update UI or perform any other necessary actions
+            //         // For example:
+            //         currentPlayer.ShowMessage($"You demolished {propertyToDemolish.name}, leaving it ownerless.");
+
+            //         // Additional actions can be added here...
+
+            //         yield return new WaitForSeconds(2f);
+            //     }
+            //     else
+            //     {
+            //         // If no opponent-owned properties are available for demolition, show a message
+            //         currentPlayer.ShowMessage("There are no opponent-owned properties available for demolition.");
+            //     }
+            //     break;
 
 
 
@@ -895,13 +954,13 @@ public class PlayerController : MonoBehaviour
                     
                     yield return StartCoroutine(WaitForPropertyDecision());
                     yield return new WaitForSeconds(1f);
-
-                    if (property.stagePrices[property.nextStageIndex] <= Money)
+                    PlayerController ownerPlayeragain = FindPlayerByID(property.ownerID);
+                    if (property.stagePrices[property.nextStageIndex] <= Money && ownerPlayeragain.teamID == this.teamID)
                     {
                         InstantiateBuyPropertyPopup012(property);
                         
                     }
-                    else
+                    else if (property.stagePrices[property.nextStageIndex] > Money && ownerPlayeragain.teamID == this.teamID)
                     {
                         ShowMessage("Not enough money to acquire this property!");
                         yield return new WaitForSeconds(2f);

@@ -343,12 +343,18 @@ public class PropertyManager : MonoBehaviour
         rentTextInstance.gameObject.SetActive(false);
     }
 
+    public void DeactivateRentTagImage(PropertyData property)
+    {
+            foreach (GameObject rentTagImage in property.rentTagImages)
+            {
+                rentTagImage.SetActive(false);
+            }
+    }
+    
     public void ActivateRentTagImage(PropertyData property)
     {
-        foreach (GameObject rentTagImage in property.rentTagImages)
-        {
-            rentTagImage.SetActive(false);
-        }
+        DeactivateRentTagImage(property);
+
         // Get the color associated with the player ID
         string color = playerIDToColor[property.ownerID];
 
