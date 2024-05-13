@@ -6,6 +6,8 @@ using TMPro;
 
 public class PropertyManager : MonoBehaviour
 {
+    private GameManager gameManager;
+
     public Dictionary<int, string> playerIDToColor  = new Dictionary<int, string>
     {
         { 1, "pink" },
@@ -37,7 +39,7 @@ public class PropertyManager : MonoBehaviour
         public List<int> buyoutPrices = new List<int>();// Stores rent prices for each stage
         public List<int> stageIndexes = new List<int>();
         
-        public List<GameObject> tiles = new List<GameObject>(); 
+        // public List<GameObject> tiles = new List<GameObject>(); 
         public List<GameObject> stageImages = new List<GameObject>();
         public List<GameObject> rentTagImages = new List<GameObject>();
 
@@ -142,13 +144,14 @@ public class PropertyManager : MonoBehaviour
     }
     private void Start()
     {
+        gameManager = FindObjectOfType<GameManager>();
 
         if (canvasTransform == null)
         {
             Debug.LogError("Canvas transform reference not set. Please assign the Canvas transform in the Inspector.");
             return;
         }
-        // Call any method that requires canvasTransform here
+
     }
     private void Awake()
     {
@@ -160,10 +163,19 @@ public class PropertyManager : MonoBehaviour
         {
             instance = this;
         }
+        gameManager = FindObjectOfType<GameManager>();
+        if (gameManager != null)
+        {
+            gameManager.TileImagesLoaded += OnTileImagesLoaded;
+        }
         DontDestroyOnLoad(gameObject);
+        // LoadProperties();
+    }
+    private void OnTileImagesLoaded()
+    {
+        // Load properties after tile images have been loaded
         LoadProperties();
     }
-
 
     private void LoadProperties()
     {
@@ -224,14 +236,22 @@ public class PropertyManager : MonoBehaviour
     }
 
     private void LoadStageImagesForProperty(PropertyData property)
+    {   
+    // Check if the waypointIndexToTileMap dictionary contains the specified key
+    if (!gameManager.waypointIndexToTileMap.ContainsKey(property.JSONwaypointIndex))
     {
-        // Iterate through each stage index
+        Debug.LogError("Tile image not found for waypoint index: " + property.JSONwaypointIndex);
+        return;
+    }
+
+    GameObject tileImage = gameManager.waypointIndexToTileMap[property.JSONwaypointIndex];
+  
         for (int i = 0; i < property.stageIndexes.Count; i++)
         {
-            // Construct the prefab path using JSON waypoint index and stage index
+            
             string prefabPath = "StageImages/P" + property.JSONwaypointIndex + "_S" + i;
 
-            // Load the stage image prefab from the Resources folder
+          
             GameObject stageImagePrefab = Resources.Load<GameObject>(prefabPath);
 
             if (stageImagePrefab == null)
@@ -240,12 +260,20 @@ public class PropertyManager : MonoBehaviour
                 continue;
             }
 
-            // Instantiate the stage image prefab
+           
             GameObject stageImageInstance = Instantiate(stageImagePrefab);
-            stageImageInstance.transform.SetParent(canvasTransform, false);
-            stageImageInstance.SetActive(false);
 
-            // Add the instantiated stage image to the property's stage images list
+            stageImageInstance.transform.SetParent(tileImage.transform, false);
+            stageImageInstance.transform.localPosition = Vector3.zero;
+            Canvas parentCanvas = tileImage.GetComponentInParent<Canvas>();
+            if (parentCanvas != null)
+            {
+                stageImageInstance.transform.SetSiblingIndex(tileImage.transform.GetSiblingIndex());
+            }
+            Debug.Log("Instantiated Object Position: " + stageImageInstance.transform.position);
+
+            // stageImageInstance.SetActive(false);
+            
             property.stageImages.Add(stageImageInstance);
         }
 
@@ -258,9 +286,6 @@ public class PropertyManager : MonoBehaviour
             {
                 // Assign the image to its corresponding stage
                 GameObject stageImage = property.stageImages[i];
-                // You can set the position, rotation, scale, or other properties of the image here
-                // For example, you can use stageImage.transform.position to set its position
-                // You may need to adjust this code based on your specific requirements
                 Debug.Log("Stage Image for stage " + i + " associated with property " + property.name);
                 
             }
@@ -312,22 +337,6 @@ public class PropertyManager : MonoBehaviour
                 rentTagImageInstance.transform.SetParent(canvasTransform, false);
                 
                 rentTagImageInstance.SetActive(false);
-                // rentTagImageInstance.GetComponent<Canvas>().sortingOrder = 50;
-
-                // Find the playerID corresponding to this color
-                // int playerID = FindPlayerIDByColor(color);
-
-                // if (playerID != -1)
-                // {
-                //     // Assign ownerID to the property
-                //     property.ownerID = playerID;                
-                // }
-                // else
-                // {
-                //     Debug.LogWarning("Player ID not found for color: " + color);
-                // }
-
-                // Add the rent tag image instance to the property's rentTagImages list
                 property.rentTagImages.Add(rentTagImageInstance);
                 
             }
@@ -412,7 +421,7 @@ public class PropertyManager : MonoBehaviour
         }
     } 
 
-
+ 
 
 
 

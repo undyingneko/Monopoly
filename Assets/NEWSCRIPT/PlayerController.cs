@@ -779,30 +779,28 @@ public class PlayerController : MonoBehaviour
                 if (opponentProperties.Count > 0)
                 {
                     currentPlayer.ShowMessage("Select a property to demolish:");
-
-             
-                    for (int i = 0; i < opponentProperties.Count; i++)
+                    yield return new WaitForSeconds(2f);
+                    foreach (var opponentProperty in opponentProperties)
                     {
-                        // currentPlayer.ShowMessage($"{i + 1}. {opponentProperties[i].name}");
-                        propertyToDemolish.tile.transform.position += new Vector3(0, 1, 0);
-                        propertyToDemolish.rentText.transform.position += new Vector3(0, 1, 0);
-                        foreach (GameObject stageImage in propertyToDemolish.stageImages)
+                        GameObject tileImage = gameManager.waypointIndexToTileMap[opponentProperty.JSONwaypointIndex];
+    
+                        tileImage.transform.position += new Vector3(0, 1, 0);
+                        opponentProperty.rentText.transform.position += new Vector3(0, 1, 0);
+                        foreach (GameObject stageImage in opponentProperty.stageImages)
                         {
                             if (stageImage != null)
                             {
                                 stageImage.transform.position += new Vector3(0, 1, 0); // Example: Increase Y position by 1 unit
                             }
-                        }
-                    }     
-
-
-                    int selectedPropertyIndex = /* Logic to get player's selection */;
+                        }  
+                        TileClickHandler clickHandler = tileImage.AddComponent<TileClickHandler>();
+                        clickHandler.SetAssociatedProperty(opponentProperty);
+                    }  
+                    yield return WaitForPlayerSelection();   
                     
-                    if (selectedPropertyIndex >= 0 && selectedPropertyIndex < opponentProperties.Count)
+                    PropertyManager.PropertyData propertyToDemolish = gameManager.selectedProperty;
+                    if (propertyToDemolish != null)
                     {
-                        PropertyManager.PropertyData propertyToDemolish = opponentProperties[selectedPropertyIndex];                    
-                        // propertyToDemolish = opponentProperties[Random.Range(0, opponentProperties.Count)];
-
                         PlayerController ownerPlayer = FindPlayerByID(propertyToDemolish.ownerID);
                         ownerPlayer.ownedProperties.Remove(propertyToDemolish);
                         // Reset the property ownership
@@ -846,7 +844,22 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private IEnumerator WaitForPlayerSelection()
+    {
+        bool selectionMade = false;
 
+        while (!selectionMade)
+        {
+            // Wait for the next frame to allow the player to click on a tile
+            yield return null;
+
+            // Check if the player has made a selection
+            if (gameManager.selectedProperty != null)
+            {
+                selectionMade = true;
+            }
+        }
+    }
 
 
     public void MoveForward()

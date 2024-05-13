@@ -2,9 +2,12 @@ using UnityEngine;
 using System.Collections;
 using TMPro;
 using System.Collections.Generic;
+using System;
 
 public class GameManager : MonoBehaviour
 {
+    public Dictionary<int, GameObject> waypointIndexToTileMap = new Dictionary<int, GameObject>();
+    public PropertyManager.PropertyData selectedProperty;
     public PlayerController[] players;
     public static int currentPlayerIndex;
     public static bool GameOver = false;
@@ -15,7 +18,8 @@ public class GameManager : MonoBehaviour
     public bool buyPropertyDecisionMade = false;
     public bool buyOutDecisionMade = false;
     public bool EndedAllInteraction  = false;
-    
+    public event Action TileImagesLoaded;
+  
 
     
     void Awake()
@@ -27,11 +31,15 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         playerController = FindObjectOfType<PlayerController>();
+        
+        StartCoroutine(LoadTileImages());
 
-
+ 
+     
         StartGame();
         
     }
+
 
     void StartGame()
     {
@@ -111,5 +119,57 @@ public class GameManager : MonoBehaviour
         }
     }
 
+   public void AssignTileToWaypointIndex(int waypointIndex, GameObject tileImage)
+    {
+        if (!waypointIndexToTileMap.ContainsKey(waypointIndex))
+        {
+            waypointIndexToTileMap.Add(waypointIndex, tileImage);
+        }
+        else
+        {
+            Debug.LogWarning($"Waypoint index {waypointIndex} already has a tile assigned.");
+        }
+    }
 
+    public GameObject GetTileForWaypointIndex(int waypointIndex)
+    {
+        if (waypointIndexToTileMap.ContainsKey(waypointIndex))
+        {
+            return waypointIndexToTileMap[waypointIndex];
+        }
+        else
+        {
+            Debug.LogWarning($"No tile assigned for waypoint index {waypointIndex}.");
+            return null;
+        }
+    } 
+    public void HandleTileClick(PropertyManager.PropertyData property)
+    {
+        // Update the selected property based on the clicked tile
+        selectedProperty = property;
+        // Perform any additional logic based on the selected property...
+    } 
+
+
+    IEnumerator LoadTileImages()
+    {       
+        GameObject[] tileImages = GameObject.FindGameObjectsWithTag("Tile");
+        foreach (GameObject tileImage in tileImages)
+        {
+            // Extract the TileWaypointIndex from the tile's name
+            int waypointIndex;
+            if (int.TryParse(tileImage.name.Replace("tile_", ""), out waypointIndex))
+            {
+                // Assign the tile image to its corresponding TileWaypointIndex
+                AssignTileToWaypointIndex(waypointIndex, tileImage);
+                Debug.Log($"Tile image assigned for waypoint index: {waypointIndex}");
+            }
+            else
+            {
+                Debug.LogWarning($"Failed to parse waypoint index from tile name: {tileImage.name}");
+            }
+        } 
+        yield return null;
+        TileImagesLoaded?.Invoke();
+    }
 }
