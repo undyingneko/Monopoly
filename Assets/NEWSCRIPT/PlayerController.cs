@@ -785,14 +785,15 @@ public class PlayerController : MonoBehaviour
                         GameObject tileImage = gameManager.waypointIndexToTileMap[opponentProperty.JSONwaypointIndex];
     
                         tileImage.transform.position += new Vector3(0, 1, 0);
-                        opponentProperty.rentText.transform.position += new Vector3(0, 1, 0);
-                        foreach (GameObject stageImage in opponentProperty.stageImages)
-                        {
-                            if (stageImage != null)
-                            {
-                                stageImage.transform.position += new Vector3(0, 1, 0); // Example: Increase Y position by 1 unit
-                            }
-                        }  
+                        
+                        // opponentProperty.rentText.transform.position += new Vector3(0, 1, 0);
+                        // foreach (GameObject stageImage in opponentProperty.stageImages)
+                        // {
+                        //     if (stageImage != null)
+                        //     {
+                        //         stageImage.transform.position += new Vector3(0, 1, 0); // Example: Increase Y position by 1 unit
+                        //     }
+                        // }  
                         TileClickHandler clickHandler = tileImage.AddComponent<TileClickHandler>();
                         clickHandler.SetAssociatedProperty(opponentProperty);
                     }  

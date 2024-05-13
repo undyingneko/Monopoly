@@ -264,15 +264,15 @@ public class PropertyManager : MonoBehaviour
             GameObject stageImageInstance = Instantiate(stageImagePrefab);
 
             stageImageInstance.transform.SetParent(tileImage.transform, false);
-            stageImageInstance.transform.localPosition = Vector3.zero;
-            Canvas parentCanvas = tileImage.GetComponentInParent<Canvas>();
-            if (parentCanvas != null)
-            {
-                stageImageInstance.transform.SetSiblingIndex(tileImage.transform.GetSiblingIndex());
-            }
-            Debug.Log("Instantiated Object Position: " + stageImageInstance.transform.position);
+            // stageImageInstance.transform.localPosition = Vector3.zero;
+            // Canvas parentCanvas = tileImage.GetComponentInParent<Canvas>();
+            // if (parentCanvas != null)
+            // {
+            //     stageImageInstance.transform.SetSiblingIndex(tileImage.transform.GetSiblingIndex());
+            // }
+            // Debug.Log("Instantiated Object Position: " + stageImageInstance.transform.position);
 
-            // stageImageInstance.SetActive(false);
+            stageImageInstance.SetActive(false);
             
             property.stageImages.Add(stageImageInstance);
         }
@@ -319,12 +319,13 @@ public class PropertyManager : MonoBehaviour
     {
         // Get the list of all color variations available for rent tag images
         string[] colors = new string[] { "pink", "turquois", "green", "purple" };
-
+        GameObject tileImage = gameManager.waypointIndexToTileMap[property.JSONwaypointIndex];
         // Iterate through each color
+        // GameObject rentTagImageInstance = null;
         foreach (string color in colors)
         {
             // Construct the path to the rent tag image based on the color and JSON waypoint index
-            string rentTagImagePath = "RentTagImages/PriceTags_" + color + "_" + property.JSONwaypointIndex;
+            string rentTagImagePath = "RentTagImages/PriceTags_" + property.JSONwaypointIndex + "_" + color;
 
             // Load the rent tag image prefab from the Resources folder
             GameObject rentTagImagePrefab = Resources.Load<GameObject>(rentTagImagePath);
@@ -332,9 +333,10 @@ public class PropertyManager : MonoBehaviour
 
             if (rentTagImagePrefab != null)
             {
+                
                 // Create a GameObject for the rent tag image
                 GameObject rentTagImageInstance = Instantiate(rentTagImagePrefab);
-                rentTagImageInstance.transform.SetParent(canvasTransform, false);
+                rentTagImageInstance.transform.SetParent(tileImage.transform, false);
                 
                 rentTagImageInstance.SetActive(false);
                 property.rentTagImages.Add(rentTagImageInstance);
@@ -345,14 +347,22 @@ public class PropertyManager : MonoBehaviour
                 Debug.LogWarning("Rent tag image not found at path: " + rentTagImagePath);
             }
         }
+        // if (rentTagImageInstance != null)
+        // {
+            // Vector3 rentTagImagePosition = rentTagImageInstance.transform.position;
 
         string rentTextPath = "RentTagImages/RentText_" + property.JSONwaypointIndex;
         TextMeshProUGUI rentTextPrefab = Resources.Load<TextMeshProUGUI>(rentTextPath);
-
         TextMeshProUGUI rentTextInstance = Instantiate(rentTextPrefab);
-        rentTextInstance.transform.SetParent(canvasTransform, false);
+
+        rentTextInstance.transform.SetParent(tileImage.transform, false);
         property.rentText = rentTextInstance;
         rentTextInstance.gameObject.SetActive(false);
+        // }
+        // else
+        // {
+        //     Debug.LogWarning("Rent tag image was not instantiated successfully.");
+        // }
     }
 
     public void DeactivateRentTagImage(PropertyData property)
@@ -374,7 +384,9 @@ public class PropertyManager : MonoBehaviour
         foreach (GameObject rentTagImage in property.rentTagImages)
         {
             // Get the color variation of the rent tag image
-            string rentTagColor = rentTagImage.name.Split('_')[1]; // Assuming the name format is "PriceTags_color_waypointIndex"
+            string rentTagColor = rentTagImage.name.Split('_')[2]; 
+            rentTagColor = rentTagColor.Replace("(Clone)", "");
+            Debug.Log("Rent tag color: " + rentTagColor + ", Expected color: " + color);
 
             // Compare the color variation with the player's color
             if (rentTagColor.Equals(color))
