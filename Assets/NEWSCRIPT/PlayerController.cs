@@ -60,22 +60,10 @@ public class PlayerController : MonoBehaviour
     public List<PropertyManager.PropertyData> properties;
     public List<PropertyManager.PropertyData> ownedProperties = new List<PropertyManager.PropertyData>();
 
-    public List<PropertyManager.PropertyData> teamProperties = new List<PropertyManager.PropertyData>();
-
-    public static Dictionary<int, List<PropertyManager.PropertyData>> teamPropertiesDict = new Dictionary<int, List<PropertyManager.PropertyData>>();
-
-    // Method to add a property to the teamProperties list of a specific team
-    public static void AddToTeamProperties(int teamID, PropertyManager.PropertyData property)
-    {
-        if (!teamPropertiesDict.ContainsKey(teamID))
-        {
-            teamPropertiesDict[teamID] = new List<PropertyManager.PropertyData>();
-        }
-        teamPropertiesDict[teamID].Add(property);
-    }
-
+    public List<PropertyManager.PropertyData> opponentProperties;
 
     public PropertyManager.PropertyData propertyToDemolish;  
+    private GameObject darkenScreenGameObject;
 
     private SpriteRenderer spriteRenderer;
     private int originalSortingOrder = 0;
@@ -776,59 +764,70 @@ public class PlayerController : MonoBehaviour
                 yield return new WaitForSeconds(2f);
                 break;
 
-            // case "Avenue Demolition":
-            //     // Check if there are properties owned by other players
-            //     opponentProperties = new List<PropertyManager.PropertyData>();
-            //     foreach (PlayerController player in players)
-            //     {
-            //         if (player != currentPlayer) // Exclude the current player
-            //         {
-            //             opponentProperties.AddRange(player.ownedProperties);
-            //         }
-            //     }
+            case "Avenue Demolition":
+                // Check if there are properties owned by other players
+                opponentProperties = new List<PropertyManager.PropertyData>();
+                foreach (PlayerController player in players)
+                {
+                    if (player != currentPlayer) // Exclude the current player
+                    {
+                        opponentProperties.AddRange(player.ownedProperties);
+                    }
+                }
 
-            //     // Check if there are opponent-owned properties available for demolition
-            //     if (opponentProperties.Count > 0)
-            //     {
-            //         // Select a random opponent-owned property for demolition
-            //         propertyToDemolish = opponentProperties[Random.Range(0, opponentProperties.Count)];
+                // Check if there are opponent-owned properties available for demolition
+                if (opponentProperties.Count > 0)
+                {
+                    currentPlayer.ShowMessage("Select a property to demolish:");
 
-            //         // Reset the property ownership
-            //         propertyToDemolish.owned = false;
-            //         propertyToDemolish.ownerID = -1; // Set ownerID to -1 (ownerless)
-            //         propertyToDemolish.teamownerID = -1; // Set teamownerID to -1 (ownerless)
-            //         currentPlayer.ownedProperties.Remove(propertyToDemolish); // Remove the property from the current player's owned properties
-            //         // if (propertyToDemolish.rentTagImages != null)
-            //         // {
-            //             // Destroy(propertyToDemolish.rentTagImages[currentStageIndex]);
-            //             propertyManager.DeactivateOldStageImages(propertyToDemolish);
-            //             propertyManager.DeactivateRentTagImage(propertyToDemolish);
-            //             propertyToDemolish.rentText.gameObject.SetActive(false);
+             
+                    for (int i = 0; i < opponentProperties.Count; i++)
+                    {
+                        // currentPlayer.ShowMessage($"{i + 1}. {opponentProperties[i].name}");
+                        propertyToDemolish.tile.transform.position += new Vector3(0, 1, 0);
+                        propertyToDemolish.rentText.transform.position += new Vector3(0, 1, 0);
+                        foreach (GameObject stageImage in propertyToDemolish.stageImages)
+                        {
+                            if (stageImage != null)
+                            {
+                                stageImage.transform.position += new Vector3(0, 1, 0); // Example: Increase Y position by 1 unit
+                            }
+                        }
+                    }     
 
-            //         // }
 
-            //         // // Destroy StageImages
-            //         // foreach (var stageImage in propertyToDemolish.stageImages)
-            //         // {
-            //         //     if (stageImage != null)
-            //         //     {
-            //         //         Destroy(stageImage.gameObject);
-            //         //     }
-            //         // }
-            //         // Update UI or perform any other necessary actions
-            //         // For example:
-            //         currentPlayer.ShowMessage($"You demolished {propertyToDemolish.name}, leaving it ownerless.");
+                    int selectedPropertyIndex = /* Logic to get player's selection */;
+                    
+                    if (selectedPropertyIndex >= 0 && selectedPropertyIndex < opponentProperties.Count)
+                    {
+                        PropertyManager.PropertyData propertyToDemolish = opponentProperties[selectedPropertyIndex];                    
+                        // propertyToDemolish = opponentProperties[Random.Range(0, opponentProperties.Count)];
 
-            //         // Additional actions can be added here...
+                        PlayerController ownerPlayer = FindPlayerByID(propertyToDemolish.ownerID);
+                        ownerPlayer.ownedProperties.Remove(propertyToDemolish);
+                        // Reset the property ownership
+                        propertyToDemolish.owned = false;
+                        propertyToDemolish.ownerID = 0; // Set ownerID to -1 (ownerless)
+                        propertyToDemolish.teamownerID = 0; // Set teamownerID to -1 (ownerless)
+                        
+                        propertyManager.DeactivateOldStageImages(propertyToDemolish);
+                        propertyManager.DeactivateRentTagImage(propertyToDemolish);
+                        propertyToDemolish.rentText.gameObject.SetActive(false);
 
-            //         yield return new WaitForSeconds(2f);
-            //     }
-            //     else
-            //     {
-            //         // If no opponent-owned properties are available for demolition, show a message
-            //         currentPlayer.ShowMessage("There are no opponent-owned properties available for demolition.");
-            //     }
-            //     break;
+                        currentPlayer.ShowMessage($"You demolished {propertyToDemolish.name}, leaving it ownerless.");
+                        opponentProperties.Clear();
+                        propertyToDemolish = null;
+                       
+                        // Additional actions can be added here...
+                    }
+                    yield return new WaitForSeconds(2f);
+                }
+                else
+                {
+                    // If no opponent-owned properties are available for demolition, show a message
+                    currentPlayer.ShowMessage("There are no opponent-owned properties available for demolition.");
+                }
+                break;
 
 
 
@@ -846,6 +845,9 @@ public class PlayerController : MonoBehaviour
                 break;
         }
     }
+
+
+
 
     public void MoveForward()
     {

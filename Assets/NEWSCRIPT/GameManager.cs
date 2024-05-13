@@ -99,7 +99,7 @@ public class GameManager : MonoBehaviour
         if (price >= 1000000)
         {
             float millionValue = price / 1000000f;
-            return millionValue.ToString("0.##") + "M";
+            return millionValue.ToString("0.###") + "M";
         }
         else if (price >= 1000)
         {
