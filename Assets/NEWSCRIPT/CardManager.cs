@@ -59,16 +59,16 @@ public class CardManager : MonoBehaviour
 
         // Populate the card deck
         cardDeck.Add("Birthday Gift", new Card("Birthday Gift", "Collect a Birthday Gift of $15000 from each player."));
-        cardDeck.Add("Lottery Win: $200,000", new Card("Lottery Win", "Congratulations! You have won a lottery prize of $200,000."));
-        cardDeck.Add("Dog Poop Cleanup Fee", new Card("Dog Poop Cleanup Fee", "Oops! You have to pay a fee of $50,000 for dog poop cleanup."));
-        cardDeck.Add("Get out of Jail Ticket", new Card("Get out of Jail Ticket", "You can use this card to get out of jail once."));
-        cardDeck.Add("Go to Jail", new Card("Go to Jail", "Go directly to Jail. Do not pass 'Go,' do not collect $300,000"));
-        cardDeck.Add("Advance to Go", new Card("Advance to Go", "Move your character to the \"Go\" space on the board and collect $300,000 from the bank."));
-        cardDeck.Add("Go Back to Go", new Card("Go Back to Go", "Go back to \"Go\" without passing 'Go,' without collecting $300,000"));
-        cardDeck.Add("Advance 1 Space", new Card("Advance 1 Space", "Advance 1 space on the board."));
-        cardDeck.Add("Move Backward 1 Space", new Card("Move Backward 1 Space", "Move your character back one space on the board."));
-        cardDeck.Add("Tax Levy", new Card("Tax Levy", "Pay a tax equal to 10% of the total value of your owned properties."));
-        cardDeck.Add("Avenue Demolition", new Card("Avenue Demolition", "Demolish one of the opponent's avenues, leaving it ownerless."));
+        // cardDeck.Add("Lottery Win: $200,000", new Card("Lottery Win", "Congratulations! You have won a lottery prize of $200,000."));
+        // cardDeck.Add("Dog Poop Cleanup Fee", new Card("Dog Poop Cleanup Fee", "Oops! You have to pay a fee of $50,000 for dog poop cleanup."));
+        // cardDeck.Add("Get out of Jail Ticket", new Card("Get out of Jail Ticket", "You can use this card to get out of jail once."));
+        // cardDeck.Add("Go to Jail", new Card("Go to Jail", "Go directly to Jail. Do not pass 'Go,' do not collect $300,000"));
+        // cardDeck.Add("Advance to Go", new Card("Advance to Go", "Move your character to the \"Go\" space on the board and collect $300,000 from the bank."));
+        // cardDeck.Add("Go Back to Go", new Card("Go Back to Go", "Go back to \"Go\" without passing 'Go,' without collecting $300,000"));
+        // cardDeck.Add("Advance 1 Space", new Card("Advance 1 Space", "Advance 1 space on the board."));
+        // cardDeck.Add("Move Backward 1 Space", new Card("Move Backward 1 Space", "Move your character back one space on the board."));
+        // cardDeck.Add("Tax Levy", new Card("Tax Levy", "Pay a tax equal to 10% of the total value of your owned properties."));
+        // cardDeck.Add("Avenue Demolition", new Card("Avenue Demolition", "Demolish one of the opponent's avenues, leaving it ownerless."));
         // cardDeck.Add("Property Seizure", new Card("Property Seizure", "Force one opponent to sell one property of your choice from their holdings."));
         // cardDeck.Add("Natural Disaster", new Card("Natural Disaster", "An earthquake has destroyed 1 of your food stalls at the festival."));
         // cardDeck.Add("Forced Property Sale", new Card("Forced Property Sale", "You must sell one property of your choice from your holdings."));
@@ -492,7 +492,6 @@ public class CardManager : MonoBehaviour
         yield return null;
     }
 
-
     public IEnumerator DrawAndDisplayCard(PlayerController player)
     {
         Card drawnCard = DrawRandomCard();
@@ -513,41 +512,61 @@ public class CardManager : MonoBehaviour
         Destroy(cardObject);
         yield return new WaitForSecondsRealtime(0.5f);
         // yield return StartCoroutine(ApplyCardEffects(drawnCard.name, player, cardObject));
-        yield return coroutineManager.StartTrackedCoroutine("CardEffect", ApplyCardEffects(drawnCard.name, player, cardObject));
+        yield return ApplyCardEffect(drawnCard.name, player);
     }
 
 
     private Card DrawRandomCard()
     {
-        // Get all keys from the cardDeck dictionary
-        string[] keys = new string[cardDeck.Count];
-        cardDeck.Keys.CopyTo(keys, 0);
-
-        // Generate a random index within the range of the keys array
-        int randomIndex = Random.Range(0, keys.Length);
-
-        // Use the random index to access a random card from the dictionary
-        string randomKey = keys[randomIndex];
-        return cardDeck[randomKey];
+        List<Card> cards = new List<Card>(cardDeck.Values);
+        int randomIndex = Random.Range(0, cards.Count);
+        return cards[randomIndex];
        
     }
 
-    private IEnumerator ApplyCardEffects(string cardName, PlayerController player, GameObject cardObject)
+    private IEnumerator ApplyCardEffect(string cardName, PlayerController player)
     {
-        // Check if the card effect is defined
-        if (cardEffects.ContainsKey(cardName))
+        switch (cardName)
         {
-            // yield return StartCoroutine(cardEffects[cardName](player));
-            yield return coroutineManager.StartTrackedCoroutine("CardEffect", cardEffects[cardName](player));
-        }
-        else
-        {
-            Debug.LogWarning("Card effect not found: " + cardName);
+            case "Birthday Gift":
+                yield return BirthdayGiftEffect(player);
+                break;
+            // case "Lottery Win":
+            //     yield return LotteryWinEffect(player);
+            //     break;
+            // case "Dog Poop Cleanup Fee":
+            //     yield return DogPoopCleanupFeeEffect(player);
+            //     break;
+            // case "Get out of Jail Ticket":
+            //     yield return GetOutOfJailEffect(player);
+            //     break;
+            // case "Go to Jail":
+            //     yield return GoToJailEffect(player);
+            //     break;
+            // case "Advance to Go":
+            //     yield return AdvanceToGoEffect(player);
+            //     break;
+            // case "Go Back to Go":
+            //     yield return GoBackToGoEffect(player);
+            //     break;
+            // case "Advance 1 Space":
+            //     yield return AdvanceOneSpaceEffect(player);
+            //     break;
+            // case "Move Backward 1 Space":
+            //     yield return MoveBackwardOneSpaceEffect(player);
+            //     break;
+            // case "Tax Levy":
+            //     yield return TaxLevyEffect(player);
+            //     break;
+            // case "Avenue Demolition":
+            //     yield return AvenueDemolitionEffect(player);
+            //     break;
+            
+            default:
+                Debug.LogWarning("Card effect not found: " + cardName);
+                break;
         }
         yield return new WaitForSecondsRealtime(2f);
-        if (cardObject != null)
-        {
-            Destroy(cardObject);
-        }
     }
+
 }
