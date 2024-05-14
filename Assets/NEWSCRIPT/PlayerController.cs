@@ -7,6 +7,7 @@ using Unity.Properties;
 
 public class PlayerController : MonoBehaviour
 {
+    // [SerializeField]
     public List<PropertyManager.PropertyData> properties;
     public List<PropertyManager.PropertyData> ownedProperties = new List<PropertyManager.PropertyData>();
     public List<PropertyManager.PropertyData> opponentProperties;
@@ -139,10 +140,7 @@ public class PlayerController : MonoBehaviour
     {   
         // currentPlayerController = FindObjectOfType<PlayerController>();
         propertyManager = PropertyManager.Instance;
-        if (propertyManager == null)
-        {
-            Debug.LogError("propertyManager is not assigned. Assign it in the Unity Editor or via script.");
-        }        
+       
         gameManager = FindObjectOfType<GameManager>();
 
         rollButton.onClick.AddListener(StartRollDiceCoroutine);
@@ -171,7 +169,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.LogError("Failed to load buyout popup prefab.");
         }
-
+        
         properties = propertyManager.properties;
         // if (properties == null || properties.Count == 0)
         // {
@@ -181,7 +179,10 @@ public class PlayerController : MonoBehaviour
         // {
         //     Debug.Log("Fetched properties successfully. Count: " + properties.Count);
         // }
-       
+        if (propertyManager == null)
+        {
+            Debug.LogError("propertyManager is not assigned. Assign it in the Unity Editor or via script.");
+        } 
 
         // Ensure waypoints array is assigned and not empty
         if (waypoints == null || waypoints.Length == 0)
@@ -210,8 +211,13 @@ public class PlayerController : MonoBehaviour
             Debug.LogError("Failed to load ChancePrefabPath from Resources folder at path: " + MessagePrefabPath);
         }  
         PopulateCardDeck();
-        
+        // PropertyManager.Instance.OnPropertiesLoaded += OnPropertiesLoaded;
     }
+    private void OnPropertiesLoaded()
+    {
+        // Now that properties are loaded, access them
+        properties = propertyManager.properties;
+    }   
     private void InstantiateBuyPropertyPopup012(PropertyManager.PropertyData property)
     {
         // Find the Canvas GameObject

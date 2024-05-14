@@ -54,7 +54,7 @@ public class PropertyManager : MonoBehaviour
         public int buyoutMultiplier;
         public int buyoutCount;
  
-        public int currentStageIndex = -1; // Track the highest stage index that the player owns
+        public int currentStageIndex; // Track the highest stage index that the player owns
         public int nextStageIndex;
 
 
@@ -123,7 +123,11 @@ public class PropertyManager : MonoBehaviour
     public List<PropertyData> properties = new List<PropertyData>();
 
     // Singleton instance
-    private static PropertyManager instance;
+    public static PropertyManager instance;
+
+    public delegate void PropertiesLoadedCallback();
+    public event PropertiesLoadedCallback OnPropertiesLoaded;
+
 
     public static PropertyManager Instance
     {
@@ -153,6 +157,7 @@ public class PropertyManager : MonoBehaviour
         }
 
     }
+
     private void Awake()
     {
         if (instance != null && instance != this)
@@ -171,6 +176,7 @@ public class PropertyManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         // LoadProperties();
     }
+
     private void OnTileImagesLoaded()
     {
         // Load properties after tile images have been loaded
@@ -218,6 +224,7 @@ public class PropertyManager : MonoBehaviour
             // JSON file not found
             Debug.LogError("JSON file not found at path: " + jsonFilePath);
         }
+        OnPropertiesLoaded?.Invoke();
         
     }
 

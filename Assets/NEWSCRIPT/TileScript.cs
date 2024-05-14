@@ -13,7 +13,7 @@ public class TileScript : MonoBehaviour
     // public TextMeshProUGUI Tilepopup_propertyNameText;
     public TextMeshProUGUI[] Tilepopup_stagePriceTexts;
     // public TextMeshProUGUI Tilepopup_RentPrice;
-    // public Button Tilepopup_closeButton;
+    public Button Tilepopup_closeButton;
 
     private PropertyManager propertyManager;
     private static GameObject activePopupInstance;
