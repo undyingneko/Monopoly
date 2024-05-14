@@ -27,7 +27,7 @@ public class TileScript : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (gameManager.isAvenueDemolitionActive)
+        if (gameManager.isAvenueDemolitionActive || gameManager.isPropertySeizureActive )
         {
             // Do nothing if Avenue Demolition is active
             return;

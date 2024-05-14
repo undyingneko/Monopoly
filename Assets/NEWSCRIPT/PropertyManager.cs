@@ -17,8 +17,8 @@ public class PropertyManager : MonoBehaviour
     };
 
 
-    [SerializeField]
-    private Transform canvasTransform;
+
+    public Transform canvasTransform;
 
     [System.Serializable]
     public class PropertyDataWrapper

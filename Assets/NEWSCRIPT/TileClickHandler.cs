@@ -6,7 +6,7 @@ public class TileClickHandler : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (GameManager.Instance.isAvenueDemolitionActive)
+        if (GameManager.Instance.isAvenueDemolitionActive || GameManager.Instance.isPropertySeizureActive )
         {
             if (associatedProperty == null)
             {

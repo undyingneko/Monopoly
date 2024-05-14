@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     public bool EndedAllInteraction  = false;
     public event Action TileImagesLoaded;
     public bool isAvenueDemolitionActive = false;
+    public bool isPropertySeizureActive = false;
   
 
     
