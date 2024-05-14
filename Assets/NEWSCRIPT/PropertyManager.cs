@@ -6,6 +6,10 @@ using TMPro;
 
 public class PropertyManager : MonoBehaviour
 {
+    private Dictionary<string, TextMeshProUGUI> rentTextPrefabs = new Dictionary<string, TextMeshProUGUI>();
+    private Dictionary<string, GameObject> rentTagImagePrefabs = new Dictionary<string, GameObject>();
+    private Dictionary<string, GameObject> stageImagePrefabs = new Dictionary<string, GameObject>();
+
     private GameManager gameManager;
 
     public Dictionary<int, string> playerIDToColor  = new Dictionary<int, string>
@@ -251,15 +255,12 @@ public class PropertyManager : MonoBehaviour
         return;
     }
 
-    GameObject tileImage = gameManager.waypointIndexToTileMap[property.JSONwaypointIndex];
+        GameObject tileImage = gameManager.waypointIndexToTileMap[property.JSONwaypointIndex];
   
         for (int i = 0; i < property.stageIndexes.Count; i++)
         {
-            
             string prefabPath = "StageImages/P" + property.JSONwaypointIndex + "_S" + i;
-
-          
-            GameObject stageImagePrefab = Resources.Load<GameObject>(prefabPath);
+            GameObject stageImagePrefab = LoadStageImagePrefab(prefabPath);
 
             if (stageImagePrefab == null)
             {
@@ -267,18 +268,8 @@ public class PropertyManager : MonoBehaviour
                 continue;
             }
 
-           
             GameObject stageImageInstance = Instantiate(stageImagePrefab);
-
             stageImageInstance.transform.SetParent(tileImage.transform, false);
-            // stageImageInstance.transform.localPosition = Vector3.zero;
-            // Canvas parentCanvas = tileImage.GetComponentInParent<Canvas>();
-            // if (parentCanvas != null)
-            // {
-            //     stageImageInstance.transform.SetSiblingIndex(tileImage.transform.GetSiblingIndex());
-            // }
-            // Debug.Log("Instantiated Object Position: " + stageImageInstance.transform.position);
-
             stageImageInstance.SetActive(false);
             
             property.stageImages.Add(stageImageInstance);
@@ -335,8 +326,8 @@ public class PropertyManager : MonoBehaviour
             string rentTagImagePath = "RentTagImages/PriceTags_" + property.JSONwaypointIndex + "_" + color;
 
             // Load the rent tag image prefab from the Resources folder
-            GameObject rentTagImagePrefab = Resources.Load<GameObject>(rentTagImagePath);
-            
+            // GameObject rentTagImagePrefab = Resources.Load<GameObject>(rentTagImagePath);
+            GameObject rentTagImagePrefab = LoadRentTagImagePrefab(rentTagImagePath);
 
             if (rentTagImagePrefab != null)
             {
@@ -359,7 +350,8 @@ public class PropertyManager : MonoBehaviour
             // Vector3 rentTagImagePosition = rentTagImageInstance.transform.position;
 
         string rentTextPath = "RentTagImages/RentText_" + property.JSONwaypointIndex;
-        TextMeshProUGUI rentTextPrefab = Resources.Load<TextMeshProUGUI>(rentTextPath);
+        // TextMeshProUGUI rentTextPrefab = Resources.Load<TextMeshProUGUI>(rentTextPath);
+        TextMeshProUGUI rentTextPrefab = LoadRentTextPrefab(rentTextPath);
         TextMeshProUGUI rentTextInstance = Instantiate(rentTextPrefab);
 
         rentTextInstance.transform.SetParent(tileImage.transform, false);
@@ -440,8 +432,74 @@ public class PropertyManager : MonoBehaviour
         }
     } 
 
- 
+    private GameObject LoadStageImagePrefab(string prefabPath)
+    {
+        // Check if the prefab is already loaded
+        if (stageImagePrefabs.ContainsKey(prefabPath))
+        {
+            return stageImagePrefabs[prefabPath];
+        }
 
+        // Load the prefab from the Resources folder
+        GameObject prefab = Resources.Load<GameObject>(prefabPath);
 
+        if (prefab != null)
+        {
+            // Cache the loaded prefab for reuse
+            stageImagePrefabs.Add(prefabPath, prefab);
+        }
+        else
+        {
+            Debug.LogError("Stage image prefab not found at path: " + prefabPath);
+        }
+
+        return prefab;
+    }
+    private GameObject LoadRentTagImagePrefab(string rentTagImagePath)
+    {
+        // Check if the prefab is already loaded
+        if (rentTagImagePrefabs.ContainsKey(rentTagImagePath))
+        {
+            return rentTagImagePrefabs[rentTagImagePath];
+        }
+
+        // Load the prefab from the Resources folder
+        GameObject prefab = Resources.Load<GameObject>(rentTagImagePath);
+
+        if (prefab != null)
+        {
+            // Cache the loaded prefab for reuse
+            rentTagImagePrefabs.Add(rentTagImagePath, prefab);
+        }
+        else
+        {
+            Debug.LogError("Rent tag image prefab not found at path: " + rentTagImagePath);
+        }
+
+        return prefab;
+    }
+    private TextMeshProUGUI LoadRentTextPrefab(string rentTextPath)
+    {
+        // Check if the prefab is already loaded
+        if (rentTextPrefabs.ContainsKey(rentTextPath))
+        {
+            return rentTextPrefabs[rentTextPath];
+        }
+
+        // Load the prefab from the Resources folder
+        TextMeshProUGUI prefab = Resources.Load<TextMeshProUGUI>(rentTextPath);
+
+        if (prefab != null)
+        {
+            // Cache the loaded prefab for reuse
+            rentTextPrefabs.Add(rentTextPath, prefab);
+        }
+        else
+        {
+            Debug.LogError("Rent text prefab not found at path: " + rentTextPath);
+        }
+
+        return prefab;
+    }
 
 }

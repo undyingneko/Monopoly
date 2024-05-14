@@ -15,6 +15,20 @@ public class PlayerController : MonoBehaviour
     public PropertyManager.PropertyData propertyToDemolish;
     public PropertyManager.PropertyData propertyToSeize; 
     // private PlayerController currentPlayerController;
+
+    private Sprite[] diceSides;
+    private GameObject MessagePrefab;
+    private GameObject CardPrefab;
+    private GameObject ChancePrefab;
+
+    private BuyPropertyPopup012 buyPropertyPopup012Prefab;
+    public string buyPropertyPopup012PrefabPath = "BuyPropertyPopup012Prefab"; // Path to the prefab in the Resources folder
+    private BuyPropertyPopup012 BuypopupInstance;
+
+    public string buyoutPopupPrefabPath = "buyoutPopupPrefab"; // The path to the MessagePrefab relative to the Resources folder
+    private BuyOutPopUp buyoutPopupPrefab;
+    private BuyOutPopUp buyoutPopupInstance;
+
     public int playerID;
     public int teamID;
     public TextMeshProUGUI teamNumberText;
@@ -26,7 +40,7 @@ public class PlayerController : MonoBehaviour
     public Image[] diceImages;
     public TextMeshProUGUI sumText;
     
-    private Sprite[] diceSides;
+    
     private bool coroutineAllowed = true;
 
     private GameManager gameManager;
@@ -47,13 +61,7 @@ public class PlayerController : MonoBehaviour
 
     public Transform canvasTransform;
     
-    private BuyPropertyPopup012 buyPropertyPopup012Prefab;
-    public string buyPropertyPopup012PrefabPath = "BuyPropertyPopup012Prefab"; // Path to the prefab in the Resources folder
-    private BuyPropertyPopup012 BuypopupInstance;
 
-    public string buyoutPopupPrefabPath = "buyoutPopupPrefab"; // The path to the MessagePrefab relative to the Resources folder
-    private BuyOutPopUp buyoutPopupPrefab;
-    private BuyOutPopUp buyoutPopupInstance;
 
     private PropertyManager propertyManager;
 
@@ -64,11 +72,11 @@ public class PlayerController : MonoBehaviour
     
     
     private string MessagePrefabPath = "MessagePrefab";
-    private GameObject MessagePrefab; 
+ 
 
  
     private string ChancePrefabPath = "ChancePrefab";
-    private GameObject ChancePrefab; 
+
 
     public bool isBuyPopUpActive = false;
 
@@ -84,7 +92,7 @@ public class PlayerController : MonoBehaviour
 
   
     private string CardPrefabPath = "CardPrefab";
-    private GameObject CardPrefab; 
+
 
     public List<Card> cardDeck = new List<Card>();
 
@@ -146,31 +154,35 @@ public class PlayerController : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>();
 
         rollButton.onClick.AddListener(StartRollDiceCoroutine);
-        diceSides = Resources.LoadAll<Sprite>("DiceSides/");
+        // diceSides = Resources.LoadAll<Sprite>("DiceSides/");
+        if (diceSides == null || diceSides.Length == 0)
+        {
+            LoadDiceSides();
+        }
         transform.position = waypoints[waypointIndex].transform.position;
         
         playerMoveText.gameObject.SetActive(false);
         rollButton.gameObject.SetActive(false);
 
-        buyPropertyPopup012Prefab = Resources.Load<BuyPropertyPopup012>("BuyPropertyPopup012Prefab");
-        if (buyPropertyPopup012Prefab != null)
-        {
-            Debug.Log("Popup prefab loaded successfully.");
+        // buyPropertyPopup012Prefab = Resources.Load<BuyPropertyPopup012>("BuyPropertyPopup012Prefab");
+        // if (buyPropertyPopup012Prefab != null)
+        // {
+        //     Debug.Log("Popup prefab loaded successfully.");
             
-        }
-        else
-        {
-            Debug.LogError("Failed to load popup prefab.");
-        }
-        buyoutPopupPrefab = Resources.Load<BuyOutPopUp>("buyoutPopupPrefab");
-        if (buyoutPopupPrefab != null)
-        {
-            Debug.Log("Buyout popup prefab loaded successfully.");
-        }
-        else
-        {
-            Debug.LogError("Failed to load buyout popup prefab.");
-        }
+        // }
+        // else
+        // {
+        //     Debug.LogError("Failed to load popup prefab.");
+        // }
+        // buyoutPopupPrefab = Resources.Load<BuyOutPopUp>("buyoutPopupPrefab");
+        // if (buyoutPopupPrefab != null)
+        // {
+        //     Debug.Log("Buyout popup prefab loaded successfully.");
+        // }
+        // else
+        // {
+        //     Debug.LogError("Failed to load buyout popup prefab.");
+        // }
         
         properties = propertyManager.properties;
   
@@ -189,28 +201,77 @@ public class PlayerController : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         originalSortingOrder = spriteRenderer.sortingOrder;
 
-        MessagePrefab = Resources.Load<GameObject>(MessagePrefabPath);
-        if (MessagePrefab == null)
-        {
-            Debug.LogError("Failed to load MessagePrefab from Resources folder at path: " + MessagePrefabPath);
-        }
-        
-        CardPrefab = Resources.Load<GameObject>(CardPrefabPath);
-        if (CardPrefab == null)
-        {
-            Debug.LogError("Failed to load CardPrefabPath from Resources folder at path: " + MessagePrefabPath);
-        }
-        ChancePrefab = Resources.Load<GameObject>(ChancePrefabPath);
-        if (ChancePrefab == null)
-        {
-            Debug.LogError("Failed to load ChancePrefabPath from Resources folder at path: " + MessagePrefabPath);
-        }  
+        LoadAndCachePrefabs();
+        LoadBuyPropertyPopup012Prefab();
+        LoadBuyoutPopupPrefab();
+
         PopulateCardDeck();
         SetFontSize(dice1InputField, 50);
         SetFontSize(dice2InputField, 50);
         // PropertyManager.Instance.OnPropertiesLoaded += OnPropertiesLoaded;
     }
+    private void LoadDiceSides()
+    {
+        // Load all sprites from "DiceSides/" folder
+        diceSides = Resources.LoadAll<Sprite>("DiceSides/");
+        if (diceSides == null || diceSides.Length == 0)
+        {
+            Debug.LogError("Failed to load sprites from DiceSides folder.");
+        }
+        else
+        {
+            Debug.Log("Loaded " + diceSides.Length + " sprites from DiceSides folder.");
+        }
+    }
+    private void LoadAndCachePrefabs()
+    {
+        // Load and cache MessagePrefab
+        MessagePrefab = LoadPrefab(MessagePrefabPath);
+        if (MessagePrefab == null)
+        {
+            Debug.LogError("Failed to load MessagePrefab from Resources folder at path: " + MessagePrefabPath);
+        }
+        
+        // Load and cache CardPrefab
+        CardPrefab = LoadPrefab(CardPrefabPath);
+        if (CardPrefab == null)
+        {
+            Debug.LogError("Failed to load CardPrefab from Resources folder at path: " + CardPrefabPath);
+        }
+        
+        // Load and cache ChancePrefab
+        ChancePrefab = LoadPrefab(ChancePrefabPath);
+        if (ChancePrefab == null)
+        {
+            Debug.LogError("Failed to load ChancePrefab from Resources folder at path: " + ChancePrefabPath);
+        }     
+    }
 
+    private void LoadBuyPropertyPopup012Prefab()
+    {
+        buyPropertyPopup012Prefab = Resources.Load<BuyPropertyPopup012>("BuyPropertyPopup012Prefab");
+        if (buyPropertyPopup012Prefab == null)
+        {
+            Debug.LogError("BuyPropertyPopup012Prefab not found in Resources folder.");
+        }
+    }
+    private void LoadBuyoutPopupPrefab()
+    {
+        buyoutPopupPrefab = Resources.Load<BuyOutPopUp>("buyoutPopupPrefab");
+        if (buyoutPopupPrefab == null)
+        {
+            Debug.LogError("BuyoutPopupPrefab not found in Resources folder.");
+        }
+    } 
+    private GameObject LoadPrefab(string prefabPath)
+    {
+        GameObject prefab = Resources.Load<GameObject>(prefabPath);
+        if (prefab == null)
+        {
+            Debug.LogError("Failed to load prefab from Resources folder at path: " + prefabPath);
+        }
+        return prefab;
+    }  
     private void SetFontSize(TMP_InputField inputField, float fontSize)
     {
         inputField.textComponent.fontSize = fontSize;
@@ -509,11 +570,11 @@ public class PlayerController : MonoBehaviour
         }   
     }
 
-    public void HackRollDice(int[] diceValues)
-    {
-        CheckForDoubles(diceValues);
+    // public void HackRollDice(int[] diceValues)
+    // {
+    //     CheckForDoubles(diceValues);
         
-    }
+    // }
 
     private IEnumerator CheckForDoubles(int[] diceValues)
     {   
