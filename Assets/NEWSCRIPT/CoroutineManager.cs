@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CoroutineManager : MonoBehaviour
 {
-    private Dictionary<string, Coroutine> activeCoroutines = new Dictionary<string, Coroutine>();
+    public Dictionary<string, Coroutine> activeCoroutines = new Dictionary<string, Coroutine>();
 
     public Coroutine StartTrackedCoroutine(string key, IEnumerator coroutine)
     {

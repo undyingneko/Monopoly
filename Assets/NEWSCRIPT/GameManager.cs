@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     public bool isAvenueDemolitionActive = false;
     public bool isPropertySeizureActive = false;
 
+    [SerializeField]
     private CoroutineManager coroutineManager;
 
     void Awake()
@@ -37,7 +38,7 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        coroutineManager = gameObject.AddComponent<CoroutineManager>();
+        coroutineManager = FindObjectOfType<CoroutineManager>();
     }
 
     void Start()

@@ -352,7 +352,6 @@ public class PlayerController : MonoBehaviour
                 turnsInJail = 0;
                 yield return StartCoroutine(WaitForPropertyDecision());
                 EndTurn();
-            
                 coroutineAllowed = false;
                 
             }
