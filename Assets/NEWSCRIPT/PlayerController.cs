@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
     
 
     private BuyPropertyPopup012 buyPropertyPopup012Prefab;
-    public string buyPropertyPopup012PrefabPath = "BuyPropertyPopup012Prefab"; // Path to the prefab in the Resources folder
+    private string buyPropertyPopup012PrefabPath = "BuyPropertyPopup012Prefab"; // Path to the prefab in the Resources folder
     private BuyPropertyPopup012 BuypopupInstance;
 
     public string buyoutPopupPrefabPath = "buyoutPopupPrefab"; // The path to the MessagePrefab relative to the Resources folder
@@ -130,10 +130,63 @@ public class PlayerController : MonoBehaviour
         UpdateMoneyText();
         spriteRenderer = GetComponent<SpriteRenderer>();
         originalSortingOrder = spriteRenderer.sortingOrder;
+        if (ChancePrefab == null)
+        {
+            // Load and cache the CardPrefab
+            ChancePrefab = LoadPrefab(ChancePrefabPath);
+            if (ChancePrefab == null)
+            {
+                Debug.LogError("Failed to load CardPrefab from Resources folder at path: " + ChancePrefabPath);
+            }
+        }
+        if (MessagePrefab == null)
+        {
+            // Load and cache the CardPrefab
+            MessagePrefab = LoadPrefab(MessagePrefabPath);
+            if (MessagePrefab == null)
+            {
+                Debug.LogError("Failed to load CardPrefab from Resources folder at path: " + MessagePrefabPath);
+            }
+        }      
+        if (buyPropertyPopup012Prefab == null)
+        {
+            // Load and cache the buyPropertyPopup012Prefab
+            GameObject prefab = LoadPrefab(buyPropertyPopup012PrefabPath);
+            if (prefab != null)
+            {
+                // Cast the loaded GameObject to BuyPropertyPopup012
+                buyPropertyPopup012Prefab = prefab.GetComponent<BuyPropertyPopup012>();
+                if (buyPropertyPopup012Prefab == null)
+                {
+                    Debug.LogError("Failed to find BuyPropertyPopup012 component on prefab: " + buyPropertyPopup012PrefabPath);
+                }
+            }
+            else
+            {
+                Debug.LogError("Failed to load BuyPropertyPopup012 prefab from Resources folder at path: " + buyPropertyPopup012PrefabPath);
+            }
+        }
+        if (buyoutPopupPrefab == null)
+        {
+            // Load and cache the buyPropertyPopup012Prefab
+            GameObject prefab = LoadPrefab(buyoutPopupPrefabPath);
+            if (prefab != null)
+            {
+                // Cast the loaded GameObject to BuyPropertyPopup012
+                buyoutPopupPrefab = prefab.GetComponent<BuyOutPopUp>();
+                if (buyoutPopupPrefab == null)
+                {
+                    Debug.LogError("Failed to find BuyPropertyPopup012 component on prefab: " + buyoutPopupPrefabPath);
+                }
+            }
+            else
+            {
+                Debug.LogError("Failed to load BuyPropertyPopup012 prefab from Resources folder at path: " + buyoutPopupPrefabPath);
+            }
+        }
 
-        LoadAndCachePrefabs();
-        LoadBuyPropertyPopup012Prefab();
-        LoadBuyoutPopupPrefab();
+        // LoadBuyPropertyPopup012Prefab();
+        // LoadBuyoutPopupPrefab();
 
 
         SetFontSize(dice1InputField, 50);
@@ -152,36 +205,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Loaded " + diceSides.Length + " sprites from DiceSides folder.");
         }
     }
-    private void LoadAndCachePrefabs()
-    {
-        ChancePrefab = LoadPrefab(ChancePrefabPath);
-        if (ChancePrefab == null)
-        {
-            Debug.LogError("Failed to load ChancePrefab from Resources folder at path: " + ChancePrefabPath);
-        }  
-        MessagePrefab = LoadPrefab(MessagePrefabPath);
-        if (MessagePrefab == null)
-        {
-            Debug.LogError("Failed to load MessagePrefab from Resources folder at path: " + MessagePrefabPath);
-        }      
-    }
 
-    private void LoadBuyPropertyPopup012Prefab()
-    {
-        buyPropertyPopup012Prefab = Resources.Load<BuyPropertyPopup012>("BuyPropertyPopup012Prefab");
-        if (buyPropertyPopup012Prefab == null)
-        {
-            Debug.LogError("BuyPropertyPopup012Prefab not found in Resources folder.");
-        }
-    }
-    private void LoadBuyoutPopupPrefab()
-    {
-        buyoutPopupPrefab = Resources.Load<BuyOutPopUp>("buyoutPopupPrefab");
-        if (buyoutPopupPrefab == null)
-        {
-            Debug.LogError("BuyoutPopupPrefab not found in Resources folder.");
-        }
-    } 
     private GameObject LoadPrefab(string prefabPath)
     {
         GameObject prefab = Resources.Load<GameObject>(prefabPath);

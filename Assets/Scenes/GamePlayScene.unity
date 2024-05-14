@@ -312,11 +312,11 @@ MonoBehaviour:
     buyoutCount: 0
     currentStageIndex: 0
     nextStageIndex: 0
-  buyPropertyPopup012PrefabPath: BuyPropertyPopup012Prefab
   buyoutPopupPrefabPath: buyoutPopupPrefab
   playerID: 0
   teamID: 0
   teamNumberText: {fileID: 1736353393}
+  currentPosition: 0
   rollButton: {fileID: 1029894632}
   diceImages:
   - {fileID: 706812636}
@@ -2068,6 +2068,51 @@ RectTransform:
   m_AnchoredPosition: {x: -2.22, y: -2.8}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &491577637
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 491577639}
+  - component: {fileID: 491577638}
+  m_Layer: 0
+  m_Name: CardManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &491577638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 491577637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed3b66bc1d2ed9648a8dc3af9bb7877e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canvasTransform: {fileID: 1311088092}
+--- !u!4 &491577639
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 491577637}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.3074556, y: 0.37905163, z: -0.029377326}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &514582034
 GameObject:
   m_ObjectHideFlags: 0
@@ -4227,11 +4272,11 @@ MonoBehaviour:
     buyoutCount: 0
     currentStageIndex: 0
     nextStageIndex: 0
-  buyPropertyPopup012PrefabPath: BuyPropertyPopup012Prefab
   buyoutPopupPrefabPath: buyoutPopupPrefab
   playerID: 0
   teamID: 0
   teamNumberText: {fileID: 1306345115}
+  currentPosition: 0
   rollButton: {fileID: 714192224}
   diceImages:
   - {fileID: 706812636}
@@ -4439,11 +4484,11 @@ MonoBehaviour:
     buyoutCount: 0
     currentStageIndex: 0
     nextStageIndex: 0
-  buyPropertyPopup012PrefabPath: BuyPropertyPopup012Prefab
   buyoutPopupPrefabPath: buyoutPopupPrefab
   playerID: 0
   teamID: 0
   teamNumberText: {fileID: 2077393189}
+  currentPosition: 0
   rollButton: {fileID: 138412184}
   diceImages:
   - {fileID: 706812636}
@@ -8683,11 +8728,11 @@ MonoBehaviour:
     buyoutCount: 0
     currentStageIndex: 0
     nextStageIndex: 0
-  buyPropertyPopup012PrefabPath: BuyPropertyPopup012Prefab
   buyoutPopupPrefabPath: buyoutPopupPrefab
   playerID: 0
   teamID: 0
   teamNumberText: {fileID: 989305671}
+  currentPosition: 0
   rollButton: {fileID: 2076514332}
   diceImages:
   - {fileID: 706812636}
@@ -24139,3 +24184,4 @@ SceneRoots:
   - {fileID: 1288277759}
   - {fileID: 948943369}
   - {fileID: 1650293160}
+  - {fileID: 491577639}

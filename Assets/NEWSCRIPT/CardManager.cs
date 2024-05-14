@@ -13,7 +13,7 @@ public class CardManager : MonoBehaviour
     // Card class definition
     private GameManager gameManager;
     private PropertyManager propertyManager;
-    private CoroutineManager coroutineManager;
+
 
     public class Card
     {
@@ -40,10 +40,19 @@ public class CardManager : MonoBehaviour
             DontDestroyOnLoad(gameObject); // Ensure CardManager persists between scenes if needed
             InitializeCardDeck();
             InitializeCardEffects();
-            LoadAndCachePrefabs();
+
+            if (CardPrefab == null)
+            {
+                // Load and cache the CardPrefab
+                CardPrefab = LoadPrefab(CardPrefabPath);
+                if (CardPrefab == null)
+                {
+                    Debug.LogError("Failed to load CardPrefab from Resources folder at path: " + CardPrefabPath);
+                }
+            }
             gameManager = FindObjectOfType<GameManager>();
             propertyManager = PropertyManager.Instance;
-            coroutineManager = FindObjectOfType<CoroutineManager>();
+
             
         }
         else
@@ -102,19 +111,6 @@ public class CardManager : MonoBehaviour
     }
 
 
-    
-    private void LoadAndCachePrefabs()
-    {
-        // Load and cache CardPrefab
-        CardPrefab = LoadPrefab(CardPrefabPath);
-        if (CardPrefab == null)
-        {
-            Debug.LogError("Failed to load CardPrefab from Resources folder at path: " + CardPrefabPath);
-        }
-        
-        // Load and cache ChancePrefab
-   
-    }
     private GameObject LoadPrefab(string prefabPath)
     {
         GameObject prefab = Resources.Load<GameObject>(prefabPath);
@@ -210,16 +206,16 @@ public class CardManager : MonoBehaviour
 
     private IEnumerator AdvanceOneSpaceEffect(PlayerController player)
     {
-        yield return coroutineManager.StartTrackedCoroutine("MovePlayer", player.MovePlayerCoroutine(1));
-        yield return coroutineManager.StartTrackedCoroutine("WaitForPropertyDecision", player.WaitForPropertyDecision());      
+        StartCoroutine(player.MovePlayerCoroutine(1));
+        yield return StartCoroutine(player.WaitForPropertyDecision());      
         player.ShowMessage("Advance 1 space on the board.");
         yield return null;
     }
 
     private IEnumerator MoveBackwardOneSpaceEffect(PlayerController player)
     {
-        yield return coroutineManager.StartTrackedCoroutine("MovePlayer", player.MovePlayerCoroutine(-1));
-        yield return coroutineManager.StartTrackedCoroutine("WaitForPropertyDecision", player.WaitForPropertyDecision());
+        yield return StartCoroutine(player.MovePlayerCoroutine(-1));
+        yield return StartCoroutine(player.WaitForPropertyDecision());
         yield return null;
     }
 
@@ -511,7 +507,6 @@ public class CardManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(2f);
         Destroy(cardObject);
         yield return new WaitForSecondsRealtime(0.5f);
-        // yield return StartCoroutine(ApplyCardEffects(drawnCard.name, player, cardObject));
         yield return ApplyCardEffect(drawnCard.name, player);
     }
 
@@ -561,7 +556,24 @@ public class CardManager : MonoBehaviour
             // case "Avenue Demolition":
             //     yield return AvenueDemolitionEffect(player);
             //     break;
-            
+            // case "Property Seizure":
+            //     yield return PropertySeizureEffect(player);
+            //     break; 
+            // case "Natural Disaster":
+            //     yield return NaturalDisasterEffect(player);
+            //     break;
+            // case "Forced Property Sale":
+            //     yield return ForcedPropertySaleEffect(player);
+            //     break;  
+            // case "Generous Treat":
+            //     yield return GenerousTreatEffect(player);
+            //     break;
+            // case "Free Meal Ticket":
+            //     yield return FreeMealTicketEffect(player);
+            //     break;  
+            // case "Firework Spectacle":
+            //     yield return FireworkSpectacleEffect(player);
+            //     break;
             default:
                 Debug.LogWarning("Card effect not found: " + cardName);
                 break;

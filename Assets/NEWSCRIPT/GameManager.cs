@@ -6,13 +6,17 @@ using System;
 
 public class GameManager : MonoBehaviour
 {
+    private Coroutine turnCoroutine;
+
     public Dictionary<GameObject, PropertyManager.PropertyData> tileToPropertyMap = new Dictionary<GameObject, PropertyManager.PropertyData>();
+
     public Dictionary<int, GameObject> waypointIndexToTileMap = new Dictionary<int, GameObject>();
+
     public PropertyManager.PropertyData selectedProperty;
     public PlayerController[] players;
     public static int currentPlayerIndex;
     public static bool GameOver = false;
-
+    
     private static TextMeshProUGUI[] playerMoney;
     private PlayerController playerController;
     public static GameManager Instance;
@@ -23,34 +27,25 @@ public class GameManager : MonoBehaviour
     public event Action TileImagesLoaded;
     public bool isAvenueDemolitionActive = false;
     public bool isPropertySeizureActive = false;
-
-    [SerializeField]
-    private CoroutineManager coroutineManager;
-
+  
     void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(gameObject); // Ensure GameManager persists between scenes if needed
         }
         else
         {
-            Destroy(gameObject);
+            Destroy(gameObject); // Destroy duplicate GameManager instances
         }
-        coroutineManager = FindObjectOfType<CoroutineManager>();
     }
-
+   
     void Start()
     {
         playerController = FindObjectOfType<PlayerController>();
-        coroutineManager.StartTrackedCoroutine("LoadTileImages", LoadTileImages());
+        StartCoroutine(LoadTileImages());
         StartGame();
-    }
-
-    void OnDestroy()
-    {
-        coroutineManager.StopAllTrackedCoroutines();
     }
 
     void StartGame()
@@ -62,24 +57,24 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < players.Length; i++)
         {
             int teamID = (i == 0 || i == 3) ? 1 : 2; // Alternating between team 1 and team 2
+
             players[i].AssignTeamID(teamID); // Assign team ID to the player
             players[i].AssignPlayerID(i + 1); // Assign player ID
+            
         }
-
-        coroutineManager.StartTrackedCoroutine("StartTurn", StartTurnCoroutine());
+        turnCoroutine = StartCoroutine(StartTurnCoroutine());
     }
 
     IEnumerator StartTurnCoroutine()
     {
-        yield return new WaitForSeconds(1f); // Wait for 1 second before starting the first turn
+        yield return new WaitForSeconds(1f);
         players[currentPlayerIndex].StartTurn();
-        // playerController.EndTurn();
     }
 
     public void SetPlayers(PlayerController[] newPlayers)
     {
         players = newPlayers;
-    }
+    }  
 
     public PlayerController GetCurrentPlayerController()
     {
@@ -89,9 +84,29 @@ public class GameManager : MonoBehaviour
 
     public void NextTurn()
     {
+        if (turnCoroutine != null)
+        {
+            StopCoroutine(turnCoroutine);
+        }
         currentPlayerIndex = (currentPlayerIndex + 1) % players.Length;
-        players[currentPlayerIndex].StartTurn();
+        turnCoroutine = StartCoroutine(StartTurnCoroutine());
     }
+    
+    // public string FormatPrice(int price)
+    // {
+    //     if (price >= 1000000)
+    //     {
+    //         return (price / 1000f).ToString("0,0K");
+    //     }
+    //     else if (price >= 1000)
+    //     {
+    //         return (price / 1000f).ToString("0.#") + "K";
+    //     }
+    //     else
+    //     {
+    //         return price.ToString();
+    //     }
+    // }
 
     public string FormatPrice(int price)
     {
@@ -110,7 +125,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void AssignTileToWaypointIndex(int waypointIndex, GameObject tileImage)
+   public void AssignTileToWaypointIndex(int waypointIndex, GameObject tileImage)
     {
         if (!waypointIndexToTileMap.ContainsKey(waypointIndex))
         {
@@ -133,8 +148,7 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning($"No tile assigned for waypoint index {waypointIndex}.");
             return null;
         }
-    }
-
+    } 
     public void AssignPropertyToTile(GameObject tile, PropertyManager.PropertyData property)
     {
         if (!tileToPropertyMap.ContainsKey(tile))
@@ -162,16 +176,19 @@ public class GameManager : MonoBehaviour
         // Update the selected property based on the clicked tile
         selectedProperty = property;
         // Perform any additional logic based on the selected property...
-    }
+    } 
+
 
     IEnumerator LoadTileImages()
-    {
+    {       
         GameObject[] tileImages = GameObject.FindGameObjectsWithTag("Tile");
         foreach (GameObject tileImage in tileImages)
         {
+            // Extract the TileWaypointIndex from the tile's name
             int waypointIndex;
             if (int.TryParse(tileImage.name.Replace("tile_", ""), out waypointIndex))
             {
+                // Assign the tile image to its corresponding TileWaypointIndex
                 AssignTileToWaypointIndex(waypointIndex, tileImage);
                 Debug.Log($"Tile image assigned for waypoint index: {waypointIndex}");
             }
@@ -179,7 +196,7 @@ public class GameManager : MonoBehaviour
             {
                 Debug.LogWarning($"Failed to parse waypoint index from tile name: {tileImage.name}");
             }
-        }
+        } 
         yield return null;
         TileImagesLoaded?.Invoke();
     }
