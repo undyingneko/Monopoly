@@ -129,8 +129,8 @@ public class PropertyManager : MonoBehaviour
     // Singleton instance
     public static PropertyManager instance;
 
-    public delegate void PropertiesLoadedCallback();
-    public event PropertiesLoadedCallback OnPropertiesLoaded;
+    // public delegate void PropertiesLoadedCallback();
+    // public event PropertiesLoadedCallback OnPropertiesLoaded;
 
 
     public static PropertyManager Instance
@@ -228,7 +228,7 @@ public class PropertyManager : MonoBehaviour
             // JSON file not found
             Debug.LogError("JSON file not found at path: " + jsonFilePath);
         }
-        OnPropertiesLoaded?.Invoke();
+        // OnPropertiesLoaded?.Invoke();
         
     }
 
