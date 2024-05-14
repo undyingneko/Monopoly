@@ -170,7 +170,7 @@ public class PlayerController : MonoBehaviour
             Debug.LogError("Failed to load buyout popup prefab.");
         }
         
-        properties = propertyManager.properties;
+        // properties = propertyManager.properties;
         // if (properties == null || properties.Count == 0)
         // {
         //     Debug.LogError("Failed to fetch properties from PropertyManager.");
@@ -211,7 +211,18 @@ public class PlayerController : MonoBehaviour
             Debug.LogError("Failed to load ChancePrefabPath from Resources folder at path: " + MessagePrefabPath);
         }  
         PopulateCardDeck();
-        // PropertyManager.Instance.OnPropertiesLoaded += OnPropertiesLoaded;
+        SetFontSize(dice1InputField, 50);
+        SetFontSize(dice2InputField, 50);
+        PropertyManager.Instance.OnPropertiesLoaded += OnPropertiesLoaded;
+    }
+
+    private void SetFontSize(TMP_InputField inputField, float fontSize)
+    {
+        inputField.textComponent.fontSize = fontSize;
+        if (inputField.placeholder != null && inputField.placeholder is TMP_Text)
+        {
+            ((TMP_Text)inputField.placeholder).fontSize = fontSize;
+        }
     }
     private void OnPropertiesLoaded()
     {
