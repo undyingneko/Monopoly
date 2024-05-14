@@ -7,6 +7,11 @@ using Unity.Properties;
 
 public class PlayerController : MonoBehaviour
 {
+    public List<PropertyManager.PropertyData> properties;
+    public List<PropertyManager.PropertyData> ownedProperties = new List<PropertyManager.PropertyData>();
+    public List<PropertyManager.PropertyData> opponentProperties;
+    public PropertyManager.PropertyData propertyToDestroy;
+    public PropertyManager.PropertyData propertyToDemolish;  
     // private PlayerController currentPlayerController;
     public int playerID;
     public int teamID;
@@ -24,11 +29,7 @@ public class PlayerController : MonoBehaviour
 
     private GameManager gameManager;
 
-    // private bool loopCompleted = false;
-    
     public Transform[] waypoints;
-    [SerializeField]
-    // private float moveSpeed = 1f;
     [HideInInspector]
     public int waypointIndex = 0;
     public bool moveAllowed = false;
@@ -51,19 +52,10 @@ public class PlayerController : MonoBehaviour
     public string buyoutPopupPrefabPath = "buyoutPopupPrefab"; // The path to the MessagePrefab relative to the Resources folder
     private BuyOutPopUp buyoutPopupPrefab;
     private BuyOutPopUp buyoutPopupInstance;
-    // private BuyPropertyPopup012 buyPopupInstance;
-    // private BuyOutPopUp buyoutPopupInstance;
-    
 
     private PropertyManager propertyManager;
 
-    public List<PropertyManager.PropertyData> properties;
-    public List<PropertyManager.PropertyData> ownedProperties = new List<PropertyManager.PropertyData>();
-
-    public List<PropertyManager.PropertyData> opponentProperties;
-
-    public PropertyManager.PropertyData propertyToDemolish;  
-    private GameObject darkenScreenGameObject;
+    // private GameObject darkenScreenGameObject;
 
     private SpriteRenderer spriteRenderer;
     private int originalSortingOrder = 0;
@@ -87,17 +79,6 @@ public class PlayerController : MonoBehaviour
         teamID = teamid;
         teamNumberText.text = "Team: " + teamID.ToString();
     }
-
-    // public void UpdatePropertyOwnership(int propertystageIndex)
-    // {
-    //     for (int i = 0; i <= propertystageIndex; i++)
-    //     {
-    //         for (int j = 0; j <= i; j++)
-    //         {
-    //             property.stageIndexes[i].owned = true;
-    //         }
-    //     }
-    // }
 
     [SerializeField]
     private string CardPrefabPath = "CardPrefab";
@@ -143,29 +124,25 @@ public class PlayerController : MonoBehaviour
         // cardDeck.Add(new Card("Tax Levy",  "Pay a tax equal to 10% of the total value of your owned properties."));
         // cardDeck.Add(new Card("Tax Exemption", "You are exempt from paying any taxes the next time."));
         
-        cardDeck.Add(new Card("Avenue Demolition", "Demolish one of the opponent's avenues, leaving it ownerless."));
+        // cardDeck.Add(new Card("Avenue Demolition", "Demolish one of the opponent's avenues, leaving it ownerless."));
+        cardDeck.Add(new Card("Natural Disaster", "An earthquake has destroyed 1 of your food stalls at the festival "));
+        // cardDeck.Add(new Card("Property Seizure", "Force one opponent to sell one property of your choice from their holdings."));
+        
+        // cardDeck.Add(new Card("Forced Property Sale", "You must sell one property of your choice from your holdings."));
 
         // cardDeck.Add(new Card("Generous Treat", "Select one food stall of the opponent. Any player landing on this stall is treated to a complimentary meal for one turn, no payment necessary."));
         // cardDeck.Add(new Card("Free Meal Ticket", "Receive a ticket for a complimentary meal at any food stall on your next visit."));
-
-        // cardDeck.Add(new Card("Property Seizure", "Force one opponent to sell one property of your choice from their holdings."));
-        // cardDeck.Add(new Card("Natural Disaster: Food Stall Ruined",  "An earthquake has destroyed 1 of your food stalls at the festival "));
-        // cardDeck.Add(new Card("Forced Property Sale", "You must sell one property of your choice from your holdings."));
-
         // cardDeck.Add(new Card("Firework Spectacle", "Select one of your stalls to host a firework display, turning it into a hot spot and increasing its value."));     
     }
-    // // private List<string> cards = new List<string> 
-    // private List<string> cardDescriptions = new List<string>
-    // {
-    //     // "Firework",
-    // };
-
-
 
     void Start()
     {   
         // currentPlayerController = FindObjectOfType<PlayerController>();
         propertyManager = PropertyManager.Instance;
+        if (propertyManager == null)
+        {
+            Debug.LogError("propertyManager is not assigned. Assign it in the Unity Editor or via script.");
+        }        
         gameManager = FindObjectOfType<GameManager>();
 
         rollButton.onClick.AddListener(StartRollDiceCoroutine);
@@ -195,18 +172,16 @@ public class PlayerController : MonoBehaviour
             Debug.LogError("Failed to load buyout popup prefab.");
         }
 
-
         properties = propertyManager.properties;
-        if (propertyManager == null)
-        {
-            Debug.LogError("propertyManager is not assigned. Assign it in the Unity Editor or via script.");
-        }        
- 
-        properties = propertyManager.properties;
-        if (propertyManager == null)
-        {
-            Debug.LogError("propertyManager is not assigned. Assign it in the Unity Editor or via script.");
-        }
+        // if (properties == null || properties.Count == 0)
+        // {
+        //     Debug.LogError("Failed to fetch properties from PropertyManager.");
+        // }
+        // else
+        // {
+        //     Debug.Log("Fetched properties successfully. Count: " + properties.Count);
+        // }
+       
 
         // Ensure waypoints array is assigned and not empty
         if (waypoints == null || waypoints.Length == 0)
@@ -859,6 +834,44 @@ public class PlayerController : MonoBehaviour
 
                 break;
 
+            case "Natural Disaster":
+                propertyToDestroy = null;
+
+                foreach (PlayerController player in players)
+                {
+                    if (player == currentPlayer) // Only affect the current player
+                    {
+                        if (ownedProperties.Count > 0)
+                        {                        
+                            propertyToDestroy = ownedProperties[Random.Range(0, opponentProperties.Count)];
+                        // propertyToDestroy = player.RemoveRandomProperty();
+                        // if (propertyToDestroy != null)
+                        // {
+                            // Reset the property ownership
+                            propertyToDestroy.owned = false;
+                            propertyToDestroy.ownerID = 0; // Set ownerID to 0 (ownerless)
+                            propertyToDestroy.teamownerID = 0; // Set teamownerID to 0 (ownerless)
+                            propertyToDestroy.currentStageIndex = -1;
+                            propertyManager.DeactivateOldStageImages(propertyToDestroy);
+                            propertyManager.DeactivateRentTagImage(propertyToDestroy);
+                            propertyToDestroy.rentText.gameObject.SetActive(false);
+
+                            currentPlayer.ShowMessage($"An earthquake has destroyed your property: {propertyToDestroy.name}");
+                            currentPlayer.ownedProperties.Remove(propertyToDestroy);
+                            yield return new WaitForSeconds(2f); // Wait to show the message
+
+
+                        }
+                        else
+                        {
+                            currentPlayer.ShowMessage("You have no properties to destroy.");
+                            yield return new WaitForSeconds(2f); // Wait to show the message
+                        }
+                    }
+                }
+
+                propertyToDestroy = null;
+                break;
 
 
 
@@ -1043,13 +1056,6 @@ public class PlayerController : MonoBehaviour
         // }
     }
 
-    // private void ShowMessage(string message)
-    // {
-    //     GameObject messageObject = Instantiate(MessagePrefab, canvasTransform);
-    //     TextMeshProUGUI messageText = messageObject.GetComponent<TextMeshProUGUI>();
-    //     messageText.text = message;
-    //     Destroy(messageObject, 2f);
-    // }
     private void ShowMessage(string message)
     {
         GameObject messageObject = Instantiate(MessagePrefab, canvasTransform);
