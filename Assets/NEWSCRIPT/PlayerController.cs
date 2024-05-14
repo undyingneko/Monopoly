@@ -787,6 +787,7 @@ public class PlayerController : MonoBehaviour
                 // Check if there are opponent-owned properties available for demolition
                 if (opponentProperties.Count > 0)
                 {
+                    gameManager.selectedProperty = null;
                     currentPlayer.ShowMessage("Select a property to demolish:");
                     yield return new WaitForSeconds(2f);
                     foreach (var opponentProperty in opponentProperties)
@@ -795,16 +796,19 @@ public class PlayerController : MonoBehaviour
     
                         tileImage.transform.position += new Vector3(0, 1, 0);
                         gameManager.AssignPropertyToTile(tileImage, opponentProperty);
-                        
-                        // TileClickHandler clickHandler = tileImage.AddComponent<TileClickHandler>();
-                        // clickHandler.SetAssociatedProperty(opponentProperty);
-                    }  
-                                     
+                        TileClickHandler clickHandler = tileImage.GetComponent<TileClickHandler>();
+                        if (clickHandler == null)
+                        {
+                            clickHandler = tileImage.AddComponent<TileClickHandler>();
+                        }
+                        clickHandler.SetAssociatedProperty(opponentProperty);                       
+                    }                 
                     
-                    propertyToDemolish = gameManager.selectedProperty;
-                    Debug.Log("Selected property to demolish: " + propertyToDemolish.name);
+                    
                     yield return WaitForPlayerSelection();
-
+                    propertyToDemolish = gameManager.selectedProperty;
+                    Debug.Log("Selected Property: " + gameManager.selectedProperty.name);
+                    Debug.Log("Selected property to demolish: " + propertyToDemolish.name);
                     if (propertyToDemolish != null)
                     {
                         PlayerController ownerPlayer = FindPlayerByID(propertyToDemolish.ownerID);
@@ -818,14 +822,13 @@ public class PlayerController : MonoBehaviour
                         propertyToDemolish.owned = false;
                         propertyToDemolish.ownerID = 0; // Set ownerID to -1 (ownerless)
                         propertyToDemolish.teamownerID = 0; // Set teamownerID to -1 (ownerless)
-                        
+                        propertyToDemolish.currentStageIndex = -1;
                         propertyManager.DeactivateOldStageImages(propertyToDemolish);
                         propertyManager.DeactivateRentTagImage(propertyToDemolish);
                         propertyToDemolish.rentText.gameObject.SetActive(false);
 
                         currentPlayer.ShowMessage($"You demolished {propertyToDemolish.name}, leaving it ownerless.");
-                        // opponentProperties.Clear();
-                        // propertyToDemolish = null;
+
                        
                         // Additional actions can be added here...
                     }
@@ -841,6 +844,8 @@ public class PlayerController : MonoBehaviour
                     // If no opponent-owned properties are available for demolition, show a message
                     currentPlayer.ShowMessage("There are no opponent-owned properties available for demolition.");
                 }
+                opponentProperties.Clear();
+                propertyToDemolish = null;
                 foreach (var tile in gameManager.waypointIndexToTileMap.Values)
                 {
                     var tileScript = tile.GetComponent<TileScript>();
@@ -848,8 +853,10 @@ public class PlayerController : MonoBehaviour
                     {
                         tileScript.enabled = true;
                     }
-                }             
+                }
+                            
                 gameManager.isAvenueDemolitionActive = false;
+
                 break;
 
 

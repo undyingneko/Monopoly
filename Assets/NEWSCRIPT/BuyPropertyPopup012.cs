@@ -265,7 +265,7 @@ public class BuyPropertyPopup012 : MonoBehaviour
                             // currentPlayer.UpdatePropertyOwnership(stageIndex);
                         }                    
 
-                        if (stageIndex >= currentProperty.currentStageIndex)
+                        if (stageIndex > currentProperty.currentStageIndex)
                         {
                             currentProperty.currentStageIndex = stageIndex;
                             currentProperty.nextStageIndex = stageIndex + 1;

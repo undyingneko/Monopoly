@@ -54,7 +54,7 @@ public class PropertyManager : MonoBehaviour
         public int buyoutMultiplier;
         public int buyoutCount;
  
-        public int currentStageIndex; // Track the highest stage index that the player owns
+        public int currentStageIndex = -1; // Track the highest stage index that the player owns
         public int nextStageIndex;
 
 
@@ -204,7 +204,7 @@ public class PropertyManager : MonoBehaviour
                     property.InitializePrices();
                     LoadStageImagesForProperty(property);
                     LoadRentTagImages(property);
-                    property.currentStageIndex = 0;
+                    property.currentStageIndex = -1;
                 }
             }
             else
