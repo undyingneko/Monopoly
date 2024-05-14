@@ -10265,6 +10265,7 @@ MonoBehaviour:
   buyPropertyDecisionMade: 0
   buyOutDecisionMade: 0
   EndedAllInteraction: 0
+  isAvenueDemolitionActive: 0
 --- !u!4 &1288277759
 Transform:
   m_ObjectHideFlags: 0

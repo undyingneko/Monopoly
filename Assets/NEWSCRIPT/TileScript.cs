@@ -27,6 +27,11 @@ public class TileScript : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (gameManager.isAvenueDemolitionActive)
+        {
+            // Do nothing if Avenue Demolition is active
+            return;
+        }       
         BuyPropertyPopup012 buyPopup = FindObjectOfType<BuyPropertyPopup012>();
         if (buyPopup != null && buyPopup.isActiveAndEnabled)
         {

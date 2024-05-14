@@ -765,7 +765,16 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case "Avenue Demolition":
+                gameManager.isAvenueDemolitionActive = true;
                 // Check if there are properties owned by other players
+                foreach (var tile in gameManager.waypointIndexToTileMap.Values)
+                {
+                    var tileScript = tile.GetComponent<TileScript>();
+                    if (tileScript != null)
+                    {
+                        tileScript.enabled = false;
+                    }
+                }                
                 opponentProperties = new List<PropertyManager.PropertyData>();
                 foreach (PlayerController player in players)
                 {
@@ -785,24 +794,25 @@ public class PlayerController : MonoBehaviour
                         GameObject tileImage = gameManager.waypointIndexToTileMap[opponentProperty.JSONwaypointIndex];
     
                         tileImage.transform.position += new Vector3(0, 1, 0);
+                        gameManager.AssignPropertyToTile(tileImage, opponentProperty);
                         
-                        // opponentProperty.rentText.transform.position += new Vector3(0, 1, 0);
-                        // foreach (GameObject stageImage in opponentProperty.stageImages)
-                        // {
-                        //     if (stageImage != null)
-                        //     {
-                        //         stageImage.transform.position += new Vector3(0, 1, 0); // Example: Increase Y position by 1 unit
-                        //     }
-                        // }  
-                        TileClickHandler clickHandler = tileImage.AddComponent<TileClickHandler>();
-                        clickHandler.SetAssociatedProperty(opponentProperty);
+                        // TileClickHandler clickHandler = tileImage.AddComponent<TileClickHandler>();
+                        // clickHandler.SetAssociatedProperty(opponentProperty);
                     }  
-                    yield return WaitForPlayerSelection();   
+                                     
                     
-                    PropertyManager.PropertyData propertyToDemolish = gameManager.selectedProperty;
+                    propertyToDemolish = gameManager.selectedProperty;
+                    Debug.Log("Selected property to demolish: " + propertyToDemolish.name);
+                    yield return WaitForPlayerSelection();
+
                     if (propertyToDemolish != null)
                     {
                         PlayerController ownerPlayer = FindPlayerByID(propertyToDemolish.ownerID);
+                        if (ownerPlayer == null)
+                        {
+                            Debug.LogError("Owner player not found for property: " + propertyToDemolish.name);
+                            yield break; // Exit if owner player is not found
+                        }                       
                         ownerPlayer.ownedProperties.Remove(propertyToDemolish);
                         // Reset the property ownership
                         propertyToDemolish.owned = false;
@@ -814,11 +824,16 @@ public class PlayerController : MonoBehaviour
                         propertyToDemolish.rentText.gameObject.SetActive(false);
 
                         currentPlayer.ShowMessage($"You demolished {propertyToDemolish.name}, leaving it ownerless.");
-                        opponentProperties.Clear();
-                        propertyToDemolish = null;
+                        // opponentProperties.Clear();
+                        // propertyToDemolish = null;
                        
                         // Additional actions can be added here...
                     }
+                    foreach (var opponentProperty in opponentProperties)
+                    {
+                        GameObject tileImage = gameManager.waypointIndexToTileMap[opponentProperty.JSONwaypointIndex];
+                        tileImage.transform.position += new Vector3(0, -1, 0);
+                    }                   
                     yield return new WaitForSeconds(2f);
                 }
                 else
@@ -826,6 +841,15 @@ public class PlayerController : MonoBehaviour
                     // If no opponent-owned properties are available for demolition, show a message
                     currentPlayer.ShowMessage("There are no opponent-owned properties available for demolition.");
                 }
+                foreach (var tile in gameManager.waypointIndexToTileMap.Values)
+                {
+                    var tileScript = tile.GetComponent<TileScript>();
+                    if (tileScript != null)
+                    {
+                        tileScript.enabled = true;
+                    }
+                }             
+                gameManager.isAvenueDemolitionActive = false;
                 break;
 
 

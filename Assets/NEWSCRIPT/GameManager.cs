@@ -6,7 +6,10 @@ using System;
 
 public class GameManager : MonoBehaviour
 {
+    public Dictionary<GameObject, PropertyManager.PropertyData> tileToPropertyMap = new Dictionary<GameObject, PropertyManager.PropertyData>();
+
     public Dictionary<int, GameObject> waypointIndexToTileMap = new Dictionary<int, GameObject>();
+
     public PropertyManager.PropertyData selectedProperty;
     public PlayerController[] players;
     public static int currentPlayerIndex;
@@ -15,16 +18,27 @@ public class GameManager : MonoBehaviour
     private static TextMeshProUGUI[] playerMoney;
     private PlayerController playerController;
     public static GameManager Instance;
+
+
     public bool buyPropertyDecisionMade = false;
     public bool buyOutDecisionMade = false;
     public bool EndedAllInteraction  = false;
     public event Action TileImagesLoaded;
+    public bool isAvenueDemolitionActive = false;
   
 
     
     void Awake()
     {
-        Instance = this; // Assign the current instance to the static property
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject); // Ensure GameManager persists between scenes if needed
+        }
+        else
+        {
+            Destroy(gameObject); // Destroy duplicate GameManager instances
+        }
     }
    
 
@@ -143,6 +157,28 @@ public class GameManager : MonoBehaviour
             return null;
         }
     } 
+    public void AssignPropertyToTile(GameObject tile, PropertyManager.PropertyData property)
+    {
+        if (!tileToPropertyMap.ContainsKey(tile))
+        {
+            tileToPropertyMap.Add(tile, property);
+        }
+        else
+        {
+            tileToPropertyMap[tile] = property;
+        }
+        Debug.Log("Property assigned to tile: " + property.name);
+    }
+
+    public PropertyManager.PropertyData GetPropertyFromTile(GameObject tile)
+    {
+        if (tileToPropertyMap.TryGetValue(tile, out var property))
+        {
+            return property;
+        }
+        return null;
+    }
+
     public void HandleTileClick(PropertyManager.PropertyData property)
     {
         // Update the selected property based on the clicked tile
