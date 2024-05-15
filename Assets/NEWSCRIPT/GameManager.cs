@@ -27,7 +27,14 @@ public class GameManager : MonoBehaviour
     public event Action TileImagesLoaded;
     public bool isAvenueDemolitionActive = false;
     public bool isPropertySeizureActive = false;
-  
+
+    public GameObject buyPropertyPopupPrefab;
+
+
+    private BuyPropertyPopup012 buyPropertyPopup012Prefab;
+    private string buyPropertyPopup012PrefabPath = "BuyPropertyPopup012Prefab"; // Path to the prefab in the Resources folder
+    // private BuyPropertyPopup012 BuypopupInstance;
+
     void Awake()
     {
         if (Instance == null)
@@ -44,8 +51,55 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         playerController = FindObjectOfType<PlayerController>();
+        
+        if (buyPropertyPopup012Prefab == null)
+        {
+            // Load and cache the buyPropertyPopup012Prefab
+            GameObject prefab = LoadPrefab(buyPropertyPopup012PrefabPath);
+            if (prefab != null)
+            {
+                // Cast the loaded GameObject to BuyPropertyPopup012
+                buyPropertyPopup012Prefab = prefab.GetComponent<BuyPropertyPopup012>();
+                if (buyPropertyPopup012Prefab == null)
+                {
+                    Debug.LogError("Failed to find BuyPropertyPopup012 component on prefab: " + buyPropertyPopup012PrefabPath);
+                }
+            }
+            else
+            {
+                Debug.LogError("Failed to load BuyPropertyPopup012 prefab from Resources folder at path: " + buyPropertyPopup012PrefabPath);
+            }
+        }
+
+
+        Canvas canvas = FindObjectOfType<Canvas>();
+        if (canvas == null)
+        {
+            Debug.LogError("Canvas GameObject not found.");
+            return;
+        }     
+        foreach (PlayerController player in players)
+        {
+            if (player != null)
+            {
+                GameObject popupInstance = Instantiate(buyPropertyPopupPrefab, canvas.transform);
+                popupInstance.SetActive(false);
+                BuyPropertyPopup012 popupComponent = popupInstance.GetComponent<BuyPropertyPopup012>();
+                if (popupComponent != null)
+                {
+                    player.buyPropertyPopup = popupComponent;
+                }
+                else
+                {
+                    Debug.LogError("BuyPropertyPopup012 component not found on prefab.");
+                }
+            }
+        }
+
         StartCoroutine(LoadTileImages());
         StartGame();
+
+
     }
 
     void StartGame()
@@ -92,22 +146,6 @@ public class GameManager : MonoBehaviour
         turnCoroutine = StartCoroutine(StartTurnCoroutine());
     }
     
-    // public string FormatPrice(int price)
-    // {
-    //     if (price >= 1000000)
-    //     {
-    //         return (price / 1000f).ToString("0,0K");
-    //     }
-    //     else if (price >= 1000)
-    //     {
-    //         return (price / 1000f).ToString("0.#") + "K";
-    //     }
-    //     else
-    //     {
-    //         return price.ToString();
-    //     }
-    // }
-
     public string FormatPrice(int price)
     {
         if (price >= 1000000)
@@ -200,4 +238,25 @@ public class GameManager : MonoBehaviour
         yield return null;
         TileImagesLoaded?.Invoke();
     }
+    public void ShowBuyPropertyPopup(PlayerController player, PropertyManager.PropertyData property)
+    {
+        if (player != null && player.buyPropertyPopup != null)
+        {
+            player.buyPropertyPopup.gameObject.SetActive(true);
+            player.buyPropertyPopup.Display012(property);
+        }
+        else
+        {
+            Debug.LogError("BuyPropertyPopup012 instance is not created or player is null.");
+        }
+    }
+    private GameObject LoadPrefab(string prefabPath)
+    {
+        GameObject prefab = Resources.Load<GameObject>(prefabPath);
+        if (prefab == null)
+        {
+            Debug.LogError("Failed to load prefab from Resources folder at path: " + prefabPath);
+        }
+        return prefab;
+    }     
 }

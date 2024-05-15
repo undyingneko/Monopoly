@@ -312,6 +312,7 @@ MonoBehaviour:
     buyoutCount: 0
     currentStageIndex: 0
     nextStageIndex: 0
+  buyPropertyPopup: {fileID: 0}
   buyoutPopupPrefabPath: buyoutPopupPrefab
   playerID: 0
   teamID: 0
@@ -4272,6 +4273,7 @@ MonoBehaviour:
     buyoutCount: 0
     currentStageIndex: 0
     nextStageIndex: 0
+  buyPropertyPopup: {fileID: 0}
   buyoutPopupPrefabPath: buyoutPopupPrefab
   playerID: 0
   teamID: 0
@@ -4484,6 +4486,7 @@ MonoBehaviour:
     buyoutCount: 0
     currentStageIndex: 0
     nextStageIndex: 0
+  buyPropertyPopup: {fileID: 0}
   buyoutPopupPrefabPath: buyoutPopupPrefab
   playerID: 0
   teamID: 0
@@ -6364,6 +6367,7 @@ MonoBehaviour:
   EndedAllInteraction: 0
   isAvenueDemolitionActive: 0
   isPropertySeizureActive: 0
+  buyPropertyPopupPrefab: {fileID: 4599409617057639570, guid: c4936c166a2d7ef4f8adc20b5849be12, type: 3}
 --- !u!4 &1288277759
 Transform:
   m_ObjectHideFlags: 0
@@ -8728,6 +8732,7 @@ MonoBehaviour:
     buyoutCount: 0
     currentStageIndex: 0
     nextStageIndex: 0
+  buyPropertyPopup: {fileID: 0}
   buyoutPopupPrefabPath: buyoutPopupPrefab
   playerID: 0
   teamID: 0

@@ -174,7 +174,7 @@ public class BuyOutPopUp : MonoBehaviour
         {
             StopCoroutine(buyConfirmationCoroutine);
         }
-        Destroy(gameObject);
+        // Destroy(gameObject);
     }
 
     public void DisplayBuyOut(PropertyManager.PropertyData property)

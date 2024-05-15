@@ -7,6 +7,7 @@ public class CardManager : MonoBehaviour
 {
     private GameObject CardPrefab;
     private string CardPrefabPath = "CardPrefab";
+    private GameObject instantiatedCard;
 
 
     public static CardManager Instance;
@@ -52,6 +53,9 @@ public class CardManager : MonoBehaviour
             }
             gameManager = FindObjectOfType<GameManager>();
             propertyManager = PropertyManager.Instance;
+
+            instantiatedCard = Instantiate(CardPrefab, canvasTransform);
+            instantiatedCard.SetActive(false); 
 
             
         }
@@ -206,7 +210,7 @@ public class CardManager : MonoBehaviour
 
     private IEnumerator AdvanceOneSpaceEffect(PlayerController player)
     {
-        StartCoroutine(player.MovePlayerCoroutine(1));
+        StartCoroutine(player.MovePlayerCoroutine(1, player));
         yield return StartCoroutine(player.WaitForPropertyDecision());      
         player.ShowMessage("Advance 1 space on the board.");
         yield return null;
@@ -214,7 +218,7 @@ public class CardManager : MonoBehaviour
 
     private IEnumerator MoveBackwardOneSpaceEffect(PlayerController player)
     {
-        yield return StartCoroutine(player.MovePlayerCoroutine(-1));
+        yield return StartCoroutine(player.MovePlayerCoroutine(-1, player));
         yield return StartCoroutine(player.WaitForPropertyDecision());
         yield return null;
     }
@@ -490,10 +494,13 @@ public class CardManager : MonoBehaviour
 
     public IEnumerator DrawAndDisplayCard(PlayerController player)
     {
+
         Card drawnCard = DrawRandomCard();
-        GameObject cardObject = Instantiate(CardPrefab, canvasTransform);
-        TextMeshProUGUI nameText = cardObject.transform.Find("NameText").GetComponent<TextMeshProUGUI>();
-        TextMeshProUGUI descriptionText = cardObject.transform.Find("DescriptionText").GetComponent<TextMeshProUGUI>();
+        instantiatedCard.SetActive(true);
+
+        TextMeshProUGUI nameText = instantiatedCard.transform.Find("NameText").GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI descriptionText = instantiatedCard.transform.Find("DescriptionText").GetComponent<TextMeshProUGUI>();
+
 
         if (nameText != null && descriptionText != null)
         {
@@ -505,9 +512,10 @@ public class CardManager : MonoBehaviour
             Debug.LogError("Description text component not found on card prefab.");
         }
         yield return new WaitForSecondsRealtime(2f);
-        Destroy(cardObject);
+        instantiatedCard.SetActive(false);
         yield return new WaitForSecondsRealtime(0.5f);
         yield return ApplyCardEffect(drawnCard.name, player);
+
     }
 
 

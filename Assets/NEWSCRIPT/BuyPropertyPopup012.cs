@@ -37,7 +37,7 @@ public class BuyPropertyPopup012 : MonoBehaviour
     private void Start()
     {
         // GameManager gameManager = FindObjectOfType<GameManager>();
-        playerController = FindObjectOfType<PlayerController>();
+        
         gameManager = FindObjectOfType<GameManager>();
         if (gameManager == null)
         {
@@ -54,11 +54,21 @@ public class BuyPropertyPopup012 : MonoBehaviour
             Debug.LogError("PropertyManager reference is not set in BuyPropertyPopup012!");
             return;
         }
+
+        // Add listeners to buttons once
+        BuyPropertyPopup_closeButton.onClick.AddListener(Decline);
+
+        for (int i = 0; i < BuyPropertyPopup_buyButtons.Length; i++)
+        {
+            int index = i; // Store the current index in a local variable to avoid closure issues
+            BuyPropertyPopup_buyButtons[i].onClick.AddListener(() => BuyStage(index, GameManager.currentPlayerIndex));
+        }
+
     }
 
     private void OnEnable()
     {
-        playerController = FindObjectOfType<PlayerController>();
+        playerController = GetComponentInParent<PlayerController>();
         if (playerController != null)
         {
             Debug.Log("Popup enabled");
@@ -75,8 +85,8 @@ public class BuyPropertyPopup012 : MonoBehaviour
 
             for (int i = 0; i < BuyPropertyPopup_buyButtons.Length; i++)
             {
-                int index = i; // Store the current index in a local variable to avoid closure issues
-                BuyPropertyPopup_buyButtons[i].onClick.AddListener(() => BuyStage(index, GameManager.currentPlayerIndex));
+                BuyPropertyPopup_buyButtons[i].gameObject.SetActive(true);
+                BuyPropertyPopup_buyButtons[i].interactable = true;
             }
         }
         else
@@ -89,31 +99,7 @@ public class BuyPropertyPopup012 : MonoBehaviour
         {
             Debug.LogError("GameManager not found!");
             return;
-        }
-
-        // Get the current player index from the GameManager
-        int currentPlayerIndex = GameManager.currentPlayerIndex;
-
-        // Check if the current player index is valid
-        if (currentPlayerIndex >= 0 && currentPlayerIndex < gameManager.players.Length)
-        {
-            // Assign the current player using the player index
-            currentPlayer = gameManager.players[currentPlayerIndex];
-
-            // Check if the currentPlayer is null
-            if (currentPlayer == null)
-            {
-                Debug.LogError("Current player not found!");
-            }
-            else
-            {
-                Debug.Log("Current player assigned: " + currentPlayer.name);
-            }
-        }
-        else
-        {
-            Debug.LogError("Invalid currentPlayerIndex in GameManager!");
-        }      
+        }     
     }
 
     private void OnDisable()
@@ -126,7 +112,10 @@ public class BuyPropertyPopup012 : MonoBehaviour
         {
             StopCoroutine(buyConfirmationCoroutine);
         }
-        Destroy(gameObject);
+        for (int i = 0; i < BuyPropertyPopup_buyButtons.Length; i++)
+        {
+            BuyPropertyPopup_buyButtons[i].interactable = false;
+        }
     }
 
     public void Display012(PropertyManager.PropertyData property)
@@ -143,6 +132,7 @@ public class BuyPropertyPopup012 : MonoBehaviour
         // property.stageImageInstances.Clear();  
 
         // Check if the current player and property are valid
+
         if (currentPlayer == null || currentProperty == null)
         {
             Debug.LogError("Current player or property is null!");
