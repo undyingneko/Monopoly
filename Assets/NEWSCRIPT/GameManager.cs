@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
     public event Action TileImagesLoaded;
     public bool isAvenueDemolitionActive = false;
     public bool isPropertySeizureActive = false;
-  
+    public TextMeshProUGUI plus300Text;
     void Awake()
     {
         if (Instance == null)
@@ -91,22 +91,6 @@ public class GameManager : MonoBehaviour
         currentPlayerIndex = (currentPlayerIndex + 1) % players.Length;
         turnCoroutine = StartCoroutine(StartTurnCoroutine());
     }
-    
-    // public string FormatPrice(int price)
-    // {
-    //     if (price >= 1000000)
-    //     {
-    //         return (price / 1000f).ToString("0,0K");
-    //     }
-    //     else if (price >= 1000)
-    //     {
-    //         return (price / 1000f).ToString("0.#") + "K";
-    //     }
-    //     else
-    //     {
-    //         return price.ToString();
-    //     }
-    // }
 
     public string FormatPrice(int price)
     {
@@ -178,7 +162,6 @@ public class GameManager : MonoBehaviour
         // Perform any additional logic based on the selected property...
     } 
 
-
     IEnumerator LoadTileImages()
     {       
         GameObject[] tileImages = GameObject.FindGameObjectsWithTag("Tile");
@@ -199,5 +182,16 @@ public class GameManager : MonoBehaviour
         } 
         yield return null;
         TileImagesLoaded?.Invoke();
+    }
+
+    public void DisplayPlus300()
+    {
+        plus300Text.gameObject.SetActive(true);
+        StartCoroutine(HidePlus300Text(plus300Text));
+    }
+    private IEnumerator HidePlus300Text(TextMeshProUGUI plus300Text)
+    {
+        yield return new WaitForSecondsRealtime(2f);
+        plus300Text.gameObject.SetActive(false); // Destroy the Plus300Text object after 2 seconds
     }
 }

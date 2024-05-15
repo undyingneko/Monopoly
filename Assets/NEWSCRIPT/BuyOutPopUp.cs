@@ -17,43 +17,29 @@ public class BuyOutPopUp : MonoBehaviour
 
 
     private PropertyManager propertyManager;
-    private PlayerController currentPlayerController;
+    public PlayerController playerController;
 
 
     private PlayerController currentPlayer;
     private PropertyManager.PropertyData currentProperty;
 
-
-    private bool buyingStage; // Flag to track if the player is in the process of buying a stage
     private float buyConfirmationTime = 10f; // Time limit for confirming the purchase
 
-    private Coroutine buyConfirmationCoroutine; // Coroutine reference for buy confirmation timer
+    private Coroutine buyConfirmationCoroutine; 
     private GameManager gameManager;
 
-    // public Transform canvasTransform;
     public GameObject stageImagePrefab;
-
-    
-    // public PlayerController buyoutPopup;
-
-
-
 
     private void Start()
     {
-        // GameManager gameManager = FindObjectOfType<GameManager>();
-        // playerController = FindObjectOfType<PlayerController>();
         gameManager = FindObjectOfType<GameManager>();
         if (gameManager == null)
         {
             Debug.LogError("GameManager not found!");
-            return; // Exit the method if GameManager is not found to avoid null reference errors
+            return; 
         }
-
         propertyManager = PropertyManager.Instance;
-        // ownedByTeammateText.gameObject.SetActive(false);
 
-        // Ensure that the PropertyManager reference is not null
         if (propertyManager == null)
         {
             Debug.LogError("PropertyManager reference is not set");
@@ -63,13 +49,10 @@ public class BuyOutPopUp : MonoBehaviour
 
     private void OnEnable()
     {
-        currentPlayerController = FindObjectOfType<PlayerController>();
-
         Transform propertyNameTextTransform = transform.Find("PropertyNameText");
         if (propertyNameTextTransform != null)
         {
             propertyNameText = propertyNameTextTransform.GetComponent<TextMeshProUGUI>();
-            
         }
         else
         {
@@ -87,7 +70,6 @@ public class BuyOutPopUp : MonoBehaviour
         }
 
         Transform stageBuyOutPriceTextTransform = transform.Find("stageBuyOutPriceText");
-        // Assign the TextMeshProUGUI component if found
         if (stageBuyOutPriceTextTransform != null)
         {
             stageBuyOutPriceText = stageBuyOutPriceTextTransform.GetComponent<TextMeshProUGUI>();  
@@ -117,10 +99,10 @@ public class BuyOutPopUp : MonoBehaviour
             Debug.LogError("Stage number text not found");
         }
 
-        if (currentPlayerController != null)
+        if (playerController != null)
         {
             Debug.Log("Popup enabled");
-            currentPlayerController.isBuyPopUpActive = true;
+            playerController.isBuyPopUpActive = true;
             buyConfirmationCoroutine = StartCoroutine(BuyConfirmationTimer());
             closeButton.onClick.AddListener(Decline); // Add a listener to the close button
             buyButton.onClick.AddListener(() => BuyOut(GameManager.currentPlayerIndex));
@@ -136,17 +118,10 @@ public class BuyOutPopUp : MonoBehaviour
             Debug.LogError("GameManager not found!");
             return;
         }
-
-        // Get the current player index from the GameManager
         int currentPlayerIndex = GameManager.currentPlayerIndex;
-
-        // Check if the current player index is valid
         if (currentPlayerIndex >= 0 && currentPlayerIndex < gameManager.players.Length)
         {
-            // Assign the current player using the player index
             currentPlayer = gameManager.players[currentPlayerIndex];
-
-            // Check if the currentPlayer is null
             if (currentPlayer == null)
             {
                 Debug.LogError("Current player not found!");
@@ -163,18 +138,14 @@ public class BuyOutPopUp : MonoBehaviour
     }
 
     private void OnDisable()
-
     {   
-        currentPlayerController = FindObjectOfType<PlayerController>();
-        currentPlayerController.isBuyPopUpActive = false;
+        playerController.isBuyPopUpActive = false;
         Debug.Log("Popup disabled");
-        // currentPlayerController = FindObjectOfType<PlayerController>();
-        // Stop the buy confirmation timer when the panel is disabled
         if (buyConfirmationCoroutine != null)
         {
             StopCoroutine(buyConfirmationCoroutine);
         }
-        Destroy(gameObject);
+        buyButton.onClick.RemoveListener(() => BuyOut(GameManager.currentPlayerIndex));
     }
 
     public void DisplayBuyOut(PropertyManager.PropertyData property)
@@ -188,16 +159,13 @@ public class BuyOutPopUp : MonoBehaviour
         Debug.Log ("currentProperty name:"+ currentProperty.name);
 
         propertyNameText.text = property.name;
-        // property.stageImageInstances.Clear();  
-
-        // Check if the current player and property are valid
         if (currentPlayer == null || currentProperty == null)
         {
             Debug.LogError("Current player or property is null!");
             return;
         }
 
-        int buyoutPrice = currentProperty.CalculateBuyoutPrice(currentProperty.currentStageIndex);
+        // int buyoutPrice = currentProperty.CalculateBuyoutPrice(currentProperty.currentStageIndex);
 
         if (currentProperty.currentStageIndex < 2)
         {
@@ -238,13 +206,9 @@ public class BuyOutPopUp : MonoBehaviour
 
     public void BuyOut(int currentPlayerIndex)
     {
-        if (!buyingStage)
-        {
-            buyingStage = true;
             int stageIndex = currentProperty.currentStageIndex;
             // int buyoutPrice = currentProperty.buyoutPrices[stageIndex];
             int buyoutPrice = currentProperty.CalculateBuyoutPrice(stageIndex);
-            
             
             if (gameManager != null && currentPlayerIndex >= 0 && currentPlayerIndex < gameManager.players.Length)
             {
@@ -253,7 +217,7 @@ public class BuyOutPopUp : MonoBehaviour
                 {
                     if (currentPlayer.Money >= buyoutPrice)
                     {
-                        PlayerController ownerPlayer = currentPlayerController.FindPlayerByID(currentProperty.ownerID);
+                        PlayerController ownerPlayer = playerController.FindPlayerByID(currentProperty.ownerID);
                         currentPlayer.Money -= buyoutPrice; 
                         ownerPlayer.Money += buyoutPrice;
                         
@@ -270,7 +234,6 @@ public class BuyOutPopUp : MonoBehaviour
 
                         currentProperty.buyoutCount += 1;
                         
-
                         Debug.Log("Property bought out successfully.");
 
                         gameObject.SetActive(false); 
@@ -282,7 +245,6 @@ public class BuyOutPopUp : MonoBehaviour
 
                         gameManager.buyOutDecisionMade = true;
                         Debug.Log("gameManager.buyOutDecisionMade set to : " + gameManager.buyOutDecisionMade);
-                        
                     }
                     else
                     {
@@ -301,18 +263,12 @@ public class BuyOutPopUp : MonoBehaviour
                 Debug.LogWarning("GameManager reference is null in BuyStage method!");
                 return;
             }
-
-            // Stop the buy confirmation timer coroutine if needed
             if (buyConfirmationCoroutine != null)
             {
                 StopCoroutine(buyConfirmationCoroutine);
             }
-        }
         Debug.Log ("currentPlayerIndex:"+ GameManager.currentPlayerIndex);
     }
-
-    
-
     IEnumerator BuyConfirmationTimer()
     {
         yield return new WaitForSeconds(buyConfirmationTime);
@@ -323,7 +279,6 @@ public class BuyOutPopUp : MonoBehaviour
         gameManager.buyOutDecisionMade = true;
         Debug.Log("gameManager.buyOutDecisionMade set to : " + gameManager.buyOutDecisionMade);
     }
-
     public void Decline()
     {
         // Close the popup immediately when the close button is pressed
@@ -333,22 +288,6 @@ public class BuyOutPopUp : MonoBehaviour
         Debug.Log("gameManager.buyOutDecisionMade set to : " + gameManager.buyOutDecisionMade);
         
     }
-    // private string FormatPrice(int price)
-    // {
-    //     if (price >= 1000000)
-    //     {
-    //         return (price / 1000f).ToString("0,0K");
-    //     }
-    //     else if (price >= 1000)
-    //     {
-    //         return (price / 1000f).ToString("0.#") + "K";
-    //     }
-    //     else
-    //     {
-    //         return price.ToString();
-    //     }
-    // }    
-
     private string FormatBuyoutPrice (int stageIndex, PropertyManager.PropertyData property)
     {
         gameManager = FindObjectOfType<GameManager>();

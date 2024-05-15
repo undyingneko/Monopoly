@@ -20,8 +20,6 @@ public class PropertyManager : MonoBehaviour
         { 4, "purple" }
     };
 
-
-
     public Transform canvasTransform;
 
     [System.Serializable]
@@ -47,7 +45,6 @@ public class PropertyManager : MonoBehaviour
         public List<GameObject> stageImages = new List<GameObject>();
         public List<GameObject> rentTagImages = new List<GameObject>();
 
-
         public TextMeshProUGUI rentText;
         // public List<GameObject> stageImages;
         
@@ -60,8 +57,6 @@ public class PropertyManager : MonoBehaviour
  
         public int currentStageIndex; // Track the highest stage index that the player owns
         public int nextStageIndex;
-
-
 
         public void InitializePrices()
         {
@@ -88,7 +83,6 @@ public class PropertyManager : MonoBehaviour
                 buyoutPrices.Add(buyoutPrice);
             }
         }
-        
         public int CalculateStagePrice(int stageIndex)
         {
             switch (stageIndex)

@@ -15,20 +15,14 @@ public class PlayerController : MonoBehaviour
     public PropertyManager.PropertyData propertyToDemolish;
     public PropertyManager.PropertyData propertyToSeize; 
     // private PlayerController currentPlayerController;
-
-    private Sprite[] diceSides;
-    private GameObject MessagePrefab;
-    private GameObject ChancePrefab;
-    private string ChancePrefabPath = "ChancePrefab";
     
+    private Sprite[] diceSides;
 
-    private BuyPropertyPopup012 buyPropertyPopup012Prefab;
-    private string buyPropertyPopup012PrefabPath = "BuyPropertyPopup012Prefab"; // Path to the prefab in the Resources folder
-    private BuyPropertyPopup012 BuypopupInstance;
+    public GameObject MessageObject;
+    public GameObject ChancePopUp;
 
-    public string buyoutPopupPrefabPath = "buyoutPopupPrefab"; // The path to the MessagePrefab relative to the Resources folder
-    private BuyOutPopUp buyoutPopupPrefab;
-    private BuyOutPopUp buyoutPopupInstance;
+    public BuyPropertyPopup012 buy012PopUp;
+    public BuyOutPopUp buyoutPopup;
 
     public int playerID;
     public int teamID;
@@ -51,7 +45,7 @@ public class PlayerController : MonoBehaviour
     public int waypointIndex = 0;
     public bool moveAllowed = false;
     public int Money = 2000000;
-    public TextMeshProUGUI plus300TextPrefab;
+
     public TextMeshProUGUI moneyText;
     public TextMeshProUGUI playerMoveText;
     private int consecutiveDoublesCount = 0;
@@ -72,13 +66,7 @@ public class PlayerController : MonoBehaviour
     private int originalSortingOrder = 0;
     
     
-    private string MessagePrefabPath = "MessagePrefab";
  
-
- 
-    
-
-
     public bool isBuyPopUpActive = false;
 
     public void AssignPlayerID(int id)
@@ -130,69 +118,45 @@ public class PlayerController : MonoBehaviour
         UpdateMoneyText();
         spriteRenderer = GetComponent<SpriteRenderer>();
         originalSortingOrder = spriteRenderer.sortingOrder;
-        if (ChancePrefab == null)
-        {
-            // Load and cache the CardPrefab
-            ChancePrefab = LoadPrefab(ChancePrefabPath);
-            if (ChancePrefab == null)
-            {
-                Debug.LogError("Failed to load CardPrefab from Resources folder at path: " + ChancePrefabPath);
-            }
-        }
-        if (MessagePrefab == null)
-        {
-            // Load and cache the CardPrefab
-            MessagePrefab = LoadPrefab(MessagePrefabPath);
-            if (MessagePrefab == null)
-            {
-                Debug.LogError("Failed to load CardPrefab from Resources folder at path: " + MessagePrefabPath);
-            }
-        }      
-        if (buyPropertyPopup012Prefab == null)
-        {
-            // Load and cache the buyPropertyPopup012Prefab
-            GameObject prefab = LoadPrefab(buyPropertyPopup012PrefabPath);
-            if (prefab != null)
-            {
-                // Cast the loaded GameObject to BuyPropertyPopup012
-                buyPropertyPopup012Prefab = prefab.GetComponent<BuyPropertyPopup012>();
-                if (buyPropertyPopup012Prefab == null)
-                {
-                    Debug.LogError("Failed to find BuyPropertyPopup012 component on prefab: " + buyPropertyPopup012PrefabPath);
-                }
-            }
-            else
-            {
-                Debug.LogError("Failed to load BuyPropertyPopup012 prefab from Resources folder at path: " + buyPropertyPopup012PrefabPath);
-            }
-        }
-        if (buyoutPopupPrefab == null)
-        {
-            // Load and cache the buyPropertyPopup012Prefab
-            GameObject prefab = LoadPrefab(buyoutPopupPrefabPath);
-            if (prefab != null)
-            {
-                // Cast the loaded GameObject to BuyPropertyPopup012
-                buyoutPopupPrefab = prefab.GetComponent<BuyOutPopUp>();
-                if (buyoutPopupPrefab == null)
-                {
-                    Debug.LogError("Failed to find BuyPropertyPopup012 component on prefab: " + buyoutPopupPrefabPath);
-                }
-            }
-            else
-            {
-                Debug.LogError("Failed to load BuyPropertyPopup012 prefab from Resources folder at path: " + buyoutPopupPrefabPath);
-            }
-        }
-
-        // LoadBuyPropertyPopup012Prefab();
-        // LoadBuyoutPopupPrefab();
-
 
         SetFontSize(dice1InputField, 50);
         SetFontSize(dice2InputField, 50);
         // PropertyManager.Instance.OnPropertiesLoaded += OnPropertiesLoaded;
+        // currentPlayer = gameManager.players[currentPlayerIndex]
     }
+    private void ShowBuy012(PropertyManager.PropertyData property, PlayerController player)
+    {
+        buy012PopUp.playerController = player;
+        buy012PopUp.gameObject.SetActive(true);
+        buy012PopUp.Display012(property);
+    }
+    private void ShowBuyOutPopUp(PropertyManager.PropertyData property, PlayerController player)
+    {
+        buyoutPopup.playerController = player;
+        buyoutPopup.gameObject.SetActive(true);
+        buyoutPopup.DisplayBuyOut(property);
+    }
+
+    private void DisplayChancePopUp()
+    {
+        ChancePopUp.gameObject.SetActive(true);
+        StartCoroutine(HideObject(ChancePopUp));
+    }
+
+    private IEnumerator HideObject(GameObject ObjectToHide)
+    {
+        yield return new WaitForSecondsRealtime(2f);
+        ObjectToHide.gameObject.SetActive(false);
+    } 
+
+    public void ShowMessage(string message)
+    {
+        MessageObject.gameObject.SetActive(true);
+        TextMeshProUGUI messageText = MessageObject.GetComponentInChildren<TextMeshProUGUI>();
+        messageText.text = message;
+        StartCoroutine(HideObject(MessageObject));
+    }
+
     private void LoadDiceSides()
     {
         diceSides = Resources.LoadAll<Sprite>("DiceSides/");
@@ -206,15 +170,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private GameObject LoadPrefab(string prefabPath)
-    {
-        GameObject prefab = Resources.Load<GameObject>(prefabPath);
-        if (prefab == null)
-        {
-            Debug.LogError("Failed to load prefab from Resources folder at path: " + prefabPath);
-        }
-        return prefab;
-    }  
+ 
     private void SetFontSize(TMP_InputField inputField, float fontSize)
     {
         inputField.textComponent.fontSize = fontSize;
@@ -228,52 +184,6 @@ public class PlayerController : MonoBehaviour
     //     // Now that properties are loaded, access them
     //     properties = propertyManager.properties;
     // }   
-    private void InstantiateBuyPropertyPopup012(PropertyManager.PropertyData property)
-    {
-        // Find the Canvas GameObject
-        Canvas canvas = FindObjectOfType<Canvas>();
-        if (canvas == null)
-        {
-            Debug.LogError("Canvas GameObject not found.");
-            return;
-        }
-        BuypopupInstance  = Instantiate(buyPropertyPopup012Prefab, canvas.transform);
-        if (BuypopupInstance  != null)
-        {
-            Debug.Log("Buy property popup instantiated successfully.");
-
-            BuypopupInstance .Display012(property);
-
-            Debug.Log("Buy property decision made.");
-        }
-        else
-        {
-            Debug.LogError("Failed to instantiate the buy property popup.");
-            return;
-        }
-    }
-
-    public void InstantiateBuyoutPopup(PropertyManager.PropertyData property)
-    {
-        Canvas canvas = FindObjectOfType<Canvas>();
-        if (canvas == null)
-        {
-            Debug.LogError("Canvas GameObject not found.");
-            return;
-        }
-        buyoutPopupInstance = Instantiate(buyoutPopupPrefab, canvas.transform);
- 
-        if (buyoutPopupInstance != null)
-        {
-            Debug.Log("Buy property popup instantiated successfully.");
-            buyoutPopupInstance.DisplayBuyOut(property);
-        }
-        else
-        {
-            Debug.LogError("Failed to instantiate the buy property popup.");
-            return;
-        }
-    }
 
     public IEnumerator RollDiceOnClick()
     {
@@ -374,7 +284,7 @@ public class PlayerController : MonoBehaviour
                 InJail = false;
                 MovePlayer(diceValues[0] + diceValues[1]);
                 turnsInJail = 0;
-                yield return StartCoroutine(WaitForPropertyDecision());
+                // yield return StartCoroutine(WaitForPropertyDecision());
                 EndTurn();
                 coroutineAllowed = false;
                 
@@ -457,13 +367,12 @@ public class PlayerController : MonoBehaviour
         coroutineAllowed = true; 
 
     }
+
     private IEnumerator CheckPosition()
     {
         if (currentPosition == 12 || currentPosition == 20 || currentPosition == 23 || currentPosition == 28)
         {
-            GameObject ChancePrefabInstance = Instantiate(ChancePrefab, canvasTransform);
-            yield return new WaitForSecondsRealtime(2f);
-            Destroy(ChancePrefabInstance);
+            DisplayChancePopUp();
             yield return new WaitForSecondsRealtime(0.5f);
             yield return StartCoroutine(CardManager.Instance.DrawAndDisplayCard(this));
         }     
@@ -495,7 +404,7 @@ public class PlayerController : MonoBehaviour
             if (consecutiveDoublesCount >= 3)
             {   
 
-                yield return StartCoroutine(WaitForPropertyDecision());
+                // yield return StartCoroutine(WaitForPropertyDecision());
                 consecutiveDoublesCount = 0;
                 waypointIndex = 8;
                 transform.position = waypoints[waypointIndex].position;
@@ -520,7 +429,7 @@ public class PlayerController : MonoBehaviour
         {   
             consecutiveDoublesCount = 0;
             // MovePlayer(diceValues[0] + diceValues[1]);
-            yield return StartCoroutine(WaitForPropertyDecision());
+            // yield return StartCoroutine(WaitForPropertyDecision());
             EndTurn();
             yield break;
         }
@@ -556,7 +465,7 @@ public class PlayerController : MonoBehaviour
                 // Add $300,000 to the player's money
                 Money += 300000;
                 UpdateMoneyText(); // Update UI to reflect the new money amount
-                DisplayPlus300();
+                gameManager.DisplayPlus300();
             }
             yield return new WaitForSecondsRealtime(0.3f);
         }
@@ -620,7 +529,7 @@ public class PlayerController : MonoBehaviour
         if (!property.owned && property.nextStageIndex <= 5 && property.stagePrices[property.nextStageIndex] <= Money)
         {
             // Instantiate the buy property popup
-            InstantiateBuyPropertyPopup012(property);
+            ShowBuy012(property, this);
         }
         else if (property.owned && property.currentStageIndex < 5)
         {
@@ -630,7 +539,7 @@ public class PlayerController : MonoBehaviour
             {
                 if (property.nextStageIndex <= property.stagePrices.Count && property.stagePrices[property.nextStageIndex] <= Money)
                 {
-                    InstantiateBuyPropertyPopup012(property);
+                    ShowBuy012(property, this);
                 }
                 else if (Money < property.stagePrices[property.nextStageIndex])
                 {
@@ -643,16 +552,8 @@ public class PlayerController : MonoBehaviour
             else if (ownerPlayer != null && ownerPlayer.teamID != this.teamID)
             {
                 int rentPriceToDeduct = property.rentPrices[property.currentStageIndex];
-
-                GameObject rentMessageObject = Instantiate(MessagePrefab, canvasTransform);
-                TextMeshProUGUI RentMessageText = rentMessageObject.GetComponentInChildren<TextMeshProUGUI>();
-
                 string formattedRent = FormatMoney(rentPriceToDeduct);
-                RentMessageText.text = "You pay a rent of $" + formattedRent;
-
-                yield return new WaitForSecondsRealtime(1f);
-                Destroy(rentMessageObject);
-
+                ShowMessage("You pay a rent of $" + formattedRent);
                 if (hasFreeRentTicket)
                 {
                     hasFreeRentTicket = false;
@@ -674,7 +575,7 @@ public class PlayerController : MonoBehaviour
                 {
                     if (property.buyoutPrices[property.currentStageIndex] <= Money )
                     {
-                        InstantiateBuyoutPopup(property);
+                        ShowBuyOutPopUp(property, this);
                     }
                     else if (property.buyoutPrices[property.currentStageIndex] > Money)
                     {
@@ -689,14 +590,13 @@ public class PlayerController : MonoBehaviour
                     PlayerController ownerPlayeragain = FindPlayerByID(property.ownerID);
                     if (property.stagePrices[property.nextStageIndex] <= Money && ownerPlayeragain.teamID == this.teamID)
                     {
-                        InstantiateBuyPropertyPopup012(property);
+                        ShowBuy012(property, this);
                         
                     }
                     else if (property.stagePrices[property.nextStageIndex] > Money && ownerPlayeragain.teamID == this.teamID)
                     {
                         ShowMessage("Not enough money to acquire this property!");
                         yield return new WaitForSecondsRealtime(2f);
-                    
                         gameManager.EndedAllInteraction = true;
                         yield break;
                     }
@@ -706,7 +606,7 @@ public class PlayerController : MonoBehaviour
                 {
                     ShowMessage("You can't buy out the hotel");
                     yield return new WaitForSecondsRealtime(2f);
-                    WaitForPropertyDecision();
+                    yield return StartCoroutine(WaitForPropertyDecision());
                     gameManager.EndedAllInteraction = true;
                 }
             }
@@ -728,14 +628,7 @@ public class PlayerController : MonoBehaviour
         // }
     }
 
-    public void ShowMessage(string message)
-    {
-        GameObject messageObject = Instantiate(MessagePrefab, canvasTransform);
-        TextMeshProUGUI messageText = messageObject.GetComponentInChildren<TextMeshProUGUI>();
-        messageText.text = message;
-        Destroy(messageObject, 2f);
 
-    }
 
 
     // Method to find player object by ID
@@ -818,11 +711,16 @@ public class PlayerController : MonoBehaviour
     }
     private IEnumerator DelayedNextTurn()
     {
+        yield return StartCoroutine(WaitForPropertyDecision());
         yield return new WaitForSecondsRealtime(1f); // Wait for 1 second
+        gameManager.buyPropertyDecisionMade = false;
+        gameManager.buyOutDecisionMade = false;
+        gameManager.EndedAllInteraction = false;    
         gameManager.NextTurn(); // Call NextTurn after waiting
     }
     public void StartTurn()
     {
+        
         isTurn = true;
         coroutineAllowed = true;
         if (!isBuyPopUpActive)
@@ -831,34 +729,19 @@ public class PlayerController : MonoBehaviour
             rollButton.gameObject.SetActive(true);
             playerMoveText.gameObject.SetActive(true);
 
-            gameManager.buyPropertyDecisionMade = false;
-            gameManager.buyOutDecisionMade = false;
-            gameManager.EndedAllInteraction = false;    
+
         }
-    }
-
-
-    private void DisplayPlus300()
-    {
-        TextMeshProUGUI plus300Text = Instantiate(plus300TextPrefab, canvasTransform);
-        plus300Text.gameObject.SetActive(true);
-        StartCoroutine(HidePlus300Text(plus300Text));
-    }
-    private IEnumerator HidePlus300Text(TextMeshProUGUI plus300Text)
-    {
-        yield return new WaitForSecondsRealtime(2f);
-        Destroy(plus300Text.gameObject); // Destroy the Plus300Text object after 2 seconds
     }
 
     public IEnumerator WaitForPropertyDecision()
     {
-        while (BuypopupInstance != null || buyoutPopupInstance != null)
+        while (buy012PopUp != null && buy012PopUp.gameObject.activeSelf|| buyoutPopup != null&& buyoutPopup.gameObject.activeSelf)
         {
-            while (BuypopupInstance != null)
+            while (buy012PopUp.gameObject.activeSelf)
             {
                 yield return new WaitUntil(() => gameManager.buyPropertyDecisionMade);
             }
-            while (buyoutPopupInstance != null)
+            while (buyoutPopup.gameObject.activeSelf)
             {
                 yield return new WaitUntil(() => gameManager.buyOutDecisionMade);
             }
