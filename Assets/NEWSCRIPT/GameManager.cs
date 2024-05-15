@@ -189,9 +189,17 @@ public class GameManager : MonoBehaviour
         plus300Text.gameObject.SetActive(true);
         StartCoroutine(HidePlus300Text(plus300Text));
     }
+
     private IEnumerator HidePlus300Text(TextMeshProUGUI plus300Text)
     {
         yield return new WaitForSecondsRealtime(2f);
         plus300Text.gameObject.SetActive(false); // Destroy the Plus300Text object after 2 seconds
     }
+    
+    public IEnumerator HideObject(GameObject ObjectToHide)
+    {
+        yield return new WaitForSecondsRealtime(2f);
+        ObjectToHide.gameObject.SetActive(false);
+    } 
+
 }

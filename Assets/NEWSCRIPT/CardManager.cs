@@ -5,15 +5,11 @@ using TMPro;
 
 public class CardManager : MonoBehaviour
 {
-    private GameObject CardPrefab;
-    private string CardPrefabPath = "CardPrefab";
-
-
+    public GameObject CardObject;
     public static CardManager Instance;
     // Card class definition
     private GameManager gameManager;
     private PropertyManager propertyManager;
-
 
     public class Card
     {
@@ -26,6 +22,9 @@ public class CardManager : MonoBehaviour
             this.description = description;
         }
     }
+
+    public TextMeshProUGUI cardName;
+    public TextMeshProUGUI cardDescription;
 
     private Dictionary<string, Card> cardDeck;
     private Dictionary<string, System.Func<PlayerController, IEnumerator>> cardEffects;
@@ -40,16 +39,6 @@ public class CardManager : MonoBehaviour
             DontDestroyOnLoad(gameObject); // Ensure CardManager persists between scenes if needed
             InitializeCardDeck();
             InitializeCardEffects();
-
-            if (CardPrefab == null)
-            {
-                // Load and cache the CardPrefab
-                CardPrefab = LoadPrefab(CardPrefabPath);
-                if (CardPrefab == null)
-                {
-                    Debug.LogError("Failed to load CardPrefab from Resources folder at path: " + CardPrefabPath);
-                }
-            }
             gameManager = FindObjectOfType<GameManager>();
             propertyManager = PropertyManager.Instance;
 
@@ -110,17 +99,6 @@ public class CardManager : MonoBehaviour
         cardEffects.Add("Firework Spectacle", FireworkSpectacleEffect);
     }
 
-
-    private GameObject LoadPrefab(string prefabPath)
-    {
-        GameObject prefab = Resources.Load<GameObject>(prefabPath);
-        if (prefab == null)
-        {
-            Debug.LogError("Failed to load prefab from Resources folder at path: " + prefabPath);
-        }
-        return prefab;
-    }  
-
     // Define card effects
     private IEnumerator BirthdayGiftEffect(PlayerController currentPlayer)
     {
@@ -128,7 +106,7 @@ public class CardManager : MonoBehaviour
         
         currentPlayer.Money += 15000 * (players.Length - 1);
         currentPlayer.UpdateMoneyText(); // Update UI to reflect the new money amount
-        currentPlayer.ShowMessage("Collect a Birthday Gift of $15,000 from each player");
+        StartCoroutine(currentPlayer.ShowMessage("Collect a Birthday Gift of $15,000 from each player"));
 
         foreach (PlayerController player in players)
         {
@@ -136,7 +114,7 @@ public class CardManager : MonoBehaviour
             {
                 player.Money -= 15000; // Deduct $15 from the player
                 player.UpdateMoneyText(); // Update UI to reflect the new money amount for the player
-                player.ShowMessage("You gave $15,000 as a birthday gift");
+                StartCoroutine(player.ShowMessage("You gave $15,000 as a birthday gift"));
             }
         }
         yield return null;
@@ -146,7 +124,7 @@ public class CardManager : MonoBehaviour
     {
         player.Money += 200000;
         player.UpdateMoneyText();
-        player.ShowMessage("Congratulations! You have won a lottery prize of $200,000.");
+        StartCoroutine(player.ShowMessage("Congratulations! You have won a lottery prize of $200,000."));
         yield return null;
     }
 
@@ -154,14 +132,14 @@ public class CardManager : MonoBehaviour
     {
         player.Money -= 50000;
         player.UpdateMoneyText();
-        player.ShowMessage("Oops! You have to pay a fee of $50,000 for dog poop cleanup.");
+        StartCoroutine(player.ShowMessage("Oops! You have to pay a fee of $50,000 for dog poop cleanup."));
         yield return null;
     }
 
     private IEnumerator GetOutOfJailEffect(PlayerController player)
     {
         player.hasGetOutOfJailCard = true;
-        player.ShowMessage("You got a Get out of jail Free Ticket to leave jail.");
+        StartCoroutine(player.ShowMessage("You got a Get out of jail Free Ticket to leave jail."));
         yield return null;
     }
 
@@ -171,7 +149,7 @@ public class CardManager : MonoBehaviour
         player.transform.position = player.waypoints[player.waypointIndex].position; 
         player.DisplayGoToJailText();
         player.InJail = true;
-        player.ShowMessage("You have been sent to jail.");
+        StartCoroutine(player.ShowMessage("You have been sent to jail."));
         yield return null;
     }
 
@@ -186,7 +164,7 @@ public class CardManager : MonoBehaviour
         }
         player.Money += 300000;
         player.UpdateMoneyText();
-        player.ShowMessage("Your character has moved forward to 'Go' and collected $300,000 from the bank.");
+        StartCoroutine(player.ShowMessage("Your character has moved forward to 'Go' and collected $300,000 from the bank."));
         yield return null;     
     }
 
@@ -200,7 +178,7 @@ public class CardManager : MonoBehaviour
             player.MoveBackward();
             yield return new WaitForSecondsRealtime(0.3f);
         }
-        player.ShowMessage("Your character has moved back to 'Go'");
+        StartCoroutine(player.ShowMessage("Your character has moved back to 'Go'"));
         yield return null;  
     }
 
@@ -208,7 +186,7 @@ public class CardManager : MonoBehaviour
     {
         StartCoroutine(player.MovePlayerCoroutine(1));
         yield return StartCoroutine(player.WaitForPropertyDecision());      
-        player.ShowMessage("Advance 1 space on the board.");
+        StartCoroutine(player.ShowMessage("Advance 1 space on the board."));
         yield return null;
     }
 
@@ -231,13 +209,13 @@ public class CardManager : MonoBehaviour
         player.Money -= taxAmount;
         player.UpdateMoneyText();
 
-        player.ShowMessage($"You paid a tax of ${taxAmount}");
+        StartCoroutine(player.ShowMessage($"You paid a tax of ${taxAmount}"));
         yield return null;
     }
     private IEnumerator FreeMealTicketEffect(PlayerController currentPlayer)
     {
         currentPlayer.hasFreeRentTicket = true;
-        currentPlayer.ShowMessage("You've received a Free Dinner Ticket. Your meal will be complimentary next time.");
+        StartCoroutine(currentPlayer.ShowMessage("You've received a Free Dinner Ticket. Your meal will be complimentary next time."));
         yield return null;
     }
 
@@ -265,7 +243,7 @@ public class CardManager : MonoBehaviour
                 if (currentPlayer.opponentProperties.Count > 0)
                 {
                     gameManager.selectedProperty = null;
-                    currentPlayer.ShowMessage("Select a property to demolish:");
+                    StartCoroutine(currentPlayer.ShowMessage("Select a property to demolish:"));
                     yield return new WaitForSecondsRealtime(2f);
                     foreach (var opponentProperty in currentPlayer.opponentProperties)
                     {
@@ -302,7 +280,7 @@ public class CardManager : MonoBehaviour
                         propertyManager.DeactivateRentTagImage(currentPlayer.propertyToDemolish);
                         currentPlayer.propertyToDemolish.rentText.gameObject.SetActive(false);
 
-                        currentPlayer.ShowMessage($"You demolished {currentPlayer.propertyToDemolish.name}, leaving it ownerless.");
+                        StartCoroutine(currentPlayer.ShowMessage($"You demolished {currentPlayer.propertyToDemolish.name}, leaving it ownerless."));
 
                        
                         // Additional actions can be added here...
@@ -316,7 +294,7 @@ public class CardManager : MonoBehaviour
                 else
                 {
                     // If no opponent-owned properties are available for demolition, show a message
-                    currentPlayer.ShowMessage("There are no opponent-owned properties available for demolition.");
+                    StartCoroutine(currentPlayer.ShowMessage("There are no opponent-owned properties available for demolition."));
                 }
                 currentPlayer.opponentProperties.Clear();
                 currentPlayer.propertyToDemolish = null;
@@ -359,7 +337,7 @@ public class CardManager : MonoBehaviour
                 if (currentPlayer.opponentProperties.Count > 0)
                 {
                     gameManager.selectedProperty = null;
-                    currentPlayer.ShowMessage("Select a property to seize:");
+                    StartCoroutine(currentPlayer.ShowMessage("Select a property to seize:"));
                     yield return new WaitForSecondsRealtime(2f);
                     foreach (var opponentProperty in currentPlayer.opponentProperties)
                     {
@@ -389,7 +367,7 @@ public class CardManager : MonoBehaviour
                         }
                         int compensationAmount = currentPlayer.propertyToSeize.stagePrices[currentPlayer.propertyToSeize.currentStageIndex];
                         ownerPlayer.Money += compensationAmount;
-                        ownerPlayer.ShowMessage($"Your property {currentPlayer.propertyToSeize.name} has been seized. You received $ {compensationAmount} as compensation.");
+                        StartCoroutine(ownerPlayer.ShowMessage($"Your property {currentPlayer.propertyToSeize.name} has been seized. You received $ {compensationAmount} as compensation."));
 
                         ownerPlayer.ownedProperties.Remove(currentPlayer.propertyToSeize);
                         // Transfer the property ownership to the current player
@@ -403,7 +381,7 @@ public class CardManager : MonoBehaviour
                         propertyManager.DeactivateRentTagImage(currentPlayer.propertyToSeize);
                         currentPlayer.propertyToSeize.rentText.gameObject.SetActive(false);
 
-                        currentPlayer.ShowMessage($"You seize {currentPlayer.propertyToSeize.name} of your opponent, leaving it ownerless.");
+                        StartCoroutine(currentPlayer.ShowMessage($"You seize {currentPlayer.propertyToSeize.name} of your opponent, leaving it ownerless."));
                     }
                     foreach (var opponentProperty in currentPlayer.opponentProperties)
                     {
@@ -414,7 +392,7 @@ public class CardManager : MonoBehaviour
                 else
                 {
                     // If no opponent-owned properties are available for seizure, show a message
-                    currentPlayer.ShowMessage("There are no opponent-owned properties available for seizure.");
+                    StartCoroutine(currentPlayer.ShowMessage("There are no opponent-owned properties available for seizure."));
                 }
                 currentPlayer.opponentProperties.Clear();
                 currentPlayer.propertyToSeize = null;
@@ -453,13 +431,13 @@ public class CardManager : MonoBehaviour
                             propertyManager.DeactivateRentTagImage(currentPlayer.propertyToDestroy);
                             currentPlayer.propertyToDestroy.rentText.gameObject.SetActive(false);
 
-                            currentPlayer.ShowMessage($"An earthquake has destroyed your property: {currentPlayer.propertyToDestroy.name}");
+                            StartCoroutine(currentPlayer.ShowMessage($"An earthquake has destroyed your property: {currentPlayer.propertyToDestroy.name}"));
                             currentPlayer.ownedProperties.Remove(currentPlayer.propertyToDestroy);
                             yield return null; // Wait to show the message
                         }
                         else
                         {
-                            currentPlayer.ShowMessage("You have no properties to destroy.");
+                            StartCoroutine(currentPlayer.ShowMessage("You have no properties to destroy."));
                         }
                     }
                 }
@@ -470,7 +448,7 @@ public class CardManager : MonoBehaviour
     private IEnumerator ForcedPropertySaleEffect(PlayerController player)
     {
         // player.SellProperty();
-        player.ShowMessage("You must sell one property of your choice from your holdings.");
+        StartCoroutine(player.ShowMessage("You must sell one property of your choice from your holdings."));
         yield return null;
     }
 
@@ -484,39 +462,38 @@ public class CardManager : MonoBehaviour
     private IEnumerator FireworkSpectacleEffect(PlayerController player)
     {
         // player.IncreaseStallValue();
-        player.ShowMessage("Select one of your stalls to host a firework display, turning it into a hot spot and increasing its value.");
+        StartCoroutine(player.ShowMessage("Select one of your stalls to host a firework display, turning it into a hot spot and increasing its value."));
         yield return null;
     }
 
     public IEnumerator DrawAndDisplayCard(PlayerController player)
     {
         Card drawnCard = DrawRandomCard();
-        GameObject cardObject = Instantiate(CardPrefab, canvasTransform);
-        TextMeshProUGUI nameText = cardObject.transform.Find("NameText").GetComponent<TextMeshProUGUI>();
-        TextMeshProUGUI descriptionText = cardObject.transform.Find("DescriptionText").GetComponent<TextMeshProUGUI>();
-
-        if (nameText != null && descriptionText != null)
+        StartCoroutine(ShowCardObject());
+        if (cardName != null && cardDescription != null)
         {
-            nameText.text = drawnCard.name;
-            descriptionText.text = drawnCard.description;
+            cardName.text = drawnCard.name;
+            cardDescription.text = drawnCard.description;
         }
         else
         {
             Debug.LogError("Description text component not found on card prefab.");
         }
-        yield return new WaitForSecondsRealtime(2f);
-        Destroy(cardObject);
-        yield return new WaitForSecondsRealtime(0.5f);
+        yield return new WaitForSecondsRealtime(3f);
         yield return ApplyCardEffect(drawnCard.name, player);
     }
 
+    private IEnumerator ShowCardObject()
+    {
+        CardObject.gameObject.SetActive(true);
+        yield return StartCoroutine(gameManager.HideObject(CardObject));
+    }
 
     private Card DrawRandomCard()
     {
         List<Card> cards = new List<Card>(cardDeck.Values);
         int randomIndex = Random.Range(0, cards.Count);
         return cards[randomIndex];
-       
     }
 
     private IEnumerator ApplyCardEffect(string cardName, PlayerController player)
@@ -578,7 +555,7 @@ public class CardManager : MonoBehaviour
                 Debug.LogWarning("Card effect not found: " + cardName);
                 break;
         }
-        yield return new WaitForSecondsRealtime(2f);
+        yield return new WaitForSecondsRealtime(1f);
     }
 
 }
