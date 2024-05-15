@@ -27,8 +27,9 @@ public class GameManager : MonoBehaviour
     public bool buyOutDecisionMade = false;
     public bool EndedAllInteraction  = false;
     public event Action TileImagesLoaded;
-    public bool isAvenueDemolitionActive = false;
-    public bool isPropertySeizureActive = false;
+    // public bool isAvenueDemolitionActive = false;
+    // public bool isPropertySeizureActive = false;
+    public bool isCardEffect = false;
     public TextMeshProUGUI plus300Text;
     void Awake()
     {

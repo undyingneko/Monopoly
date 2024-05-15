@@ -9,13 +9,11 @@ public class PlayerController : MonoBehaviour
 {
     public List<PropertyManager.PropertyData> properties;
     public List<PropertyManager.PropertyData> ownedProperties = new List<PropertyManager.PropertyData>();
-    public List<PropertyManager.PropertyData> opponentProperties;
-    public PropertyManager.PropertyData propertyToDestroy;
-    public PropertyManager.PropertyData propertyToDemolish;
-    public PropertyManager.PropertyData propertyToSeize; 
+    public List<PropertyManager.PropertyData> ListPropertiesForEffect;
+    public PropertyManager.PropertyData propertyToSeize;
+
     // private PlayerController currentPlayerController;
     
-
     public int dice1Value;
     public int dice2Value;
     
@@ -120,14 +118,14 @@ public class PlayerController : MonoBehaviour
     private void ShowBuy012(PropertyManager.PropertyData property, PlayerController player)
     {
         buy012PopUp.playerController = player;
-        buy012PopUp.gameObject.SetActive(true);
-        buy012PopUp.Display012(property);
+        player.buy012PopUp.gameObject.SetActive(true);
+        player.buy012PopUp.Display012(property);
     }
     private void ShowBuyOutPopUp(PropertyManager.PropertyData property, PlayerController player)
     {
         buyoutPopup.playerController = player;
-        buyoutPopup.gameObject.SetActive(true);
-        buyoutPopup.DisplayBuyOut(property);
+        player.buyoutPopup.gameObject.SetActive(true);
+        player.buyoutPopup.DisplayBuyOut(property);
     }
 
     private IEnumerator DisplayChancePopUp()
@@ -143,9 +141,6 @@ public class PlayerController : MonoBehaviour
         messageText.text = message;
         yield return StartCoroutine(gameManager.HideObject(MessageObject));
     }
-
-
-
 
     private void SetFontSize(TMP_InputField inputField, float fontSize)
     {
@@ -190,10 +185,10 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                // int diceValue1 = int.Parse(dice1InputField.text); 
-                // int diceValue2 = int.Parse(dice2InputField.text);
-                // StartCoroutine(RollTheDice(diceValue1 , diceValue2));
-                StartCoroutine(RollTheDice(dice1Value, dice2Value));
+                int diceValue1 = int.Parse(dice1InputField.text); 
+                int diceValue2 = int.Parse(dice2InputField.text);
+                StartCoroutine(RollTheDice(diceValue1 , diceValue2));
+                // StartCoroutine(RollTheDice(dice1Value, dice2Value));
                 rollButton.gameObject.SetActive(false);
                 playerMoveText.gameObject.SetActive(false);
             }
@@ -313,44 +308,34 @@ public class PlayerController : MonoBehaviour
             dice2Image.SetActive(false);
         }   
         //-----------------------
-        for (int i = 0; i <= 20; i++)
-        {
-            int randomDice1Side = Random.Range(1, 7); 
-            int randomDice2Side = Random.Range(1, 7); 
-
-            gameManager.dice1Sides[randomDice1Side].SetActive(true);
-            gameManager.dice2Sides[randomDice2Side].SetActive(true);
-
-            yield return new WaitForSecondsRealtime(0.05f);
-
-            gameManager.dice1Sides[randomDice1Side].SetActive(false);
-            gameManager.dice2Sides[randomDice2Side].SetActive(false);
-
-            // Store the random values
-            diceValues[0] = randomDice1Side;
-            diceValues[1] = randomDice2Side;
-        }
-        // Set the final values
-        gameManager.dice1Sides[diceValues[0]].SetActive(true);
-        gameManager.dice2Sides[diceValues[1]].SetActive(true);
-        int sum = diceValues[0] + diceValues[1];
-        //---------------------
-        // // For testing purposes, set the dice values to double 6
-        // diceValues[0] = dice1Value;
-        // diceValues[1] = dice2Value;
         // for (int i = 0; i <= 20; i++)
         // {
-        //     for (int j = 0; j < diceImages.Length; j++)
-        //     {
-        //         diceImages[j].sprite = diceSides[3]; // Use the sprite for dice side 6
-        //     }
+        //     int randomDice1Side = Random.Range(1, 7); 
+        //     int randomDice2Side = Random.Range(1, 7); 
+
+        //     gameManager.dice1Sides[randomDice1Side].SetActive(true);
+        //     gameManager.dice2Sides[randomDice2Side].SetActive(true);
 
         //     yield return new WaitForSecondsRealtime(0.05f);
+
+        //     gameManager.dice1Sides[randomDice1Side].SetActive(false);
+        //     gameManager.dice2Sides[randomDice2Side].SetActive(false);
+
+        //     // Store the random values
+        //     diceValues[0] = randomDice1Side;
+        //     diceValues[1] = randomDice2Side;
         // }
-        // int sum = diceValues[0] + diceValues[1];      
+        // // Set the final values
+        // gameManager.dice1Sides[diceValues[0]].SetActive(true);
+        // gameManager.dice2Sides[diceValues[1]].SetActive(true);
+        // int sum = diceValues[0] + diceValues[1];
+        //---------------------
+        // For testing purposes
+        diceValues[0] = dice1Value;
+        diceValues[1] = dice2Value;
+        int sum = diceValues[0] + diceValues[1];      
         //---------------------
 
-        // int sum = 7;
         sumText.text = "" + sum; 
         yield return new WaitForSecondsRealtime(0.1f);
 

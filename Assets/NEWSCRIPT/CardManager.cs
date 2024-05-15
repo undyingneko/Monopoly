@@ -56,7 +56,7 @@ public class CardManager : MonoBehaviour
         cardDeck = new Dictionary<string, Card>();
 
         // Populate the card deck
-        cardDeck.Add("Birthday Gift", new Card("Birthday Gift", "Collect a Birthday Gift of $15000 from each player."));
+        // cardDeck.Add("Birthday Gift", new Card("Birthday Gift", "Collect a Birthday Gift of $15000 from each player."));
         // cardDeck.Add("Lottery Win: $200,000", new Card("Lottery Win", "Congratulations! You have won a lottery prize of $200,000."));
         // cardDeck.Add("Dog Poop Cleanup Fee", new Card("Dog Poop Cleanup Fee", "Oops! You have to pay a fee of $50,000 for dog poop cleanup."));
         // cardDeck.Add("Get out of Jail Ticket", new Card("Get out of Jail Ticket", "You can use this card to get out of jail once."));
@@ -69,7 +69,7 @@ public class CardManager : MonoBehaviour
         // cardDeck.Add("Avenue Demolition", new Card("Avenue Demolition", "Demolish one of the opponent's avenues, leaving it ownerless."));
         // cardDeck.Add("Property Seizure", new Card("Property Seizure", "Force one opponent to sell one property of your choice from their holdings."));
         // cardDeck.Add("Natural Disaster", new Card("Natural Disaster", "An earthquake has destroyed 1 of your food stalls at the festival."));
-        // cardDeck.Add("Forced Property Sale", new Card("Forced Property Sale", "You must sell one property of your choice from your holdings."));
+        cardDeck.Add("Sales Slump", new Card("Sales Slump", "You're Forced to Sell One Food Stall to Keep Your Business Afloat"));
         // cardDeck.Add("Generous Treat", new Card("Generous Treat", "Select one food stall of the opponent. Any player landing on this stall is treated to a complimentary meal for one turn, no payment necessary."));
         // cardDeck.Add("Free Meal Ticket", new Card("Free Meal Ticket", "Receive a ticket for a complimentary meal at any food stall on your next visit."));
         // cardDeck.Add("Firework Spectacle", new Card("Firework Spectacle", "Select one of your stalls to host a firework display, turning it into a hot spot and increasing its value."));
@@ -93,12 +93,72 @@ public class CardManager : MonoBehaviour
         cardEffects.Add("Avenue Demolition", AvenueDemolitionEffect);
         cardEffects.Add("Property Seizure", PropertySeizureEffect);
         cardEffects.Add("Natural Disaster", NaturalDisasterEffect);
-        cardEffects.Add("Forced Property Sale", ForcedPropertySaleEffect);
+        cardEffects.Add("Sales Slump", SalesSlump);
         cardEffects.Add("Generous Treat", GenerousTreatEffect);
         cardEffects.Add("Free Meal Ticket", FreeMealTicketEffect);
         cardEffects.Add("Firework Spectacle", FireworkSpectacleEffect);
     }
-
+    private IEnumerator ApplyCardEffect(string cardName, PlayerController player)
+    {
+        switch (cardName)
+        {
+            // case "Birthday Gift":
+            //     yield return BirthdayGiftEffect(player);
+            //     break;
+            // case "Lottery Win":
+            //     yield return LotteryWinEffect(player);
+            //     break;
+            // case "Dog Poop Cleanup Fee":
+            //     yield return DogPoopCleanupFeeEffect(player);
+            //     break;
+            // case "Get out of Jail Ticket":
+            //     yield return GetOutOfJailEffect(player);
+            //     break;
+            // case "Go to Jail":
+            //     yield return GoToJailEffect(player);
+            //     break;
+            // case "Advance to Go":
+            //     yield return AdvanceToGoEffect(player);
+            //     break;
+            // case "Go Back to Go":
+            //     yield return GoBackToGoEffect(player);
+            //     break;
+            // case "Advance 1 Space":
+            //     yield return AdvanceOneSpaceEffect(player);
+            //     break;
+            // case "Move Backward 1 Space":
+            //     yield return MoveBackwardOneSpaceEffect(player);
+            //     break;
+            // case "Tax Levy":
+            //     yield return TaxLevyEffect(player);
+            //     break;
+            // case "Avenue Demolition":
+            //     yield return AvenueDemolitionEffect(player);
+            //     break;
+            // case "Property Seizure":
+            //     yield return PropertySeizureEffect(player);
+            //     break; 
+            // case "Natural Disaster":
+            //     yield return NaturalDisasterEffect(player);
+            //     break;
+            case "Sales Slump":
+                yield return SalesSlump(player);
+                break;  
+            // case "Generous Treat":
+            //     yield return GenerousTreatEffect(player);
+            //     break;
+            // case "Free Meal Ticket":
+            //     yield return FreeMealTicketEffect(player);
+            //     break;  
+            // case "Firework Spectacle":
+            //     yield return FireworkSpectacleEffect(player);
+            //     break;
+            default:
+                Debug.LogWarning("Card effect not found: " + cardName);
+                break;
+        }
+        yield return new WaitForSecondsRealtime(1f);
+    }
     // Define card effects
     private IEnumerator BirthdayGiftEffect(PlayerController currentPlayer)
     {
@@ -221,7 +281,7 @@ public class CardManager : MonoBehaviour
 
     private IEnumerator AvenueDemolitionEffect(PlayerController currentPlayer)
     {
-            gameManager.isAvenueDemolitionActive = true;
+            gameManager.isCardEffect = true;
 
                 foreach (var tile in gameManager.waypointIndexToTileMap.Values)
                 {
@@ -231,21 +291,21 @@ public class CardManager : MonoBehaviour
                         tileScript.enabled = false;
                     }
                 }                
-                currentPlayer.opponentProperties = new List<PropertyManager.PropertyData>();
+                currentPlayer.ListPropertiesForEffect = new List<PropertyManager.PropertyData>();
                 PlayerController[] players = FindObjectsOfType<PlayerController>();
                 foreach (PlayerController player in players)
                 {
                     if (player.teamID != currentPlayer.teamID)  // Exclude the current player
                     {
-                        currentPlayer.opponentProperties.AddRange(player.ownedProperties);
+                        currentPlayer.ListPropertiesForEffect.AddRange(player.ownedProperties);
                     }
                 }
-                if (currentPlayer.opponentProperties.Count > 0)
+                if (currentPlayer.ListPropertiesForEffect.Count > 0)
                 {
                     gameManager.selectedProperty = null;
                     StartCoroutine(currentPlayer.ShowMessage("Select a property to demolish:"));
                     yield return new WaitForSecondsRealtime(2f);
-                    foreach (var opponentProperty in currentPlayer.opponentProperties)
+                    foreach (var opponentProperty in currentPlayer.ListPropertiesForEffect)
                     {
                         GameObject tileImage = gameManager.waypointIndexToTileMap[opponentProperty.JSONwaypointIndex];
     
@@ -259,33 +319,33 @@ public class CardManager : MonoBehaviour
                         clickHandler.SetAssociatedProperty(opponentProperty);                       
                     }                 
                     yield return currentPlayer.WaitForPlayerSelection();
-                    currentPlayer.propertyToDemolish = gameManager.selectedProperty;
+                    currentPlayer.propertyToSeize = gameManager.selectedProperty;
                     Debug.Log("Selected Property: " + gameManager.selectedProperty.name);
-                    Debug.Log("Selected property to demolish: " + currentPlayer.propertyToDemolish.name);
-                    if (currentPlayer.propertyToDemolish != null)
+                    Debug.Log("Selected property to demolish: " + currentPlayer.propertyToSeize.name);
+                    if (currentPlayer.propertyToSeize != null)
                     {
-                        PlayerController ownerPlayer = currentPlayer.FindPlayerByID(currentPlayer.propertyToDemolish.ownerID);
+                        PlayerController ownerPlayer = currentPlayer.FindPlayerByID(currentPlayer.propertyToSeize.ownerID);
                         if (ownerPlayer == null)
                         {
-                            Debug.LogError("Owner player not found for property: " + currentPlayer.propertyToDemolish.name);
+                            Debug.LogError("Owner player not found for property: " + currentPlayer.propertyToSeize.name);
                             yield break; // Exit if owner player is not found
                         }                       
-                        ownerPlayer.ownedProperties.Remove(currentPlayer.propertyToDemolish);
+                        ownerPlayer.ownedProperties.Remove(currentPlayer.propertyToSeize);
                         // Reset the property ownership
-                        currentPlayer.propertyToDemolish.owned = false;
-                        currentPlayer.propertyToDemolish.ownerID = 0; // Set ownerID to -1 (ownerless)
-                        currentPlayer.propertyToDemolish.teamownerID = 0; // Set teamownerID to -1 (ownerless)
-                        currentPlayer.propertyToDemolish.currentStageIndex = -1;
-                        propertyManager.DeactivateOldStageImages(currentPlayer.propertyToDemolish);
-                        propertyManager.DeactivateRentTagImage(currentPlayer.propertyToDemolish);
-                        currentPlayer.propertyToDemolish.rentText.gameObject.SetActive(false);
+                        currentPlayer.propertyToSeize.owned = false;
+                        currentPlayer.propertyToSeize.ownerID = 0; // Set ownerID to -1 (ownerless)
+                        currentPlayer.propertyToSeize.teamownerID = 0; // Set teamownerID to -1 (ownerless)
+                        currentPlayer.propertyToSeize.currentStageIndex = -1;
+                        propertyManager.DeactivateOldStageImages(currentPlayer.propertyToSeize);
+                        propertyManager.DeactivateRentTagImage(currentPlayer.propertyToSeize);
+                        currentPlayer.propertyToSeize.rentText.gameObject.SetActive(false);
 
-                        StartCoroutine(currentPlayer.ShowMessage($"You demolished {currentPlayer.propertyToDemolish.name}, leaving it ownerless."));
+                        StartCoroutine(currentPlayer.ShowMessage($"You demolished {currentPlayer.propertyToSeize.name}, leaving it ownerless."));
 
                        
                         // Additional actions can be added here...
                     }
-                    foreach (var opponentProperty in currentPlayer.opponentProperties)
+                    foreach (var opponentProperty in currentPlayer.ListPropertiesForEffect)
                     {
                         GameObject tileImage = gameManager.waypointIndexToTileMap[opponentProperty.JSONwaypointIndex];
                         tileImage.transform.position += new Vector3(0, -1, 0);
@@ -296,8 +356,8 @@ public class CardManager : MonoBehaviour
                     // If no opponent-owned properties are available for demolition, show a message
                     StartCoroutine(currentPlayer.ShowMessage("There are no opponent-owned properties available for demolition."));
                 }
-                currentPlayer.opponentProperties.Clear();
-                currentPlayer.propertyToDemolish = null;
+                currentPlayer.ListPropertiesForEffect.Clear();
+                currentPlayer.propertyToSeize = null;
                 foreach (var tile in gameManager.waypointIndexToTileMap.Values)
                 {
                     var tileScript = tile.GetComponent<TileScript>();
@@ -306,14 +366,13 @@ public class CardManager : MonoBehaviour
                         tileScript.enabled = true;
                     }
                 }
-                gameManager.isAvenueDemolitionActive = false;
+                gameManager.isCardEffect = false;
                 yield return null;
     }
 
     private IEnumerator PropertySeizureEffect(PlayerController currentPlayer)
     {
-                gameManager.isPropertySeizureActive = true;
-                
+                gameManager.isCardEffect = true;
                 foreach (var tile in gameManager.waypointIndexToTileMap.Values)
                 {
                     var tileScript = tile.GetComponent<TileScript>();
@@ -322,24 +381,22 @@ public class CardManager : MonoBehaviour
                         tileScript.enabled = false;
                     }
                 } 
-                
-                currentPlayer.opponentProperties = new List<PropertyManager.PropertyData>();
+                currentPlayer.ListPropertiesForEffect = new List<PropertyManager.PropertyData>();
                 PlayerController[] players = FindObjectsOfType<PlayerController>();
                 foreach (PlayerController player in players)
                 {
                     if (player.teamID != currentPlayer.teamID)  // Exclude the current player
                     {
-                        currentPlayer.opponentProperties.AddRange(player.ownedProperties);
+                        currentPlayer.ListPropertiesForEffect.AddRange(player.ownedProperties);
                     }
                 }
-
                 // Check if there are opponent-owned properties available for seizure
-                if (currentPlayer.opponentProperties.Count > 0)
+                if (currentPlayer.ListPropertiesForEffect.Count > 0)
                 {
                     gameManager.selectedProperty = null;
                     StartCoroutine(currentPlayer.ShowMessage("Select a property to seize:"));
                     yield return new WaitForSecondsRealtime(2f);
-                    foreach (var opponentProperty in currentPlayer.opponentProperties)
+                    foreach (var opponentProperty in currentPlayer.ListPropertiesForEffect)
                     {
                         GameObject tileImage = gameManager.waypointIndexToTileMap[opponentProperty.JSONwaypointIndex];
 
@@ -352,7 +409,6 @@ public class CardManager : MonoBehaviour
                         }
                         clickHandler.SetAssociatedProperty(opponentProperty);
                     }
-
                     yield return currentPlayer.WaitForPlayerSelection();
                     currentPlayer.propertyToSeize = gameManager.selectedProperty;
                     Debug.Log("Selected Property: " + gameManager.selectedProperty.name);
@@ -370,8 +426,7 @@ public class CardManager : MonoBehaviour
                         StartCoroutine(ownerPlayer.ShowMessage($"Your property {currentPlayer.propertyToSeize.name} has been seized. You received $ {compensationAmount} as compensation."));
 
                         ownerPlayer.ownedProperties.Remove(currentPlayer.propertyToSeize);
-                        // Transfer the property ownership to the current player
-                        
+                        // Transfer the property ownership to the current player 
                         currentPlayer.propertyToSeize.owned = false;
                         currentPlayer.propertyToSeize.ownerID = 0;
                         currentPlayer.propertyToSeize.teamownerID = 0;
@@ -383,7 +438,7 @@ public class CardManager : MonoBehaviour
 
                         StartCoroutine(currentPlayer.ShowMessage($"You seize {currentPlayer.propertyToSeize.name} of your opponent, leaving it ownerless."));
                     }
-                    foreach (var opponentProperty in currentPlayer.opponentProperties)
+                    foreach (var opponentProperty in currentPlayer.ListPropertiesForEffect)
                     {
                         GameObject tileImage = gameManager.waypointIndexToTileMap[opponentProperty.JSONwaypointIndex];
                         tileImage.transform.position += new Vector3(0, -1, 0);
@@ -391,10 +446,9 @@ public class CardManager : MonoBehaviour
                 }
                 else
                 {
-                    // If no opponent-owned properties are available for seizure, show a message
                     StartCoroutine(currentPlayer.ShowMessage("There are no opponent-owned properties available for seizure."));
                 }
-                currentPlayer.opponentProperties.Clear();
+                currentPlayer.ListPropertiesForEffect.Clear();
                 currentPlayer.propertyToSeize = null;
                 foreach (var tile in gameManager.waypointIndexToTileMap.Values)
                 {
@@ -404,13 +458,13 @@ public class CardManager : MonoBehaviour
                         tileScript.enabled = true;
                     }
                 }
-                gameManager.isPropertySeizureActive = false;
+                gameManager.isCardEffect = false;
                 yield return null;
     }
 
     private IEnumerator NaturalDisasterEffect(PlayerController currentPlayer)
     {
-                currentPlayer.propertyToDestroy = null;
+                currentPlayer.propertyToSeize = null;
                 PlayerController[] players = FindObjectsOfType<PlayerController>();
                 foreach (PlayerController player in players)
                 {
@@ -418,21 +472,21 @@ public class CardManager : MonoBehaviour
                     {
                         if (currentPlayer.ownedProperties.Count > 0)
                         {                        
-                            currentPlayer.propertyToDestroy = currentPlayer.ownedProperties[Random.Range(0, currentPlayer.opponentProperties.Count)];
-                        // currentPlayer.propertyToDestroy = player.RemoveRandomProperty();
-                        // if (currentPlayer.propertyToDestroy != null)
+                            currentPlayer.propertyToSeize = currentPlayer.ownedProperties[Random.Range(0, currentPlayer.ListPropertiesForEffect.Count)];
+                        // currentPlayer.propertyToSeize = player.RemoveRandomProperty();
+                        // if (currentPlayer.propertyToSeize != null)
                         // {
                             // Reset the property ownership
-                            currentPlayer.propertyToDestroy.owned = false;
-                            currentPlayer.propertyToDestroy.ownerID = 0; // Set ownerID to 0 (ownerless)
-                            currentPlayer.propertyToDestroy.teamownerID = 0; // Set teamownerID to 0 (ownerless)
-                            currentPlayer.propertyToDestroy.currentStageIndex = -1;
-                            propertyManager.DeactivateOldStageImages(currentPlayer.propertyToDestroy);
-                            propertyManager.DeactivateRentTagImage(currentPlayer.propertyToDestroy);
-                            currentPlayer.propertyToDestroy.rentText.gameObject.SetActive(false);
+                            currentPlayer.propertyToSeize.owned = false;
+                            currentPlayer.propertyToSeize.ownerID = 0; // Set ownerID to 0 (ownerless)
+                            currentPlayer.propertyToSeize.teamownerID = 0; // Set teamownerID to 0 (ownerless)
+                            currentPlayer.propertyToSeize.currentStageIndex = -1;
+                            propertyManager.DeactivateOldStageImages(currentPlayer.propertyToSeize);
+                            propertyManager.DeactivateRentTagImage(currentPlayer.propertyToSeize);
+                            currentPlayer.propertyToSeize.rentText.gameObject.SetActive(false);
 
-                            StartCoroutine(currentPlayer.ShowMessage($"An earthquake has destroyed your property: {currentPlayer.propertyToDestroy.name}"));
-                            currentPlayer.ownedProperties.Remove(currentPlayer.propertyToDestroy);
+                            StartCoroutine(currentPlayer.ShowMessage($"An earthquake has destroyed your property: {currentPlayer.propertyToSeize.name}"));
+                            currentPlayer.ownedProperties.Remove(currentPlayer.propertyToSeize);
                             yield return null; // Wait to show the message
                         }
                         else
@@ -441,16 +495,95 @@ public class CardManager : MonoBehaviour
                         }
                     }
                 }
-                currentPlayer.propertyToDestroy = null;
+                currentPlayer.propertyToSeize = null;
                 yield return null;
     }
 
-    private IEnumerator ForcedPropertySaleEffect(PlayerController player)
+    private IEnumerator SalesSlump(PlayerController currentPlayer)
     {
-        // player.SellProperty();
-        StartCoroutine(player.ShowMessage("You must sell one property of your choice from your holdings."));
+        gameManager.isCardEffect = true;
+        foreach (var tile in gameManager.waypointIndexToTileMap.Values)
+        {
+            var tileScript = tile.GetComponent<TileScript>();
+            if (tileScript != null)
+            {
+                tileScript.enabled = false;
+            }
+        }
+        currentPlayer.ListPropertiesForEffect = new List<PropertyManager.PropertyData>();
+        currentPlayer.ListPropertiesForEffect.AddRange(currentPlayer.ownedProperties);
+
+        if (currentPlayer.ListPropertiesForEffect.Count > 0)
+        {
+            gameManager.selectedProperty = null;
+            StartCoroutine(currentPlayer.ShowMessage("Select a property to sell:"));
+            yield return new WaitForSecondsRealtime(2f);
+
+            // Show player's properties for selection
+            foreach (var playerProperty in currentPlayer.ListPropertiesForEffect)
+            {
+                GameObject tileImage = gameManager.waypointIndexToTileMap[playerProperty.JSONwaypointIndex];
+
+                tileImage.transform.position += new Vector3(0, 1, 0);
+
+                // Assign click handler for selecting the property
+                TileClickHandler clickHandler = tileImage.GetComponent<TileClickHandler>();
+                if (clickHandler == null)
+                {
+                    clickHandler = tileImage.AddComponent<TileClickHandler>();
+                }
+                clickHandler.SetAssociatedProperty(playerProperty);
+            }
+
+            // Wait for player selection
+            yield return currentPlayer.WaitForPlayerSelection();
+            currentPlayer.propertyToSeize = gameManager.selectedProperty;
+
+            if (currentPlayer.propertyToSeize != null)
+            {
+                int compensationAmount = currentPlayer.propertyToSeize.stagePrices[currentPlayer.propertyToSeize.currentStageIndex];
+                currentPlayer.Money += compensationAmount;
+                currentPlayer.ownedProperties.Remove(currentPlayer.propertyToSeize);
+                
+                currentPlayer.propertyToSeize.owned = false;
+                currentPlayer.propertyToSeize.ownerID = 0;
+                currentPlayer.propertyToSeize.teamownerID = 0;
+                currentPlayer.propertyToSeize.currentStageIndex = -1;
+
+                // Deactivate property images and UI elements
+                propertyManager.DeactivateOldStageImages(currentPlayer.propertyToSeize);
+                propertyManager.DeactivateRentTagImage(currentPlayer.propertyToSeize);
+                currentPlayer.propertyToSeize.rentText.gameObject.SetActive(false);
+                StartCoroutine(currentPlayer.ShowMessage($"You sold {currentPlayer.propertyToSeize.name} for $ {compensationAmount}."));
+            
+            }
+            foreach (var opponentProperty in currentPlayer.ListPropertiesForEffect)
+            {
+                GameObject tileImage = gameManager.waypointIndexToTileMap[opponentProperty.JSONwaypointIndex];
+                tileImage.transform.position += new Vector3(0, -1, 0);
+            }           
+        }
+        else
+        {
+            // Inform the player if they don't own any properties to sell
+            StartCoroutine(currentPlayer.ShowMessage("You don't own any properties to sell."));
+        }
+
+        // Reset variables and enable tile scripts
+        currentPlayer.ListPropertiesForEffect.Clear();
+        currentPlayer.propertyToSeize = null;
+        foreach (var tile in gameManager.waypointIndexToTileMap.Values)
+        {
+            var tileScript = tile.GetComponent<TileScript>();
+            if (tileScript != null)
+            {
+                tileScript.enabled = true;
+            }
+        }
+        gameManager.isCardEffect = false;
         yield return null;
     }
+
 
     private IEnumerator GenerousTreatEffect(PlayerController currentPlayer)
     {
@@ -496,66 +629,6 @@ public class CardManager : MonoBehaviour
         return cards[randomIndex];
     }
 
-    private IEnumerator ApplyCardEffect(string cardName, PlayerController player)
-    {
-        switch (cardName)
-        {
-            case "Birthday Gift":
-                yield return BirthdayGiftEffect(player);
-                break;
-            // case "Lottery Win":
-            //     yield return LotteryWinEffect(player);
-            //     break;
-            // case "Dog Poop Cleanup Fee":
-            //     yield return DogPoopCleanupFeeEffect(player);
-            //     break;
-            // case "Get out of Jail Ticket":
-            //     yield return GetOutOfJailEffect(player);
-            //     break;
-            // case "Go to Jail":
-            //     yield return GoToJailEffect(player);
-            //     break;
-            // case "Advance to Go":
-            //     yield return AdvanceToGoEffect(player);
-            //     break;
-            // case "Go Back to Go":
-            //     yield return GoBackToGoEffect(player);
-            //     break;
-            // case "Advance 1 Space":
-            //     yield return AdvanceOneSpaceEffect(player);
-            //     break;
-            // case "Move Backward 1 Space":
-            //     yield return MoveBackwardOneSpaceEffect(player);
-            //     break;
-            // case "Tax Levy":
-            //     yield return TaxLevyEffect(player);
-            //     break;
-            // case "Avenue Demolition":
-            //     yield return AvenueDemolitionEffect(player);
-            //     break;
-            // case "Property Seizure":
-            //     yield return PropertySeizureEffect(player);
-            //     break; 
-            // case "Natural Disaster":
-            //     yield return NaturalDisasterEffect(player);
-            //     break;
-            // case "Forced Property Sale":
-            //     yield return ForcedPropertySaleEffect(player);
-            //     break;  
-            // case "Generous Treat":
-            //     yield return GenerousTreatEffect(player);
-            //     break;
-            // case "Free Meal Ticket":
-            //     yield return FreeMealTicketEffect(player);
-            //     break;  
-            // case "Firework Spectacle":
-            //     yield return FireworkSpectacleEffect(player);
-            //     break;
-            default:
-                Debug.LogWarning("Card effect not found: " + cardName);
-                break;
-        }
-        yield return new WaitForSecondsRealtime(1f);
-    }
+
 
 }
