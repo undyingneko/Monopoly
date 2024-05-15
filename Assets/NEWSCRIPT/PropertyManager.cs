@@ -117,15 +117,12 @@ public class PropertyManager : MonoBehaviour
         } 
     }
 
-
     public List<PropertyData> properties = new List<PropertyData>();
-
     // Singleton instance
     public static PropertyManager instance;
 
     // public delegate void PropertiesLoadedCallback();
     // public event PropertiesLoadedCallback OnPropertiesLoaded;
-
 
     public static PropertyManager Instance
     {
@@ -147,13 +144,11 @@ public class PropertyManager : MonoBehaviour
     private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
-
         if (canvasTransform == null)
         {
             Debug.LogError("Canvas transform reference not set. Please assign the Canvas transform in the Inspector.");
             return;
         }
-
     }
 
     private void Awake()
@@ -248,24 +243,19 @@ public class PropertyManager : MonoBehaviour
         Debug.LogError("Tile image not found for waypoint index: " + property.JSONwaypointIndex);
         return;
     }
-
         GameObject tileImage = gameManager.waypointIndexToTileMap[property.JSONwaypointIndex];
   
         for (int i = 0; i < property.stageIndexes.Count; i++)
         {
-            string prefabPath = "StageImages/P" + property.JSONwaypointIndex + "_S" + i;
-            GameObject stageImagePrefab = LoadStageImagePrefab(prefabPath);
-
-            if (stageImagePrefab == null)
+            string stageImageName = "P" + property.JSONwaypointIndex + "_S" + i;
+            Transform stageImageTransform = tileImage.transform.Find(stageImageName);
+            if (stageImageTransform == null)
             {
-                Debug.LogError("Stage image prefab not found at path: " + prefabPath);
+                Debug.LogError("Stage image object not found with name: " + stageImageName);
                 continue;
             }
-
-            GameObject stageImageInstance = Instantiate(stageImagePrefab);
-            stageImageInstance.transform.SetParent(tileImage.transform, false);
+            GameObject stageImageInstance = stageImageTransform.gameObject;
             stageImageInstance.SetActive(false);
-            
             property.stageImages.Add(stageImageInstance);
         }
 
@@ -287,7 +277,7 @@ public class PropertyManager : MonoBehaviour
             Debug.LogWarning("Number of loaded images does not match the number of stages for property: " + property.name);
         }
     }
-    
+
     public void DeactivateOldStageImages(PropertyData property)
     {
         // Ensure the property has stage images
@@ -309,53 +299,44 @@ public class PropertyManager : MonoBehaviour
 
     private void LoadRentTagImages(PropertyData property)
     {
-        // Get the list of all color variations available for rent tag images
         string[] colors = new string[] { "pink", "turquois", "green", "purple" };
         GameObject tileImage = gameManager.waypointIndexToTileMap[property.JSONwaypointIndex];
-        // Iterate through each color
-        // GameObject rentTagImageInstance = null;
+
         foreach (string color in colors)
         {
-            // Construct the path to the rent tag image based on the color and JSON waypoint index
-            string rentTagImagePath = "RentTagImages/PriceTags_" + property.JSONwaypointIndex + "_" + color;
-
-            // Load the rent tag image prefab from the Resources folder
-            // GameObject rentTagImagePrefab = Resources.Load<GameObject>(rentTagImagePath);
-            GameObject rentTagImagePrefab = LoadRentTagImagePrefab(rentTagImagePath);
-
-            if (rentTagImagePrefab != null)
+            string rentTagObjectName = "PriceTags_" + property.JSONwaypointIndex + "_" + color;
+            Transform rentTagObject = tileImage.transform.Find(rentTagObjectName);
+            if (rentTagObject != null)
             {
-                
-                // Create a GameObject for the rent tag image
-                GameObject rentTagImageInstance = Instantiate(rentTagImagePrefab);
-                rentTagImageInstance.transform.SetParent(tileImage.transform, false);
-                
+                GameObject rentTagImageInstance = rentTagObject.gameObject;
                 rentTagImageInstance.SetActive(false);
                 property.rentTagImages.Add(rentTagImageInstance);
-                
             }
             else
             {
-                Debug.LogWarning("Rent tag image not found at path: " + rentTagImagePath);
+                Debug.LogWarning("Rent tag image object not found: " + rentTagObjectName);
             }
         }
-        // if (rentTagImageInstance != null)
-        // {
-            // Vector3 rentTagImagePosition = rentTagImageInstance.transform.position;
+        string rentTextObjectName = "RentText_" + property.JSONwaypointIndex;
+        Transform rentTextObject = tileImage.transform.Find(rentTextObjectName);
+        if (rentTextObject != null)
+        {
+            TextMeshProUGUI rentTextInstance = rentTextObject.GetComponent<TextMeshProUGUI>();
 
-        string rentTextPath = "RentTagImages/RentText_" + property.JSONwaypointIndex;
-        // TextMeshProUGUI rentTextPrefab = Resources.Load<TextMeshProUGUI>(rentTextPath);
-        TextMeshProUGUI rentTextPrefab = LoadRentTextPrefab(rentTextPath);
-        TextMeshProUGUI rentTextInstance = Instantiate(rentTextPrefab);
-
-        rentTextInstance.transform.SetParent(tileImage.transform, false);
-        property.rentText = rentTextInstance;
-        rentTextInstance.gameObject.SetActive(false);
-        // }
-        // else
-        // {
-        //     Debug.LogWarning("Rent tag image was not instantiated successfully.");
-        // }
+            if (rentTextInstance != null)
+            {
+                property.rentText = rentTextInstance;
+                rentTextInstance.gameObject.SetActive(false);
+            }
+            else
+            {
+                Debug.LogWarning("Rent text component not found on object: " + rentTextObjectName);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Rent text object not found: " + rentTextObjectName);
+        }
     }
 
     public void DeactivateRentTagImage(PropertyData property)
@@ -426,52 +407,6 @@ public class PropertyManager : MonoBehaviour
         }
     } 
 
-    private GameObject LoadStageImagePrefab(string prefabPath)
-    {
-        // Check if the prefab is already loaded
-        if (stageImagePrefabs.ContainsKey(prefabPath))
-        {
-            return stageImagePrefabs[prefabPath];
-        }
-
-        // Load the prefab from the Resources folder
-        GameObject prefab = Resources.Load<GameObject>(prefabPath);
-
-        if (prefab != null)
-        {
-            // Cache the loaded prefab for reuse
-            stageImagePrefabs.Add(prefabPath, prefab);
-        }
-        else
-        {
-            Debug.LogError("Stage image prefab not found at path: " + prefabPath);
-        }
-
-        return prefab;
-    }
-    private GameObject LoadRentTagImagePrefab(string rentTagImagePath)
-    {
-        // Check if the prefab is already loaded
-        if (rentTagImagePrefabs.ContainsKey(rentTagImagePath))
-        {
-            return rentTagImagePrefabs[rentTagImagePath];
-        }
-
-        // Load the prefab from the Resources folder
-        GameObject prefab = Resources.Load<GameObject>(rentTagImagePath);
-
-        if (prefab != null)
-        {
-            // Cache the loaded prefab for reuse
-            rentTagImagePrefabs.Add(rentTagImagePath, prefab);
-        }
-        else
-        {
-            Debug.LogError("Rent tag image prefab not found at path: " + rentTagImagePath);
-        }
-
-        return prefab;
-    }
     private TextMeshProUGUI LoadRentTextPrefab(string rentTextPath)
     {
         // Check if the prefab is already loaded

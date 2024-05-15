@@ -549,7 +549,7 @@ public class PlayerController : MonoBehaviour
                 {
                     hasFreeRentTicket = false;
                     StartCoroutine(ShowMessage("Your Free Meal Ticket has been redeemed! Enjoy your complimentary meal."));
-                    yield return new WaitForSecondsRealtime(2f);
+                    // yield return new WaitForSecondsRealtime(2f);
                 }
                 else
                 {
@@ -557,7 +557,7 @@ public class PlayerController : MonoBehaviour
                     UpdateMoneyText();
                 }
 
-                yield return new WaitForSecondsRealtime(1f);
+                yield return new WaitForSecondsRealtime(3f);
 
                 ownerPlayer.Money += rentPriceToDeduct;
                 ownerPlayer.UpdateMoneyText();
