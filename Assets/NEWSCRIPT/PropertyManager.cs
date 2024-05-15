@@ -46,7 +46,6 @@ public class PropertyManager : MonoBehaviour
         public List<GameObject> rentTagImages = new List<GameObject>();
 
         public TextMeshProUGUI rentText;
-        // public List<GameObject> stageImages;
         
         public bool owned;
         public int ownerID;
@@ -65,7 +64,6 @@ public class PropertyManager : MonoBehaviour
             stageIndexes.Clear();
             stageImages.Clear();  
             rentTagImages.Clear();   
-
 
             for (int i = 0; i < 5; i++)
             {
@@ -406,29 +404,5 @@ public class PropertyManager : MonoBehaviour
             return price.ToString();
         }
     } 
-
-    private TextMeshProUGUI LoadRentTextPrefab(string rentTextPath)
-    {
-        // Check if the prefab is already loaded
-        if (rentTextPrefabs.ContainsKey(rentTextPath))
-        {
-            return rentTextPrefabs[rentTextPath];
-        }
-
-        // Load the prefab from the Resources folder
-        TextMeshProUGUI prefab = Resources.Load<TextMeshProUGUI>(rentTextPath);
-
-        if (prefab != null)
-        {
-            // Cache the loaded prefab for reuse
-            rentTextPrefabs.Add(rentTextPath, prefab);
-        }
-        else
-        {
-            Debug.LogError("Rent text prefab not found at path: " + rentTextPath);
-        }
-
-        return prefab;
-    }
 
 }

@@ -6,6 +6,8 @@ using System;
 
 public class GameManager : MonoBehaviour
 {
+    public Dictionary<int, GameObject> dice1Sides;
+    public Dictionary<int, GameObject> dice2Sides;
     private Coroutine turnCoroutine;
 
     public Dictionary<GameObject, PropertyManager.PropertyData> tileToPropertyMap = new Dictionary<GameObject, PropertyManager.PropertyData>();
@@ -45,6 +47,7 @@ public class GameManager : MonoBehaviour
     {
         playerController = FindObjectOfType<PlayerController>();
         StartCoroutine(LoadTileImages());
+        LoadDiceSides();
         StartGame();
     }
 
@@ -92,6 +95,48 @@ public class GameManager : MonoBehaviour
         turnCoroutine = StartCoroutine(StartTurnCoroutine());
     }
 
+    private void LoadDiceSides()
+    {
+        dice1Sides = new Dictionary<int, GameObject>();
+        dice2Sides = new Dictionary<int, GameObject>();
+
+        for (int i = 1; i <= 6; i++)
+        {
+            string dice1ImageName = "Dice_1_Image_" + i;
+            GameObject dice1Image = GameObject.Find(dice1ImageName);
+            if (dice1Image != null)
+            {
+                dice1Sides.Add(i, dice1Image);
+                dice1Image.SetActive(false);
+                Debug.Log("found Dice_1_Image_" + i); // Initially set all dice images to inactive
+            }
+            else
+            {
+                Debug.LogError("Dice_1 image not found: " + dice1ImageName);
+            }
+
+            string dice2ImageName = "Dice_2_Image_" + i;
+            GameObject dice2Image = GameObject.Find(dice2ImageName);
+            if (dice2Image != null)
+            {
+                dice2Sides.Add(i, dice2Image);
+                dice2Image.SetActive(false); // Initially set all dice images to inactive
+            }
+            else
+            {
+                Debug.LogError("Dice_2 image not found: " + dice2ImageName);
+            }
+        }
+
+        if (dice1Sides.Count == 0 || dice2Sides.Count == 0)
+        {
+            Debug.LogError("No dice images found in the hierarchy.");
+        }
+        else
+        {
+            Debug.Log("Loaded dice images from the hierarchy.");
+        }
+    }
     public string FormatPrice(int price)
     {
         if (price >= 1000000)

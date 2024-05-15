@@ -7,7 +7,6 @@ using Unity.Properties;
 
 public class PlayerController : MonoBehaviour
 {
-
     public List<PropertyManager.PropertyData> properties;
     public List<PropertyManager.PropertyData> ownedProperties = new List<PropertyManager.PropertyData>();
     public List<PropertyManager.PropertyData> opponentProperties;
@@ -16,8 +15,10 @@ public class PlayerController : MonoBehaviour
     public PropertyManager.PropertyData propertyToSeize; 
     // private PlayerController currentPlayerController;
     
-    private Sprite[] diceSides;
 
+    public int dice1Value;
+    public int dice2Value;
+    
     public GameObject MessageObject;
     public GameObject ChancePopUp;
 
@@ -32,9 +33,8 @@ public class PlayerController : MonoBehaviour
     private bool isTurn;
 
     public Button rollButton;
-    public Image[] diceImages;
+
     public TextMeshProUGUI sumText;
-    
     
     private bool coroutineAllowed = true;
 
@@ -89,12 +89,7 @@ public class PlayerController : MonoBehaviour
        
         gameManager = FindObjectOfType<GameManager>();
 
-        rollButton.onClick.AddListener(StartRollDiceCoroutine);
-
-        if (diceSides == null || diceSides.Length == 0)
-        {
-            LoadDiceSides();
-        }
+        rollButton.onClick.AddListener(() => StartRollDiceCoroutine(dice1Value, dice2Value));
         transform.position = waypoints[waypointIndex].transform.position;
         
         playerMoveText.gameObject.SetActive(false);
@@ -115,12 +110,13 @@ public class PlayerController : MonoBehaviour
         UpdateMoneyText();
         spriteRenderer = GetComponent<SpriteRenderer>();
         originalSortingOrder = spriteRenderer.sortingOrder;
-
+        
         SetFontSize(dice1InputField, 50);
         SetFontSize(dice2InputField, 50);
         // PropertyManager.Instance.OnPropertiesLoaded += OnPropertiesLoaded;
         // currentPlayer = gameManager.players[currentPlayerIndex]
     }
+
     private void ShowBuy012(PropertyManager.PropertyData property, PlayerController player)
     {
         buy012PopUp.playerController = player;
@@ -148,18 +144,7 @@ public class PlayerController : MonoBehaviour
         yield return StartCoroutine(gameManager.HideObject(MessageObject));
     }
 
-    private void LoadDiceSides()
-    {
-        diceSides = Resources.LoadAll<Sprite>("DiceSides/");
-        if (diceSides == null || diceSides.Length == 0)
-        {
-            Debug.LogError("Failed to load sprites from DiceSides folder.");
-        }
-        else
-        {
-            Debug.Log("Loaded " + diceSides.Length + " sprites from DiceSides folder.");
-        }
-    }
+
 
 
     private void SetFontSize(TMP_InputField inputField, float fontSize)
@@ -176,14 +161,16 @@ public class PlayerController : MonoBehaviour
     //     properties = propertyManager.properties;
     // }   
 
-    public IEnumerator RollDiceOnClick()
+    public IEnumerator RollDiceOnClick(int dice1Value, int dice2Value)
     {
         if (!GameManager.GameOver && isTurn && coroutineAllowed)
         {
             if (InJail && !hasGetOutOfJailCard)
             {
-
-                StartCoroutine(RollDiceInJail());
+                // int diceValue1 = int.Parse(dice1InputField.text);
+                // int diceValue2 = int.Parse(dice2InputField.text);  
+                // StartCoroutine(RollDiceInJail(diceValue1, diceValue2));
+                StartCoroutine(RollDiceInJail(dice1Value, dice2Value));
                 rollButton.gameObject.SetActive(false);
                 playerMoveText.gameObject.SetActive(false);
             }
@@ -192,9 +179,10 @@ public class PlayerController : MonoBehaviour
                 InJail = false;
                 hasGetOutOfJailCard = false;
                 turnsInJail = 0;
-                int diceValue1 = int.Parse(dice1InputField.text);
-                int diceValue2 = int.Parse(dice2InputField.text);           
-                StartCoroutine(RollTheDice(diceValue1 , diceValue1));
+                // int diceValue1 = int.Parse(dice1InputField.text);
+                // int diceValue2 = int.Parse(dice2InputField.text);           
+                // StartCoroutine(RollTheDice(diceValue1 , diceValue2));
+                StartCoroutine(RollTheDice(dice1Value, dice2Value));
                 StartCoroutine(ShowMessage("Your Get out of Jail Ticket has been redeemed! You are now released from jail without penalty."));
                 yield return new WaitForSecondsRealtime(2f);
                 rollButton.gameObject.SetActive(false);
@@ -202,27 +190,27 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                int diceValue1 = int.Parse(dice1InputField.text); 
-                int diceValue2 = int.Parse(dice2InputField.text);
-                StartCoroutine(RollTheDice(diceValue1 , diceValue2));
+                // int diceValue1 = int.Parse(dice1InputField.text); 
+                // int diceValue2 = int.Parse(dice2InputField.text);
+                // StartCoroutine(RollTheDice(diceValue1 , diceValue2));
+                StartCoroutine(RollTheDice(dice1Value, dice2Value));
                 rollButton.gameObject.SetActive(false);
                 playerMoveText.gameObject.SetActive(false);
             }
 
         }
     }
-    private void StartRollDiceCoroutine()
+    private void StartRollDiceCoroutine(int dice1Value, int dice2Value)
     {
-        StartCoroutine(RollDiceOnClick());
+        StartCoroutine(RollDiceOnClick(dice1Value, dice2Value));
     }
 
-    private IEnumerator RollDiceInJail()
+    private IEnumerator RollDiceInJail(int dice1Value, int dice2Value)
     {    
         Debug.Log("inside roll dice in jail");
         Debug.Log("current position step in jail=" + currentPosition);   
         coroutineAllowed = false;
         int[] diceValues = new int[2];
-
         // For testing purposes, set the dice values to double 6
         // diceValues[0] = 4;
         // diceValues[1] = 4;
@@ -234,23 +222,44 @@ public class PlayerController : MonoBehaviour
         //     }
 
         //     yield return new WaitForSecondsRealtime(0.05f);
-        // }     
+        // } 
+                // int sum = diceValues[0] + diceValues[1];    
         // //---------------------
 
         //------------------------------------------
+        foreach (var dice1Image in gameManager.dice1Sides.Values)
+        {
+            dice1Image.SetActive(false);
+        }
+        foreach (var dice2Image in gameManager.dice2Sides.Values)
+        {
+            dice2Image.SetActive(false);
+        }   
+        //-----------------------
         for (int i = 0; i <= 20; i++)
         {
-            for (int j = 0; j < diceImages.Length; j++)
-            {
-                int randomDiceSide = Random.Range(0, 6);
-                diceImages[j].sprite = diceSides[randomDiceSide];
-                diceValues[j] = randomDiceSide + 1;
-            }
+            int randomDice1Side = Random.Range(1, 7); 
+            int randomDice2Side = Random.Range(1, 7); 
+
+            gameManager.dice1Sides[randomDice1Side].SetActive(true);
+            gameManager.dice2Sides[randomDice2Side].SetActive(true);
 
             yield return new WaitForSecondsRealtime(0.05f);
+
+            gameManager.dice1Sides[randomDice1Side].SetActive(false);
+            gameManager.dice2Sides[randomDice2Side].SetActive(false);
+
+            // Store the random values
+            diceValues[0] = randomDice1Side;
+            diceValues[1] = randomDice2Side;
         }
-        //-------------------------------------
+        // Set the final values
+        gameManager.dice1Sides[diceValues[0]].SetActive(true);
+        gameManager.dice2Sides[diceValues[1]].SetActive(true);
         int sum = diceValues[0] + diceValues[1];
+
+        //-------------------------------------
+
         sumText.text = "" + sum; 
         isDoubles = (diceValues[0] == diceValues[1]); 
 
@@ -295,34 +304,52 @@ public class PlayerController : MonoBehaviour
         Debug.Log("inside roll dice normal");
         coroutineAllowed = false;
         int[] diceValues = new int[2];
-
+        foreach (var dice1Image in gameManager.dice1Sides.Values)
+        {
+            dice1Image.SetActive(false);
+        }
+        foreach (var dice2Image in gameManager.dice2Sides.Values)
+        {
+            dice2Image.SetActive(false);
+        }   
         //-----------------------
+        for (int i = 0; i <= 20; i++)
+        {
+            int randomDice1Side = Random.Range(1, 7); 
+            int randomDice2Side = Random.Range(1, 7); 
+
+            gameManager.dice1Sides[randomDice1Side].SetActive(true);
+            gameManager.dice2Sides[randomDice2Side].SetActive(true);
+
+            yield return new WaitForSecondsRealtime(0.05f);
+
+            gameManager.dice1Sides[randomDice1Side].SetActive(false);
+            gameManager.dice2Sides[randomDice2Side].SetActive(false);
+
+            // Store the random values
+            diceValues[0] = randomDice1Side;
+            diceValues[1] = randomDice2Side;
+        }
+        // Set the final values
+        gameManager.dice1Sides[diceValues[0]].SetActive(true);
+        gameManager.dice2Sides[diceValues[1]].SetActive(true);
+        int sum = diceValues[0] + diceValues[1];
+        //---------------------
+        // // For testing purposes, set the dice values to double 6
+        // diceValues[0] = dice1Value;
+        // diceValues[1] = dice2Value;
         // for (int i = 0; i <= 20; i++)
         // {
         //     for (int j = 0; j < diceImages.Length; j++)
         //     {
-        //         int randomDiceSide = Random.Range(0, 6);
-        //         diceImages[j].sprite = diceSides[randomDiceSide];
-        //         diceValues[j] = randomDiceSide + 1;
+        //         diceImages[j].sprite = diceSides[3]; // Use the sprite for dice side 6
         //     }
+
         //     yield return new WaitForSecondsRealtime(0.05f);
         // }
-        //---------------------
-        // For testing purposes, set the dice values to double 6
-        diceValues[0] = dice1Value;
-        diceValues[1] = dice2Value;
-        for (int i = 0; i <= 20; i++)
-        {
-            for (int j = 0; j < diceImages.Length; j++)
-            {
-                diceImages[j].sprite = diceSides[3]; // Use the sprite for dice side 6
-            }
-
-            yield return new WaitForSecondsRealtime(0.05f);
-        }      
+        // int sum = diceValues[0] + diceValues[1];      
         //---------------------
 
-        int sum = diceValues[0] + diceValues[1];
         // int sum = 7;
         sumText.text = "" + sum; 
         yield return new WaitForSecondsRealtime(0.1f);
@@ -354,9 +381,7 @@ public class PlayerController : MonoBehaviour
         }
         yield return StartCoroutine(CheckPosition());
         yield return StartCoroutine(CheckForDoubles(diceValues));
-
         coroutineAllowed = true; 
-
     }
 
     private IEnumerator CheckPosition()
