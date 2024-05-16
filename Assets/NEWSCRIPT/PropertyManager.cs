@@ -7,10 +7,6 @@ using TMPro;
 public class PropertyManager : MonoBehaviour
 {
     
-    private Dictionary<string, TextMeshProUGUI> rentTextPrefabs = new Dictionary<string, TextMeshProUGUI>();
-    private Dictionary<string, GameObject> rentTagImagePrefabs = new Dictionary<string, GameObject>();
-    private Dictionary<string, GameObject> stageImagePrefabs = new Dictionary<string, GameObject>();
-
     private GameManager gameManager;
 
     public Dictionary<int, string> playerIDToColor  = new Dictionary<int, string>
@@ -37,14 +33,13 @@ public class PropertyManager : MonoBehaviour
         public int priceStallBase; 
         // public int numberOfStages;
 
-        public List<int> stagePrices = new List<int>(); // Stores prices for each stage
-        public List<int> rentPrices = new List<int>(); 
-        public List<int> buyoutPrices = new List<int>();// Stores rent prices for each stage
-        public List<int> stageIndexes = new List<int>();
-        
-        // public List<GameObject> tiles = new List<GameObject>(); 
-        public List<GameObject> stageImages = new List<GameObject>();
-        public List<GameObject> rentTagImages = new List<GameObject>();
+        public List<int> stagePrices;
+        public List<int> rentPrices;
+        public List<int> buyoutPrices;
+        public List<int> stageIndexes;
+
+        public List<GameObject> stageImages;
+        public List<GameObject> rentTagImages;
 
         public TextMeshProUGUI rentText;
         
@@ -65,8 +60,8 @@ public class PropertyManager : MonoBehaviour
             stagePrices.Clear();
             rentPrices.Clear();
             stageIndexes.Clear();
-            stageImages.Clear();  
-            rentTagImages.Clear();   
+            // stageImages.Clear();  
+            // rentTagImages.Clear();   
 
             for (int i = 0; i < 5; i++)
             {
@@ -301,7 +296,7 @@ public class PropertyManager : MonoBehaviour
 
     private void LoadRentTagImages(PropertyData property)
     {
-        string[] colors = new string[] { "pink", "turquois", "green", "purple" };
+        string[] colors = { "pink", "turquois", "green", "purple" };
         GameObject tileImage = gameManager.waypointIndexToTileMap[property.JSONwaypointIndex];
 
         foreach (string color in colors)

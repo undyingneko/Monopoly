@@ -8,7 +8,8 @@ using Unity.Properties;
 public class PlayerController : MonoBehaviour
 {
     // public List<PropertyManager.PropertyData> properties;
-    public List<PropertyManager.PropertyData> ownedProperties = new List<PropertyManager.PropertyData>();
+    // public List<PropertyManager.PropertyData> ownedProperties = new List<PropertyManager.PropertyData>();
+    public List<PropertyManager.PropertyData> ownedProperties;
     public List<PropertyManager.PropertyData> ListPropertiesForEffect;
     public PropertyManager.PropertyData propertyToBeEffected;
 

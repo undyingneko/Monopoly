@@ -37,18 +37,15 @@ public class CardManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject); // Ensure CardManager persists between scenes if needed
-            InitializeCardDeck();
-            InitializeCardEffects();
             gameManager = FindObjectOfType<GameManager>();
-            propertyManager = PropertyManager.Instance;
-
-            
+            propertyManager = PropertyManager.Instance;         
+            InitializeCardDeck();
+            InitializeCardEffects(); 
         }
         else
         {
             Destroy(gameObject); // Destroy duplicate CardManager instances
         }
-
     }
 
     private void InitializeCardDeck()
@@ -286,7 +283,7 @@ public class CardManager : MonoBehaviour
                     tileScript.enabled = false;
                 }
             }                
-            currentPlayer.ListPropertiesForEffect = new List<PropertyManager.PropertyData>();
+            // currentPlayer.ListPropertiesForEffect = new List<PropertyManager.PropertyData>();
             PlayerController[] players = FindObjectsOfType<PlayerController>();
             foreach (PlayerController player in players)
             {
@@ -363,7 +360,7 @@ public class CardManager : MonoBehaviour
                     tileScript.enabled = false;
                 }
             }                
-            currentPlayer.ListPropertiesForEffect = new List<PropertyManager.PropertyData>();
+            // currentPlayer.ListPropertiesForEffect = new List<PropertyManager.PropertyData>();
             PlayerController[] players = FindObjectsOfType<PlayerController>();
             foreach (PlayerController player in players)
             {
@@ -453,7 +450,7 @@ public class CardManager : MonoBehaviour
                         tileScript.enabled = false;
                     }
                 } 
-                currentPlayer.ListPropertiesForEffect = new List<PropertyManager.PropertyData>();
+                // currentPlayer.ListPropertiesForEffect = new List<PropertyManager.PropertyData>();
                 PlayerController[] players = FindObjectsOfType<PlayerController>();
                 foreach (PlayerController player in players)
                 {
@@ -582,7 +579,7 @@ public class CardManager : MonoBehaviour
                 tileScript.enabled = false;
             }
         }
-        currentPlayer.ListPropertiesForEffect = new List<PropertyManager.PropertyData>();
+        // currentPlayer.ListPropertiesForEffect = new List<PropertyManager.PropertyData>();
         currentPlayer.ListPropertiesForEffect.AddRange(currentPlayer.ownedProperties);
 
         if (currentPlayer.ListPropertiesForEffect.Count > 0)
