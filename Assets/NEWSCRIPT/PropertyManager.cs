@@ -6,6 +6,7 @@ using TMPro;
 
 public class PropertyManager : MonoBehaviour
 {
+    
     private Dictionary<string, TextMeshProUGUI> rentTextPrefabs = new Dictionary<string, TextMeshProUGUI>();
     private Dictionary<string, GameObject> rentTagImagePrefabs = new Dictionary<string, GameObject>();
     private Dictionary<string, GameObject> stageImagePrefabs = new Dictionary<string, GameObject>();
@@ -56,6 +57,8 @@ public class PropertyManager : MonoBehaviour
  
         public int currentStageIndex; // Track the highest stage index that the player owns
         public int nextStageIndex;
+
+        public bool isComplimentaryMeal;
 
         public void InitializePrices()
         {
@@ -202,6 +205,7 @@ public class PropertyManager : MonoBehaviour
                     LoadStageImagesForProperty(property);
                     LoadRentTagImages(property);
                     property.currentStageIndex = -1;
+                    property.isComplimentaryMeal = false;
                 }
             }
             else

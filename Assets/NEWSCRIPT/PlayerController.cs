@@ -7,10 +7,10 @@ using Unity.Properties;
 
 public class PlayerController : MonoBehaviour
 {
-    public List<PropertyManager.PropertyData> properties;
+    // public List<PropertyManager.PropertyData> properties;
     public List<PropertyManager.PropertyData> ownedProperties = new List<PropertyManager.PropertyData>();
     public List<PropertyManager.PropertyData> ListPropertiesForEffect;
-    public PropertyManager.PropertyData propertyToSeize;
+    public PropertyManager.PropertyData propertyToBeEffected;
 
     // private PlayerController currentPlayerController;
     
@@ -77,7 +77,7 @@ public class PlayerController : MonoBehaviour
 
     public bool hasGetOutOfJailCard = false;
     public bool hasFreeRentTicket = false;
-
+    
     public TMP_InputField dice1InputField;
     public TMP_InputField dice2InputField;
 
@@ -92,7 +92,7 @@ public class PlayerController : MonoBehaviour
         
         playerMoveText.gameObject.SetActive(false);
         rollButton.gameObject.SetActive(false);    
-        properties = propertyManager.properties;
+        // properties = propertyManager.properties;
   
         if (propertyManager == null)
         {
@@ -404,7 +404,6 @@ public class PlayerController : MonoBehaviour
             
             if (consecutiveDoublesCount >= 3)
             {   
-
                 // yield return StartCoroutine(WaitForPropertyDecision());
                 consecutiveDoublesCount = 0;
                 waypointIndex = 8;
@@ -421,11 +420,9 @@ public class PlayerController : MonoBehaviour
             {   
                 
                 yield return StartCoroutine(WaitForPropertyDecision());
-                StartTurn();
-                
+                StartTurn();  
             }
         }
-
         else
         {   
             consecutiveDoublesCount = 0;
@@ -434,7 +431,6 @@ public class PlayerController : MonoBehaviour
             EndTurn();
             yield break;
         }
-        
     }
 
     void MovePlayer(int steps)
@@ -554,24 +550,30 @@ public class PlayerController : MonoBehaviour
             {
                 int rentPriceToDeduct = property.rentPrices[property.currentStageIndex];
                 string formattedRent = FormatMoney(rentPriceToDeduct);
-                StartCoroutine(ShowMessage("You pay a rent of $" + formattedRent));
-                if (hasFreeRentTicket)
+                
+                if (property.isComplimentaryMeal)
                 {
-                    hasFreeRentTicket = false;
-                    StartCoroutine(ShowMessage("Your Free Meal Ticket has been redeemed! Enjoy your complimentary meal."));
-                    // yield return new WaitForSecondsRealtime(2f);
+                    StartCoroutine(ShowMessage("This Food Stall offers a complimentary meal. No payment required"));
+                    yield return new WaitForSecondsRealtime(3f);
                 }
                 else
                 {
-                    Money -= rentPriceToDeduct;
-                    UpdateMoneyText();
+                    StartCoroutine(ShowMessage("You pay the meal expense of $" + formattedRent));
+                    if (hasFreeRentTicket)
+                    {
+                        hasFreeRentTicket = false;
+                        StartCoroutine(ShowMessage("Your Free Meal Ticket has been redeemed! Enjoy your complimentary meal."));
+                        yield return new WaitForSecondsRealtime(3f);
+                    }
+                    else
+                    {
+                        Money -= rentPriceToDeduct;
+                        UpdateMoneyText();
+                        yield return new WaitForSecondsRealtime(3f);
+                        ownerPlayer.Money += rentPriceToDeduct;
+                        ownerPlayer.UpdateMoneyText();
+                    }
                 }
-
-                yield return new WaitForSecondsRealtime(3f);
-
-                ownerPlayer.Money += rentPriceToDeduct;
-                ownerPlayer.UpdateMoneyText();
-
                 if (property.currentStageIndex < 4)
                 {
                     if (property.buyoutPrices[property.currentStageIndex] <= Money )

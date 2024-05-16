@@ -66,12 +66,12 @@ public class CardManager : MonoBehaviour
         // cardDeck.Add("Advance 1 Space", new Card("Advance 1 Space", "Advance 1 space on the board."));
         // cardDeck.Add("Move Backward 1 Space", new Card("Move Backward 1 Space", "Move your character back one space on the board."));
         // cardDeck.Add("Tax Levy", new Card("Tax Levy", "Pay a tax equal to 10% of the total value of your owned properties."));
+        // cardDeck.Add("Free Meal Ticket", new Card("Free Meal Ticket", "Receive a ticket for a complimentary meal at any food stall on your next visit."));
         // cardDeck.Add("Avenue Demolition", new Card("Avenue Demolition", "Demolish one of the opponent's avenues, leaving it ownerless."));
         // cardDeck.Add("Property Seizure", new Card("Property Seizure", "Force one opponent to sell one property of your choice from their holdings."));
         // cardDeck.Add("Natural Disaster", new Card("Natural Disaster", "An earthquake has destroyed 1 of your food stalls at the festival."));
-        cardDeck.Add("Sales Slump", new Card("Sales Slump", "You're Forced to Sell One Food Stall to Keep Your Business Afloat"));
-        // cardDeck.Add("Generous Treat", new Card("Generous Treat", "Select one food stall of the opponent. Any player landing on this stall is treated to a complimentary meal for one turn, no payment necessary."));
-        // cardDeck.Add("Free Meal Ticket", new Card("Free Meal Ticket", "Receive a ticket for a complimentary meal at any food stall on your next visit."));
+        // cardDeck.Add("Sales Slump", new Card("Sales Slump", "You're Forced to Sell One Food Stall to Keep Your Business Afloat"));
+        cardDeck.Add("Generous Treat", new Card("Generous Treat", "Select one food stall of the opponent. Any player landing on this stall is treated to a complimentary meal for one turn, no payment necessary."));
         // cardDeck.Add("Firework Spectacle", new Card("Firework Spectacle", "Select one of your stalls to host a firework display, turning it into a hot spot and increasing its value."));
     }
 
@@ -132,6 +132,12 @@ public class CardManager : MonoBehaviour
             // case "Tax Levy":
             //     yield return TaxLevyEffect(player);
             //     break;
+            // case "Free Meal Ticket":
+            //     yield return FreeMealTicketEffect(player);
+            //     break;  
+            case "Generous Treat":
+                yield return GenerousTreatEffect(player);
+                break;
             // case "Avenue Demolition":
             //     yield return AvenueDemolitionEffect(player);
             //     break;
@@ -141,15 +147,11 @@ public class CardManager : MonoBehaviour
             // case "Natural Disaster":
             //     yield return NaturalDisasterEffect(player);
             //     break;
-            case "Sales Slump":
-                yield return SalesSlump(player);
-                break;  
-            // case "Generous Treat":
-            //     yield return GenerousTreatEffect(player);
-            //     break;
-            // case "Free Meal Ticket":
-            //     yield return FreeMealTicketEffect(player);
+            // case "Sales Slump":
+            //     yield return SalesSlump(player);
             //     break;  
+
+
             // case "Firework Spectacle":
             //     yield return FireworkSpectacleEffect(player);
             //     break;
@@ -272,102 +274,172 @@ public class CardManager : MonoBehaviour
         StartCoroutine(player.ShowMessage($"You paid a tax of ${taxAmount}"));
         yield return null;
     }
-    private IEnumerator FreeMealTicketEffect(PlayerController currentPlayer)
+
+    private IEnumerator GenerousTreatEffect(PlayerController currentPlayer)
     {
-        currentPlayer.hasFreeRentTicket = true;
-        StartCoroutine(currentPlayer.ShowMessage("You've received a Free Dinner Ticket. Your meal will be complimentary next time."));
+        gameManager.isCardEffect = true;
+            foreach (var tile in gameManager.waypointIndexToTileMap.Values)
+            {
+                var tileScript = tile.GetComponent<TileScript>();
+                if (tileScript != null)
+                {
+                    tileScript.enabled = false;
+                }
+            }                
+            currentPlayer.ListPropertiesForEffect = new List<PropertyManager.PropertyData>();
+            PlayerController[] players = FindObjectsOfType<PlayerController>();
+            foreach (PlayerController player in players)
+            {
+                if (player.teamID != currentPlayer.teamID)  // Exclude the current player
+                {
+                    currentPlayer.ListPropertiesForEffect.AddRange(player.ownedProperties);
+                }
+            }
+        if (currentPlayer.ListPropertiesForEffect.Count > 0)
+        {
+            gameManager.selectedProperty = null;
+            StartCoroutine(currentPlayer.ShowMessage("Select an opponent's food stall for the generous treat:"));
+            yield return new WaitForSecondsRealtime(2f);
+            foreach (var foodstall in currentPlayer.ListPropertiesForEffect)
+            {
+                GameObject tileImage = gameManager.waypointIndexToTileMap[foodstall.JSONwaypointIndex];
+                tileImage.transform.position += new Vector3(0, 1, 0);
+                gameManager.AssignPropertyToTile(tileImage, foodstall);
+                TileClickHandler clickHandler = tileImage.GetComponent<TileClickHandler>();
+                if (clickHandler == null)
+                {
+                    clickHandler = tileImage.AddComponent<TileClickHandler>();
+                }
+                clickHandler.SetAssociatedProperty(foodstall);
+            }
+
+            yield return currentPlayer.WaitForPlayerSelection();
+            currentPlayer.propertyToBeEffected = gameManager.selectedProperty;
+            Debug.Log("Selected Property: " + gameManager.selectedProperty.name);
+            Debug.Log("Selected food stall for generous treat: " + currentPlayer.propertyToBeEffected.name);
+            if (currentPlayer.propertyToBeEffected != null)
+            {
+                // Mark the selected food stall for a complimentary meal
+                currentPlayer.propertyToBeEffected.isComplimentaryMeal = true; // Add this property to your PropertyData
+
+                StartCoroutine(currentPlayer.ShowMessage($"The food stall {currentPlayer.propertyToBeEffected.name} will treat any player to a complimentary meal for one turn."));
+            }
+
+            foreach (var foodStall in currentPlayer.ListPropertiesForEffect)
+            {
+                GameObject tileImage = gameManager.waypointIndexToTileMap[foodStall.JSONwaypointIndex];
+                tileImage.transform.position += new Vector3(0, -1, 0);
+            }
+        }
+        else
+        {
+            StartCoroutine(currentPlayer.ShowMessage("There are no opponent-owned food stalls available for the generous treat."));
+        }
+
+        currentPlayer.ListPropertiesForEffect.Clear();
+        currentPlayer.propertyToBeEffected = null;
+        foreach (var tile in gameManager.waypointIndexToTileMap.Values)
+        {
+            var tileScript = tile.GetComponent<TileScript>();
+            if (tileScript != null)
+            {
+                tileScript.enabled = true;
+            }
+        }
+        gameManager.isCardEffect = false;
         yield return null;
     }
 
+
     private IEnumerator AvenueDemolitionEffect(PlayerController currentPlayer)
     {
-            gameManager.isCardEffect = true;
+        gameManager.isCardEffect = true;
 
-                foreach (var tile in gameManager.waypointIndexToTileMap.Values)
+            foreach (var tile in gameManager.waypointIndexToTileMap.Values)
+            {
+                var tileScript = tile.GetComponent<TileScript>();
+                if (tileScript != null)
                 {
-                    var tileScript = tile.GetComponent<TileScript>();
-                    if (tileScript != null)
-                    {
-                        tileScript.enabled = false;
-                    }
-                }                
-                currentPlayer.ListPropertiesForEffect = new List<PropertyManager.PropertyData>();
-                PlayerController[] players = FindObjectsOfType<PlayerController>();
-                foreach (PlayerController player in players)
-                {
-                    if (player.teamID != currentPlayer.teamID)  // Exclude the current player
-                    {
-                        currentPlayer.ListPropertiesForEffect.AddRange(player.ownedProperties);
-                    }
+                    tileScript.enabled = false;
                 }
-                if (currentPlayer.ListPropertiesForEffect.Count > 0)
+            }                
+            currentPlayer.ListPropertiesForEffect = new List<PropertyManager.PropertyData>();
+            PlayerController[] players = FindObjectsOfType<PlayerController>();
+            foreach (PlayerController player in players)
+            {
+                if (player.teamID != currentPlayer.teamID)  // Exclude the current player
                 {
-                    gameManager.selectedProperty = null;
-                    StartCoroutine(currentPlayer.ShowMessage("Select a property to demolish:"));
-                    yield return new WaitForSecondsRealtime(2f);
-                    foreach (var opponentProperty in currentPlayer.ListPropertiesForEffect)
-                    {
-                        GameObject tileImage = gameManager.waypointIndexToTileMap[opponentProperty.JSONwaypointIndex];
-    
-                        tileImage.transform.position += new Vector3(0, 1, 0);
-                        gameManager.AssignPropertyToTile(tileImage, opponentProperty);
-                        TileClickHandler clickHandler = tileImage.GetComponent<TileClickHandler>();
-                        if (clickHandler == null)
-                        {
-                            clickHandler = tileImage.AddComponent<TileClickHandler>();
-                        }
-                        clickHandler.SetAssociatedProperty(opponentProperty);                       
-                    }                 
-                    yield return currentPlayer.WaitForPlayerSelection();
-                    currentPlayer.propertyToSeize = gameManager.selectedProperty;
-                    Debug.Log("Selected Property: " + gameManager.selectedProperty.name);
-                    Debug.Log("Selected property to demolish: " + currentPlayer.propertyToSeize.name);
-                    if (currentPlayer.propertyToSeize != null)
-                    {
-                        PlayerController ownerPlayer = currentPlayer.FindPlayerByID(currentPlayer.propertyToSeize.ownerID);
-                        if (ownerPlayer == null)
-                        {
-                            Debug.LogError("Owner player not found for property: " + currentPlayer.propertyToSeize.name);
-                            yield break; // Exit if owner player is not found
-                        }                       
-                        ownerPlayer.ownedProperties.Remove(currentPlayer.propertyToSeize);
-                        // Reset the property ownership
-                        currentPlayer.propertyToSeize.owned = false;
-                        currentPlayer.propertyToSeize.ownerID = 0; // Set ownerID to -1 (ownerless)
-                        currentPlayer.propertyToSeize.teamownerID = 0; // Set teamownerID to -1 (ownerless)
-                        currentPlayer.propertyToSeize.currentStageIndex = -1;
-                        propertyManager.DeactivateOldStageImages(currentPlayer.propertyToSeize);
-                        propertyManager.DeactivateRentTagImage(currentPlayer.propertyToSeize);
-                        currentPlayer.propertyToSeize.rentText.gameObject.SetActive(false);
+                    currentPlayer.ListPropertiesForEffect.AddRange(player.ownedProperties);
+                }
+            }
+            if (currentPlayer.ListPropertiesForEffect.Count > 0)
+            {
+                gameManager.selectedProperty = null;
+                StartCoroutine(currentPlayer.ShowMessage("Select a property to demolish:"));
+                yield return new WaitForSecondsRealtime(2f);
+                foreach (var foodstall in currentPlayer.ListPropertiesForEffect)
+                {
+                    GameObject tileImage = gameManager.waypointIndexToTileMap[foodstall.JSONwaypointIndex];
 
-                        StartCoroutine(currentPlayer.ShowMessage($"You demolished {currentPlayer.propertyToSeize.name}, leaving it ownerless."));
+                    tileImage.transform.position += new Vector3(0, 1, 0);
+                    gameManager.AssignPropertyToTile(tileImage, foodstall);
+                    TileClickHandler clickHandler = tileImage.GetComponent<TileClickHandler>();
+                    if (clickHandler == null)
+                    {
+                        clickHandler = tileImage.AddComponent<TileClickHandler>();
+                    }
+                    clickHandler.SetAssociatedProperty(foodstall);                       
+                }                 
+                yield return currentPlayer.WaitForPlayerSelection();
+                currentPlayer.propertyToBeEffected = gameManager.selectedProperty;
+                Debug.Log("Selected Property: " + gameManager.selectedProperty.name);
+                Debug.Log("Selected property to demolish: " + currentPlayer.propertyToBeEffected.name);
+                if (currentPlayer.propertyToBeEffected != null)
+                {
+                    PlayerController ownerPlayer = currentPlayer.FindPlayerByID(currentPlayer.propertyToBeEffected.ownerID);
+                    if (ownerPlayer == null)
+                    {
+                        Debug.LogError("Owner player not found for property: " + currentPlayer.propertyToBeEffected.name);
+                        yield break; // Exit if owner player is not found
+                    }                       
+                    ownerPlayer.ownedProperties.Remove(currentPlayer.propertyToBeEffected);
+                    // Reset the property ownership
+                    currentPlayer.propertyToBeEffected.owned = false;
+                    currentPlayer.propertyToBeEffected.ownerID = 0; // Set ownerID to -1 (ownerless)
+                    currentPlayer.propertyToBeEffected.teamownerID = 0; // Set teamownerID to -1 (ownerless)
+                    currentPlayer.propertyToBeEffected.currentStageIndex = -1;
+                    propertyManager.DeactivateOldStageImages(currentPlayer.propertyToBeEffected);
+                    propertyManager.DeactivateRentTagImage(currentPlayer.propertyToBeEffected);
+                    currentPlayer.propertyToBeEffected.rentText.gameObject.SetActive(false);
 
-                       
-                        // Additional actions can be added here...
-                    }
-                    foreach (var opponentProperty in currentPlayer.ListPropertiesForEffect)
-                    {
-                        GameObject tileImage = gameManager.waypointIndexToTileMap[opponentProperty.JSONwaypointIndex];
-                        tileImage.transform.position += new Vector3(0, -1, 0);
-                    }                   
+                    StartCoroutine(currentPlayer.ShowMessage($"You demolished {currentPlayer.propertyToBeEffected.name}, leaving it ownerless."));
+
+                    
+                    // Additional actions can be added here...
                 }
-                else
+                foreach (var foodstall in currentPlayer.ListPropertiesForEffect)
                 {
-                    // If no opponent-owned properties are available for demolition, show a message
-                    StartCoroutine(currentPlayer.ShowMessage("There are no opponent-owned properties available for demolition."));
-                }
-                currentPlayer.ListPropertiesForEffect.Clear();
-                currentPlayer.propertyToSeize = null;
-                foreach (var tile in gameManager.waypointIndexToTileMap.Values)
+                    GameObject tileImage = gameManager.waypointIndexToTileMap[foodstall.JSONwaypointIndex];
+                    tileImage.transform.position += new Vector3(0, -1, 0);
+                }                   
+            }
+            else
+            {
+                // If no opponent-owned properties are available for demolition, show a message
+                StartCoroutine(currentPlayer.ShowMessage("There are no opponent-owned properties available for demolition."));
+            }
+            currentPlayer.ListPropertiesForEffect.Clear();
+            currentPlayer.propertyToBeEffected = null;
+            foreach (var tile in gameManager.waypointIndexToTileMap.Values)
+            {
+                var tileScript = tile.GetComponent<TileScript>();
+                if (tileScript != null)
                 {
-                    var tileScript = tile.GetComponent<TileScript>();
-                    if (tileScript != null)
-                    {
-                        tileScript.enabled = true;
-                    }
+                    tileScript.enabled = true;
                 }
-                gameManager.isCardEffect = false;
-                yield return null;
+            }
+            gameManager.isCardEffect = false;
+            yield return null;
     }
 
     private IEnumerator PropertySeizureEffect(PlayerController currentPlayer)
@@ -396,51 +468,51 @@ public class CardManager : MonoBehaviour
                     gameManager.selectedProperty = null;
                     StartCoroutine(currentPlayer.ShowMessage("Select a property to seize:"));
                     yield return new WaitForSecondsRealtime(2f);
-                    foreach (var opponentProperty in currentPlayer.ListPropertiesForEffect)
+                    foreach (var foodstall in currentPlayer.ListPropertiesForEffect)
                     {
-                        GameObject tileImage = gameManager.waypointIndexToTileMap[opponentProperty.JSONwaypointIndex];
+                        GameObject tileImage = gameManager.waypointIndexToTileMap[foodstall.JSONwaypointIndex];
 
                         tileImage.transform.position += new Vector3(0, 1, 0);
-                        gameManager.AssignPropertyToTile(tileImage, opponentProperty);
+                        gameManager.AssignPropertyToTile(tileImage, foodstall);
                         TileClickHandler clickHandler = tileImage.GetComponent<TileClickHandler>();
                         if (clickHandler == null)
                         {
                             clickHandler = tileImage.AddComponent<TileClickHandler>();
                         }
-                        clickHandler.SetAssociatedProperty(opponentProperty);
+                        clickHandler.SetAssociatedProperty(foodstall);
                     }
                     yield return currentPlayer.WaitForPlayerSelection();
-                    currentPlayer.propertyToSeize = gameManager.selectedProperty;
+                    currentPlayer.propertyToBeEffected = gameManager.selectedProperty;
                     Debug.Log("Selected Property: " + gameManager.selectedProperty.name);
-                    Debug.Log("Selected property to seize: " + currentPlayer.propertyToSeize.name);
-                    if (currentPlayer.propertyToSeize != null)
+                    Debug.Log("Selected property to seize: " + currentPlayer.propertyToBeEffected.name);
+                    if (currentPlayer.propertyToBeEffected != null)
                     {
-                        PlayerController ownerPlayer = currentPlayer.FindPlayerByID(currentPlayer.propertyToSeize.ownerID);
+                        PlayerController ownerPlayer = currentPlayer.FindPlayerByID(currentPlayer.propertyToBeEffected.ownerID);
                         if (ownerPlayer == null)
                         {
-                            Debug.LogError("Owner player not found for property: " + currentPlayer.propertyToSeize.name);
+                            Debug.LogError("Owner player not found for property: " + currentPlayer.propertyToBeEffected.name);
                             yield break; // Exit if owner player is not found
                         }
-                        int compensationAmount = currentPlayer.propertyToSeize.stagePrices[currentPlayer.propertyToSeize.currentStageIndex];
+                        int compensationAmount = currentPlayer.propertyToBeEffected.stagePrices[currentPlayer.propertyToBeEffected.currentStageIndex];
                         ownerPlayer.Money += compensationAmount;
-                        StartCoroutine(ownerPlayer.ShowMessage($"Your property {currentPlayer.propertyToSeize.name} has been seized. You received $ {compensationAmount} as compensation."));
+                        StartCoroutine(ownerPlayer.ShowMessage($"Your property {currentPlayer.propertyToBeEffected.name} has been seized. You received $ {compensationAmount} as compensation."));
 
-                        ownerPlayer.ownedProperties.Remove(currentPlayer.propertyToSeize);
+                        ownerPlayer.ownedProperties.Remove(currentPlayer.propertyToBeEffected);
                         // Transfer the property ownership to the current player 
-                        currentPlayer.propertyToSeize.owned = false;
-                        currentPlayer.propertyToSeize.ownerID = 0;
-                        currentPlayer.propertyToSeize.teamownerID = 0;
-                        currentPlayer.propertyToSeize.currentStageIndex = -1;
+                        currentPlayer.propertyToBeEffected.owned = false;
+                        currentPlayer.propertyToBeEffected.ownerID = 0;
+                        currentPlayer.propertyToBeEffected.teamownerID = 0;
+                        currentPlayer.propertyToBeEffected.currentStageIndex = -1;
 
-                        propertyManager.DeactivateOldStageImages(currentPlayer.propertyToSeize);
-                        propertyManager.DeactivateRentTagImage(currentPlayer.propertyToSeize);
-                        currentPlayer.propertyToSeize.rentText.gameObject.SetActive(false);
+                        propertyManager.DeactivateOldStageImages(currentPlayer.propertyToBeEffected);
+                        propertyManager.DeactivateRentTagImage(currentPlayer.propertyToBeEffected);
+                        currentPlayer.propertyToBeEffected.rentText.gameObject.SetActive(false);
 
-                        StartCoroutine(currentPlayer.ShowMessage($"You seize {currentPlayer.propertyToSeize.name} of your opponent, leaving it ownerless."));
+                        StartCoroutine(currentPlayer.ShowMessage($"You seize {currentPlayer.propertyToBeEffected.name} of your opponent, leaving it ownerless."));
                     }
-                    foreach (var opponentProperty in currentPlayer.ListPropertiesForEffect)
+                    foreach (var foodstall in currentPlayer.ListPropertiesForEffect)
                     {
-                        GameObject tileImage = gameManager.waypointIndexToTileMap[opponentProperty.JSONwaypointIndex];
+                        GameObject tileImage = gameManager.waypointIndexToTileMap[foodstall.JSONwaypointIndex];
                         tileImage.transform.position += new Vector3(0, -1, 0);
                     }
                 }
@@ -449,7 +521,7 @@ public class CardManager : MonoBehaviour
                     StartCoroutine(currentPlayer.ShowMessage("There are no opponent-owned properties available for seizure."));
                 }
                 currentPlayer.ListPropertiesForEffect.Clear();
-                currentPlayer.propertyToSeize = null;
+                currentPlayer.propertyToBeEffected = null;
                 foreach (var tile in gameManager.waypointIndexToTileMap.Values)
                 {
                     var tileScript = tile.GetComponent<TileScript>();
@@ -464,7 +536,7 @@ public class CardManager : MonoBehaviour
 
     private IEnumerator NaturalDisasterEffect(PlayerController currentPlayer)
     {
-                currentPlayer.propertyToSeize = null;
+                currentPlayer.propertyToBeEffected = null;
                 PlayerController[] players = FindObjectsOfType<PlayerController>();
                 foreach (PlayerController player in players)
                 {
@@ -472,21 +544,21 @@ public class CardManager : MonoBehaviour
                     {
                         if (currentPlayer.ownedProperties.Count > 0)
                         {                        
-                            currentPlayer.propertyToSeize = currentPlayer.ownedProperties[Random.Range(0, currentPlayer.ListPropertiesForEffect.Count)];
-                        // currentPlayer.propertyToSeize = player.RemoveRandomProperty();
-                        // if (currentPlayer.propertyToSeize != null)
+                            currentPlayer.propertyToBeEffected = currentPlayer.ownedProperties[Random.Range(0, currentPlayer.ListPropertiesForEffect.Count)];
+                        // currentPlayer.propertyToBeEffected = player.RemoveRandomProperty();
+                        // if (currentPlayer.propertyToBeEffected != null)
                         // {
                             // Reset the property ownership
-                            currentPlayer.propertyToSeize.owned = false;
-                            currentPlayer.propertyToSeize.ownerID = 0; // Set ownerID to 0 (ownerless)
-                            currentPlayer.propertyToSeize.teamownerID = 0; // Set teamownerID to 0 (ownerless)
-                            currentPlayer.propertyToSeize.currentStageIndex = -1;
-                            propertyManager.DeactivateOldStageImages(currentPlayer.propertyToSeize);
-                            propertyManager.DeactivateRentTagImage(currentPlayer.propertyToSeize);
-                            currentPlayer.propertyToSeize.rentText.gameObject.SetActive(false);
+                            currentPlayer.propertyToBeEffected.owned = false;
+                            currentPlayer.propertyToBeEffected.ownerID = 0; // Set ownerID to 0 (ownerless)
+                            currentPlayer.propertyToBeEffected.teamownerID = 0; // Set teamownerID to 0 (ownerless)
+                            currentPlayer.propertyToBeEffected.currentStageIndex = -1;
+                            propertyManager.DeactivateOldStageImages(currentPlayer.propertyToBeEffected);
+                            propertyManager.DeactivateRentTagImage(currentPlayer.propertyToBeEffected);
+                            currentPlayer.propertyToBeEffected.rentText.gameObject.SetActive(false);
 
-                            StartCoroutine(currentPlayer.ShowMessage($"An earthquake has destroyed your property: {currentPlayer.propertyToSeize.name}"));
-                            currentPlayer.ownedProperties.Remove(currentPlayer.propertyToSeize);
+                            StartCoroutine(currentPlayer.ShowMessage($"An earthquake has destroyed your property: {currentPlayer.propertyToBeEffected.name}"));
+                            currentPlayer.ownedProperties.Remove(currentPlayer.propertyToBeEffected);
                             yield return null; // Wait to show the message
                         }
                         else
@@ -495,7 +567,7 @@ public class CardManager : MonoBehaviour
                         }
                     }
                 }
-                currentPlayer.propertyToSeize = null;
+                currentPlayer.propertyToBeEffected = null;
                 yield return null;
     }
 
@@ -537,29 +609,29 @@ public class CardManager : MonoBehaviour
 
             // Wait for player selection
             yield return currentPlayer.WaitForPlayerSelection();
-            currentPlayer.propertyToSeize = gameManager.selectedProperty;
+            currentPlayer.propertyToBeEffected = gameManager.selectedProperty;
 
-            if (currentPlayer.propertyToSeize != null)
+            if (currentPlayer.propertyToBeEffected != null)
             {
-                int compensationAmount = currentPlayer.propertyToSeize.stagePrices[currentPlayer.propertyToSeize.currentStageIndex];
+                int compensationAmount = currentPlayer.propertyToBeEffected.stagePrices[currentPlayer.propertyToBeEffected.currentStageIndex];
                 currentPlayer.Money += compensationAmount;
-                currentPlayer.ownedProperties.Remove(currentPlayer.propertyToSeize);
+                currentPlayer.ownedProperties.Remove(currentPlayer.propertyToBeEffected);
                 
-                currentPlayer.propertyToSeize.owned = false;
-                currentPlayer.propertyToSeize.ownerID = 0;
-                currentPlayer.propertyToSeize.teamownerID = 0;
-                currentPlayer.propertyToSeize.currentStageIndex = -1;
+                currentPlayer.propertyToBeEffected.owned = false;
+                currentPlayer.propertyToBeEffected.ownerID = 0;
+                currentPlayer.propertyToBeEffected.teamownerID = 0;
+                currentPlayer.propertyToBeEffected.currentStageIndex = -1;
 
                 // Deactivate property images and UI elements
-                propertyManager.DeactivateOldStageImages(currentPlayer.propertyToSeize);
-                propertyManager.DeactivateRentTagImage(currentPlayer.propertyToSeize);
-                currentPlayer.propertyToSeize.rentText.gameObject.SetActive(false);
-                StartCoroutine(currentPlayer.ShowMessage($"You sold {currentPlayer.propertyToSeize.name} for $ {compensationAmount}."));
+                propertyManager.DeactivateOldStageImages(currentPlayer.propertyToBeEffected);
+                propertyManager.DeactivateRentTagImage(currentPlayer.propertyToBeEffected);
+                currentPlayer.propertyToBeEffected.rentText.gameObject.SetActive(false);
+                StartCoroutine(currentPlayer.ShowMessage($"You sold {currentPlayer.propertyToBeEffected.name} for $ {compensationAmount}."));
             
             }
-            foreach (var opponentProperty in currentPlayer.ListPropertiesForEffect)
+            foreach (var foodstall in currentPlayer.ListPropertiesForEffect)
             {
-                GameObject tileImage = gameManager.waypointIndexToTileMap[opponentProperty.JSONwaypointIndex];
+                GameObject tileImage = gameManager.waypointIndexToTileMap[foodstall.JSONwaypointIndex];
                 tileImage.transform.position += new Vector3(0, -1, 0);
             }           
         }
@@ -571,7 +643,7 @@ public class CardManager : MonoBehaviour
 
         // Reset variables and enable tile scripts
         currentPlayer.ListPropertiesForEffect.Clear();
-        currentPlayer.propertyToSeize = null;
+        currentPlayer.propertyToBeEffected = null;
         foreach (var tile in gameManager.waypointIndexToTileMap.Values)
         {
             var tileScript = tile.GetComponent<TileScript>();
@@ -584,11 +656,10 @@ public class CardManager : MonoBehaviour
         yield return null;
     }
 
-
-    private IEnumerator GenerousTreatEffect(PlayerController currentPlayer)
+    private IEnumerator FreeMealTicketEffect(PlayerController currentPlayer)
     {
-        // player.ProvideFreeMeal();
- 
+        currentPlayer.hasFreeRentTicket = true;
+        StartCoroutine(currentPlayer.ShowMessage("You've received a Free Dinner Ticket. Your meal will be complimentary next time."));
         yield return null;
     }
 
