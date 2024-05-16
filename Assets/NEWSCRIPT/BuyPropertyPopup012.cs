@@ -307,7 +307,8 @@ public class BuyPropertyPopup012 : MonoBehaviour
     private string FormatStagePrice(int stageIndex, PropertyManager.PropertyData property)
     {
         gameManager = FindObjectOfType<GameManager>();
-        int stagePrice = property.CalculateStagePrice(stageIndex);
+        // int stagePrice = property.CalculateStagePrice(stageIndex);
+        int stagePrice = property.stagePrices[stageIndex];
         string formattedstagePrice = gameManager.FormatPrice(stagePrice);
         return formattedstagePrice;
     }

@@ -1469,7 +1469,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3656705575260860301
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1581,6 +1581,7 @@ MonoBehaviour:
   - {fileID: 8193440558505161388}
   - {fileID: 2936589980405345651}
   BuyPropertyPopup_closeButton: {fileID: 2750290047990657772}
+  playerController: {fileID: 0}
   stageImagePrefab: {fileID: 0}
 --- !u!1 &4685473072858377945
 GameObject:

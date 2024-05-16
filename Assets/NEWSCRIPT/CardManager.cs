@@ -68,8 +68,8 @@ public class CardManager : MonoBehaviour
         // cardDeck.Add("Property Seizure", new Card("Property Seizure", "Force one opponent to sell one property of your choice from their holdings."));
         // cardDeck.Add("Natural Disaster", new Card("Natural Disaster", "An earthquake has destroyed 1 of your food stalls at the festival."));
         // cardDeck.Add("Sales Slump", new Card("Sales Slump", "You're Forced to Sell One Food Stall to Keep Your Business Afloat"));
-        cardDeck.Add("Generous Treat", new Card("Generous Treat", "Select one food stall of the opponent. Any player landing on this stall is treated to a complimentary meal for one turn, no payment necessary."));
-        // cardDeck.Add("Firework Spectacle", new Card("Firework Spectacle", "Select one of your stalls to host a firework display, turning it into a hot spot and increasing its value."));
+        // cardDeck.Add("Generous Treat", new Card("Generous Treat", "Select one food stall of the opponent. Any player landing on this stall is treated to a complimentary meal for one turn, no payment necessary."));
+        cardDeck.Add("Firework Spectacle", new Card("Firework Spectacle", "Select one of your stalls to host a firework display, turning it into a hot spot and increasing its value."));
     }
 
     private void InitializeCardEffects()
@@ -132,9 +132,9 @@ public class CardManager : MonoBehaviour
             // case "Free Meal Ticket":
             //     yield return FreeMealTicketEffect(player);
             //     break;  
-            case "Generous Treat":
-                yield return GenerousTreatEffect(player);
-                break;
+            // case "Generous Treat":
+            //     yield return GenerousTreatEffect(player);
+            //     break;
             // case "Avenue Demolition":
             //     yield return AvenueDemolitionEffect(player);
             //     break;
@@ -147,11 +147,9 @@ public class CardManager : MonoBehaviour
             // case "Sales Slump":
             //     yield return SalesSlump(player);
             //     break;  
-
-
-            // case "Firework Spectacle":
-            //     yield return FireworkSpectacleEffect(player);
-            //     break;
+            case "Firework Spectacle":
+                yield return FireworkSpectacleEffect(player);
+                break;
             default:
                 Debug.LogWarning("Card effect not found: " + cardName);
                 break;
@@ -612,6 +610,7 @@ public class CardManager : MonoBehaviour
             {
                 int compensationAmount = currentPlayer.propertyToBeEffected.stagePrices[currentPlayer.propertyToBeEffected.currentStageIndex];
                 currentPlayer.Money += compensationAmount;
+                currentPlayer.UpdateMoneyText();
                 currentPlayer.ownedProperties.Remove(currentPlayer.propertyToBeEffected);
                 
                 currentPlayer.propertyToBeEffected.owned = false;
@@ -660,13 +659,88 @@ public class CardManager : MonoBehaviour
         yield return null;
     }
 
-    private IEnumerator FireworkSpectacleEffect(PlayerController player)
+    private IEnumerator FireworkSpectacleEffect(PlayerController currentPlayer)
     {
-        // player.IncreaseStallValue();
-        StartCoroutine(player.ShowMessage("Select one of your stalls to host a firework display, turning it into a hot spot and increasing its value."));
-        yield return null;
+        gameManager.isCardEffect = true;
+            foreach (var tile in gameManager.waypointIndexToTileMap.Values)
+            {
+                var tileScript = tile.GetComponent<TileScript>();
+                if (tileScript != null)
+                {
+                    tileScript.enabled = false;
+                }
+            }                
+        currentPlayer.ListPropertiesForEffect.AddRange(currentPlayer.ownedProperties);
+        if (currentPlayer.ListPropertiesForEffect.Count > 0)
+        {
+            gameManager.selectedProperty = null;
+            StartCoroutine(currentPlayer.ShowMessage("Select a stall to host a firework display:"));
+            yield return new WaitForSecondsRealtime(2f);
+            foreach (var playerProperty in currentPlayer.ListPropertiesForEffect)
+            {
+                GameObject tileImage = gameManager.waypointIndexToTileMap[playerProperty.JSONwaypointIndex];
+
+                tileImage.transform.position += new Vector3(0, 1, 0);
+
+                // Assign click handler for selecting the property
+                TileClickHandler clickHandler = tileImage.GetComponent<TileClickHandler>();
+                if (clickHandler == null)
+                {
+                    clickHandler = tileImage.AddComponent<TileClickHandler>();
+                }
+                clickHandler.SetAssociatedProperty(playerProperty);
+            }
+            yield return currentPlayer.WaitForPlayerSelection();
+
+            currentPlayer.propertyToBeEffected = gameManager.selectedProperty;
+            if (currentPlayer.propertyToBeEffected != null )
+            {
+                currentPlayer.propertyToBeEffected.isHotSpot = true;
+                float multiplier = 1.2f; 
+                for (int i = 0; i < currentPlayer.propertyToBeEffected.rentPrices.Count; i++)
+                {
+                    currentPlayer.propertyToBeEffected.rentPrices[i] = (int)(currentPlayer.propertyToBeEffected.rentPrices[i] * multiplier);
+                    propertyManager.UpdateRentText(currentPlayer.propertyToBeEffected, i);
+                }
+                for (int i = 0; i < currentPlayer.propertyToBeEffected.stagePrices.Count; i++)
+                {
+                    currentPlayer.propertyToBeEffected.stagePrices[i] = (int)(currentPlayer.propertyToBeEffected.stagePrices[i] * multiplier);
+                }
+                for (int i = 0; i < currentPlayer.propertyToBeEffected.buyoutPrices.Count; i++)
+                {
+                    currentPlayer.propertyToBeEffected.buyoutPrices[i] = (int)(currentPlayer.propertyToBeEffected.buyoutPrices[i] * multiplier);
+                }
+                StartCoroutine(currentPlayer.ShowMessage(currentPlayer.propertyToBeEffected.name + " is now hosting a firework display, becoming a hot spot!"));
+            
+            }
+            foreach (var foodstall in currentPlayer.ListPropertiesForEffect)
+            {
+                GameObject tileImage = gameManager.waypointIndexToTileMap[foodstall.JSONwaypointIndex];
+                tileImage.transform.position += new Vector3(0, -1, 0);
+            }     
+        }
+        else
+        {
+            StartCoroutine(currentPlayer.ShowMessage("You don't own any properties to host a firework display."));
+        }
+        currentPlayer.ListPropertiesForEffect.Clear();
+        currentPlayer.propertyToBeEffected = null;
+        foreach (var tile in gameManager.waypointIndexToTileMap.Values)
+        {
+            var tileScript = tile.GetComponent<TileScript>();
+            if (tileScript != null)
+            {
+                tileScript.enabled = true;
+            }
+        }
+        gameManager.isCardEffect = false;
+        yield return null;       
     }
 
+
+
+
+//------------------------------
     public IEnumerator DrawAndDisplayCard(PlayerController player)
     {
         Card drawnCard = DrawRandomCard();

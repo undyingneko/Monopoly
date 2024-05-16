@@ -54,6 +54,7 @@ public class PropertyManager : MonoBehaviour
         public int nextStageIndex;
 
         public bool isComplimentaryMeal;
+        public bool isHotSpot;
 
         public void InitializePrices()
         {
@@ -201,6 +202,7 @@ public class PropertyManager : MonoBehaviour
                     LoadRentTagImages(property);
                     property.currentStageIndex = -1;
                     property.isComplimentaryMeal = false;
+                    property.isHotSpot = false;
                 }
             }
             else
@@ -387,7 +389,7 @@ public class PropertyManager : MonoBehaviour
             Debug.LogWarning("Rent text not found for property: " + property.name);
         }
     }
-
+    
     public string FormatPrice(int price)
     {
         if (price >= 1000000)

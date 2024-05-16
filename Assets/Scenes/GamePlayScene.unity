@@ -297,6 +297,7 @@ MonoBehaviour:
     currentStageIndex: 0
     nextStageIndex: 0
     isComplimentaryMeal: 0
+    isHotSpot: 0
   dice1Value: 0
   dice2Value: 0
   MessageObject: {fileID: 1545385703}
@@ -2300,10 +2301,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: BuyPropertyPopup012_3
       objectReference: {fileID: 0}
-    - target: {fileID: 4599409617057639570, guid: c4936c166a2d7ef4f8adc20b5849be12, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3128,7 +3125,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7246326150205344208, guid: 52bffa397dbaf1a4ab29cd41377bcce5, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 800
+      value: 1500
       objectReference: {fileID: 0}
     - target: {fileID: 7246326150205344208, guid: 52bffa397dbaf1a4ab29cd41377bcce5, type: 3}
       propertyPath: m_SizeDelta.y
@@ -8578,6 +8575,7 @@ MonoBehaviour:
     currentStageIndex: 0
     nextStageIndex: 0
     isComplimentaryMeal: 0
+    isHotSpot: 0
   dice1Value: 0
   dice2Value: 0
   MessageObject: {fileID: 754290472}
@@ -8679,7 +8677,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7246326150205344208, guid: 52bffa397dbaf1a4ab29cd41377bcce5, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 800
+      value: 1500
       objectReference: {fileID: 0}
     - target: {fileID: 7246326150205344208, guid: 52bffa397dbaf1a4ab29cd41377bcce5, type: 3}
       propertyPath: m_SizeDelta.y
@@ -8856,6 +8854,7 @@ MonoBehaviour:
     currentStageIndex: 0
     nextStageIndex: 0
     isComplimentaryMeal: 0
+    isHotSpot: 0
   dice1Value: 0
   dice2Value: 0
   MessageObject: {fileID: 1824347441}
@@ -9228,10 +9227,6 @@ PrefabInstance:
     - target: {fileID: 4599409617057639570, guid: c4936c166a2d7ef4f8adc20b5849be12, type: 3}
       propertyPath: m_Name
       value: BuyPropertyPopup012_2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4599409617057639570, guid: c4936c166a2d7ef4f8adc20b5849be12, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -13586,6 +13581,7 @@ MonoBehaviour:
     currentStageIndex: 0
     nextStageIndex: 0
     isComplimentaryMeal: 0
+    isHotSpot: 0
   players:
   - {fileID: 793143341}
   - {fileID: 1676970795}
@@ -17855,6 +17851,7 @@ MonoBehaviour:
     currentStageIndex: 0
     nextStageIndex: 0
     isComplimentaryMeal: 0
+    isHotSpot: 0
   dice1Value: 0
   dice2Value: 0
   MessageObject: {fileID: 1685648543}
@@ -18192,10 +18189,6 @@ PrefabInstance:
     - target: {fileID: 4599409617057639570, guid: c4936c166a2d7ef4f8adc20b5849be12, type: 3}
       propertyPath: m_Name
       value: BuyPropertyPopup012_1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4599409617057639570, guid: c4936c166a2d7ef4f8adc20b5849be12, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -21820,7 +21813,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7246326150205344208, guid: 52bffa397dbaf1a4ab29cd41377bcce5, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 800
+      value: 1500
       objectReference: {fileID: 0}
     - target: {fileID: 7246326150205344208, guid: 52bffa397dbaf1a4ab29cd41377bcce5, type: 3}
       propertyPath: m_SizeDelta.y
@@ -32805,10 +32798,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: MessageObject_0
       objectReference: {fileID: 0}
-    - target: {fileID: 2850934404533454643, guid: 52bffa397dbaf1a4ab29cd41377bcce5, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7246326150205344208, guid: 52bffa397dbaf1a4ab29cd41377bcce5, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -32835,7 +32824,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7246326150205344208, guid: 52bffa397dbaf1a4ab29cd41377bcce5, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 800
+      value: 1500
       objectReference: {fileID: 0}
     - target: {fileID: 7246326150205344208, guid: 52bffa397dbaf1a4ab29cd41377bcce5, type: 3}
       propertyPath: m_SizeDelta.y
@@ -33712,18 +33701,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3656705575260860301, guid: c4936c166a2d7ef4f8adc20b5849be12, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3656705575260860301, guid: c4936c166a2d7ef4f8adc20b5849be12, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3656705575260860301, guid: c4936c166a2d7ef4f8adc20b5849be12, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3656705575260860301, guid: c4936c166a2d7ef4f8adc20b5849be12, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -33774,10 +33751,6 @@ PrefabInstance:
     - target: {fileID: 4599409617057639570, guid: c4936c166a2d7ef4f8adc20b5849be12, type: 3}
       propertyPath: m_Name
       value: BuyPropertyPopup012_0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4599409617057639570, guid: c4936c166a2d7ef4f8adc20b5849be12, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
