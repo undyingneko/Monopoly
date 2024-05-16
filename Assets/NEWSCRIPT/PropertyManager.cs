@@ -6,7 +6,7 @@ using TMPro;
 
 public class PropertyManager : MonoBehaviour
 {
-    
+    public PropertyData currentHotspotProperty = null;
     private GameManager gameManager;
 
     public Dictionary<int, string> playerIDToColor  = new Dictionary<int, string>
@@ -58,9 +58,9 @@ public class PropertyManager : MonoBehaviour
 
         public void InitializePrices()
         {
-            stagePrices.Clear();
-            rentPrices.Clear();
-            stageIndexes.Clear();
+            // stagePrices.Clear();
+            // rentPrices.Clear();
+            // stageIndexes.Clear();
             // stageImages.Clear();  
             // rentTagImages.Clear();   
 
@@ -140,12 +140,14 @@ public class PropertyManager : MonoBehaviour
     }
     private void Start()
     {
+
         gameManager = FindObjectOfType<GameManager>();
         if (canvasTransform == null)
         {
             Debug.LogError("Canvas transform reference not set. Please assign the Canvas transform in the Inspector.");
             return;
         }
+        currentHotspotProperty = null;
     }
 
     private void Awake()
@@ -165,6 +167,7 @@ public class PropertyManager : MonoBehaviour
         }
         DontDestroyOnLoad(gameObject);
         // LoadProperties();
+        currentHotspotProperty = null;
     }
 
     private void OnTileImagesLoaded()
@@ -376,12 +379,12 @@ public class PropertyManager : MonoBehaviour
 
     public void UpdateRentText(PropertyData property, int stageIndex)
     {
-        // Ensure the rent text is not null
+        Debug.Log("Updating rent text for property: " + property.name + " at stage index: " + stageIndex);
+        Debug.Log(System.Environment.StackTrace);
         if (property.rentText != null)
         {
+            Debug.Log("Rent text is assigned for property: " + property.name);
             property.rentText.text = FormatPrice(property.rentPrices[stageIndex]);
-
-            // property.rentText.text = property.rentPrices[stageIndex].ToString(); 
             property.rentText.gameObject.SetActive(true);
         }
         else

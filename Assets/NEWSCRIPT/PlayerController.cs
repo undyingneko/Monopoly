@@ -179,8 +179,8 @@ public class PlayerController : MonoBehaviour
                 // int diceValue2 = int.Parse(dice2InputField.text);           
                 // StartCoroutine(RollTheDice(diceValue1 , diceValue2));
                 StartCoroutine(RollTheDice(dice1Value, dice2Value));
-                StartCoroutine(ShowMessage("Your Get out of Jail Ticket has been redeemed! You are now released from jail without penalty."));
-                yield return new WaitForSecondsRealtime(2f);
+                yield return StartCoroutine(ShowMessage("Your Get out of Jail Ticket has been redeemed! You are now released from jail without penalty."));
+                // yield return new WaitForSecondsRealtime(2f);
                 rollButton.gameObject.SetActive(false);
                 playerMoveText.gameObject.SetActive(false);
             }
@@ -350,8 +350,8 @@ public class PlayerController : MonoBehaviour
                 DisplayGoToJailText();
                 InJail = false;
                 hasGetOutOfJailCard = false; 
-                StartCoroutine(ShowMessage("You have used your Get out of jail Ticket"));
-                yield return new WaitForSecondsRealtime(2f);
+                yield return StartCoroutine(ShowMessage("You have used your Get out of jail Ticket"));
+                // yield return new WaitForSecondsRealtime(2f);
 
             }
             else
@@ -389,8 +389,8 @@ public class PlayerController : MonoBehaviour
             int taxAmount = (int)(totalPropertyValue * 0.1f);
             Money -= taxAmount;
             UpdateMoneyText();
-            StartCoroutine(ShowMessage($"You paid income tax of ${taxAmount}"));
-            yield return new WaitForSecondsRealtime(2f);
+            yield return StartCoroutine(ShowMessage($"You paid income tax of ${taxAmount}"));
+            // yield return new WaitForSecondsRealtime(2f);
         }   
     }
 
@@ -472,22 +472,21 @@ public class PlayerController : MonoBehaviour
         yield return StartCoroutine(LandOnProperty());
     }
 
-    public IEnumerator WaitForPlayerSelection()
-    {
-        bool selectionMade = false;
+    // public IEnumerator WaitForPlayerSelection()
+    // {
 
-        while (!selectionMade)
-        {
-            // Wait for the next frame to allow the player to click on a tile
-            yield return null;
+    //     while (!gameManager.ChanceSelectionMade)
+    //     {
+    //         // Wait for the next frame to allow the player to click on a tile
+    //         yield return null;
 
-            // Check if the player has made a selection
-            if (gameManager.selectedProperty != null)
-            {
-                selectionMade = true;
-            }
-        }
-    }
+    //         // Check if the player has made a selection
+    //         if (gameManager.selectedProperty != null)
+    //         {
+    //             gameManager.ChanceSelectionMade = true;
+    //         }
+    //     }
+    // }
 
     public void MoveForward()
     {
@@ -541,8 +540,8 @@ public class PlayerController : MonoBehaviour
                 }
                 else if (Money < property.stagePrices[property.nextStageIndex])
                 {
-                    StartCoroutine(ShowMessage("Not enough money to acquire this property!"));
-                    yield return new WaitForSecondsRealtime(2f);
+                    yield return StartCoroutine(ShowMessage("Not enough money to acquire this property!"));
+                    // yield return new WaitForSecondsRealtime(2f);
                     gameManager.EndedAllInteraction = true;
                     yield break;
                 }
@@ -554,23 +553,23 @@ public class PlayerController : MonoBehaviour
                 
                 if (property.isComplimentaryMeal)
                 {
-                    StartCoroutine(ShowMessage("This Food Stall offers a complimentary meal. No payment required"));
-                    yield return new WaitForSecondsRealtime(3f);
+                    yield return StartCoroutine(ShowMessage("This Food Stall offers a complimentary meal. No payment required"));
+                    yield return new WaitForSecondsRealtime(1f);
                 }
                 else
                 {
-                    StartCoroutine(ShowMessage("You pay the meal expense of $" + formattedRent));
+                    yield return StartCoroutine(ShowMessage("You pay the meal expense of $" + formattedRent));
                     if (hasFreeRentTicket)
                     {
                         hasFreeRentTicket = false;
-                        StartCoroutine(ShowMessage("Your Free Meal Ticket has been redeemed! Enjoy your complimentary meal."));
-                        yield return new WaitForSecondsRealtime(3f);
+                        yield return StartCoroutine(ShowMessage("Your Free Meal Ticket has been redeemed! Enjoy your complimentary meal."));
+                        yield return new WaitForSecondsRealtime(1f);
                     }
                     else
                     {
                         Money -= rentPriceToDeduct;
                         UpdateMoneyText();
-                        yield return new WaitForSecondsRealtime(3f);
+                        yield return new WaitForSecondsRealtime(1f);
                         ownerPlayer.Money += rentPriceToDeduct;
                         ownerPlayer.UpdateMoneyText();
                     }
@@ -583,8 +582,8 @@ public class PlayerController : MonoBehaviour
                     }
                     else if (property.buyoutPrices[property.currentStageIndex] > Money)
                     {
-                        StartCoroutine(ShowMessage("Not enough money to acquire this property!"));
-                        yield return new WaitForSecondsRealtime(2f);
+                        yield return StartCoroutine(ShowMessage("Not enough money to acquire this property!"));
+                        // yield return new WaitForSecondsRealtime(2f);
                         gameManager.EndedAllInteraction = true;
                         yield break;                    
                     }
@@ -599,8 +598,8 @@ public class PlayerController : MonoBehaviour
                     }
                     else if (property.stagePrices[property.nextStageIndex] > Money && ownerPlayeragain.teamID == this.teamID)
                     {
-                        StartCoroutine(ShowMessage("Not enough money to acquire this property!"));
-                        yield return new WaitForSecondsRealtime(2f);
+                        yield return StartCoroutine(ShowMessage("Not enough money to acquire this property!"));
+                        // yield return new WaitForSecondsRealtime(2f);
                         gameManager.EndedAllInteraction = true;
                         yield break;
                     }
@@ -608,8 +607,8 @@ public class PlayerController : MonoBehaviour
                 
                 else if (property.currentStageIndex == 4)
                 {
-                    StartCoroutine(ShowMessage("You can't buy out the hotel"));
-                    yield return new WaitForSecondsRealtime(2f);
+                    yield return StartCoroutine(ShowMessage("You can't buy out the hotel"));
+                    // yield return new WaitForSecondsRealtime(2f);
                     yield return StartCoroutine(WaitForPropertyDecision());
                     gameManager.EndedAllInteraction = true;
                 }
@@ -713,7 +712,7 @@ public class PlayerController : MonoBehaviour
     private IEnumerator DelayedNextTurn()
     {
         yield return StartCoroutine(WaitForPropertyDecision());
-        yield return new WaitForSecondsRealtime(1f); // Wait for 1 second
+        yield return new WaitForSecondsRealtime(0.5f); // Wait for 1 second
         gameManager.buyPropertyDecisionMade = false;
         gameManager.buyOutDecisionMade = false;
         gameManager.EndedAllInteraction = false;    

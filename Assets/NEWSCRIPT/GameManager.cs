@@ -26,10 +26,12 @@ public class GameManager : MonoBehaviour
     public bool buyPropertyDecisionMade = false;
     public bool buyOutDecisionMade = false;
     public bool EndedAllInteraction  = false;
+    public bool HotSpotIsSet  = false;
     public event Action TileImagesLoaded;
     // public bool isAvenueDemolitionActive = false;
     // public bool isPropertySeizureActive = false;
     public bool isCardEffect = false;
+    public bool ChanceSelectionMade = false;
     public TextMeshProUGUI plus300Text;
     void Awake()
     {
