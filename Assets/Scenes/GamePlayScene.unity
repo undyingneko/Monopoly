@@ -276,10 +276,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3710db7ca05f0e146bfc8f3b1cad70db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  properties: []
   ownedProperties: []
-  opponentProperties: []
-  propertyToDestroy:
+  ListPropertiesForEffect: []
+  propertyToBeEffected:
     name: 
     JSONwaypointIndex: 0
     priceStallBase: 0
@@ -297,42 +296,9 @@ MonoBehaviour:
     buyoutCount: 0
     currentStageIndex: 0
     nextStageIndex: 0
-  propertyToDemolish:
-    name: 
-    JSONwaypointIndex: 0
-    priceStallBase: 0
-    stagePrices: 
-    rentPrices: 
-    buyoutPrices: 
-    stageIndexes: 
-    stageImages: []
-    rentTagImages: []
-    rentText: {fileID: 0}
-    owned: 0
-    ownerID: 0
-    teamownerID: 0
-    buyoutMultiplier: 0
-    buyoutCount: 0
-    currentStageIndex: 0
-    nextStageIndex: 0
-  propertyToSeize:
-    name: 
-    JSONwaypointIndex: 0
-    priceStallBase: 0
-    stagePrices: 
-    rentPrices: 
-    buyoutPrices: 
-    stageIndexes: 
-    stageImages: []
-    rentTagImages: []
-    rentText: {fileID: 0}
-    owned: 0
-    ownerID: 0
-    teamownerID: 0
-    buyoutMultiplier: 0
-    buyoutCount: 0
-    currentStageIndex: 0
-    nextStageIndex: 0
+    isComplimentaryMeal: 0
+  dice1Value: 0
+  dice2Value: 0
   MessageObject: {fileID: 1545385703}
   ChancePopUp: {fileID: 624023700}
   buy012PopUp: {fileID: 1441252303}
@@ -1084,7 +1050,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 25
+  m_SortingOrder: 26
   m_Sprite: {fileID: 21300000, guid: e55481665f6c5cd459b79a16b7726480, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -2510,7 +2476,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 17
+  m_SortingOrder: 18
   m_Sprite: {fileID: 21300000, guid: 2ad908fed7817a64585b7a97b48bda8e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -3814,7 +3780,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 20
+  m_SortingOrder: 21
   m_Sprite: {fileID: 21300000, guid: e317cd48b5b237443a6b85d6eeda29fc, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -5518,7 +5484,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 21
+  m_SortingOrder: 22
   m_Sprite: {fileID: 21300000, guid: 253574bf5e37bd34bb132740b4a96678, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -6409,7 +6375,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 26
+  m_SortingOrder: 27
   m_Sprite: {fileID: 21300000, guid: 04f18623926df1746b726d23695a397d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -7416,7 +7382,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 27
+  m_SortingOrder: 28
   m_Sprite: {fileID: 21300000, guid: cf68b25fe75c27f4082109e1b8717f08, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -8591,10 +8557,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3710db7ca05f0e146bfc8f3b1cad70db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  properties: []
   ownedProperties: []
-  opponentProperties: []
-  propertyToDestroy:
+  ListPropertiesForEffect: []
+  propertyToBeEffected:
     name: 
     JSONwaypointIndex: 0
     priceStallBase: 0
@@ -8612,42 +8577,9 @@ MonoBehaviour:
     buyoutCount: 0
     currentStageIndex: 0
     nextStageIndex: 0
-  propertyToDemolish:
-    name: 
-    JSONwaypointIndex: 0
-    priceStallBase: 0
-    stagePrices: 
-    rentPrices: 
-    buyoutPrices: 
-    stageIndexes: 
-    stageImages: []
-    rentTagImages: []
-    rentText: {fileID: 0}
-    owned: 0
-    ownerID: 0
-    teamownerID: 0
-    buyoutMultiplier: 0
-    buyoutCount: 0
-    currentStageIndex: 0
-    nextStageIndex: 0
-  propertyToSeize:
-    name: 
-    JSONwaypointIndex: 0
-    priceStallBase: 0
-    stagePrices: 
-    rentPrices: 
-    buyoutPrices: 
-    stageIndexes: 
-    stageImages: []
-    rentTagImages: []
-    rentText: {fileID: 0}
-    owned: 0
-    ownerID: 0
-    teamownerID: 0
-    buyoutMultiplier: 0
-    buyoutCount: 0
-    currentStageIndex: 0
-    nextStageIndex: 0
+    isComplimentaryMeal: 0
+  dice1Value: 0
+  dice2Value: 0
   MessageObject: {fileID: 754290472}
   ChancePopUp: {fileID: 1707998966}
   buy012PopUp: {fileID: 478391559}
@@ -8903,10 +8835,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3710db7ca05f0e146bfc8f3b1cad70db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  properties: []
   ownedProperties: []
-  opponentProperties: []
-  propertyToDestroy:
+  ListPropertiesForEffect: []
+  propertyToBeEffected:
     name: 
     JSONwaypointIndex: 0
     priceStallBase: 0
@@ -8924,42 +8855,9 @@ MonoBehaviour:
     buyoutCount: 0
     currentStageIndex: 0
     nextStageIndex: 0
-  propertyToDemolish:
-    name: 
-    JSONwaypointIndex: 0
-    priceStallBase: 0
-    stagePrices: 
-    rentPrices: 
-    buyoutPrices: 
-    stageIndexes: 
-    stageImages: []
-    rentTagImages: []
-    rentText: {fileID: 0}
-    owned: 0
-    ownerID: 0
-    teamownerID: 0
-    buyoutMultiplier: 0
-    buyoutCount: 0
-    currentStageIndex: 0
-    nextStageIndex: 0
-  propertyToSeize:
-    name: 
-    JSONwaypointIndex: 0
-    priceStallBase: 0
-    stagePrices: 
-    rentPrices: 
-    buyoutPrices: 
-    stageIndexes: 
-    stageImages: []
-    rentTagImages: []
-    rentText: {fileID: 0}
-    owned: 0
-    ownerID: 0
-    teamownerID: 0
-    buyoutMultiplier: 0
-    buyoutCount: 0
-    currentStageIndex: 0
-    nextStageIndex: 0
+    isComplimentaryMeal: 0
+  dice1Value: 0
+  dice2Value: 0
   MessageObject: {fileID: 1824347441}
   ChancePopUp: {fileID: 983940245}
   buy012PopUp: {fileID: 1600060962}
@@ -12832,7 +12730,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 28
+  m_SortingOrder: 29
   m_Sprite: {fileID: 21300000, guid: cf68b25fe75c27f4082109e1b8717f08, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -13613,7 +13511,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 18
+  m_SortingOrder: 19
   m_Sprite: {fileID: 21300000, guid: 253574bf5e37bd34bb132740b4a96678, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -13687,6 +13585,7 @@ MonoBehaviour:
     buyoutCount: 0
     currentStageIndex: 0
     nextStageIndex: 0
+    isComplimentaryMeal: 0
   players:
   - {fileID: 793143341}
   - {fileID: 1676970795}
@@ -13695,8 +13594,7 @@ MonoBehaviour:
   buyPropertyDecisionMade: 0
   buyOutDecisionMade: 0
   EndedAllInteraction: 0
-  isAvenueDemolitionActive: 0
-  isPropertySeizureActive: 0
+  isCardEffect: 0
   plus300Text: {fileID: 1259017702}
 --- !u!4 &1288277759
 Transform:
@@ -15838,7 +15736,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 29
+  m_SortingOrder: 30
   m_Sprite: {fileID: 21300000, guid: 2066d1f7058ad884c82c8c8785906bca, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -16007,7 +15905,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 19
+  m_SortingOrder: 20
   m_Sprite: {fileID: 21300000, guid: e317cd48b5b237443a6b85d6eeda29fc, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -17063,7 +16961,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 23
+  m_SortingOrder: 24
   m_Sprite: {fileID: 21300000, guid: b83c3b72ca910664da4454e6101ed6f9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -17936,10 +17834,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3710db7ca05f0e146bfc8f3b1cad70db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  properties: []
   ownedProperties: []
-  opponentProperties: []
-  propertyToDestroy:
+  ListPropertiesForEffect: []
+  propertyToBeEffected:
     name: 
     JSONwaypointIndex: 0
     priceStallBase: 0
@@ -17957,42 +17854,9 @@ MonoBehaviour:
     buyoutCount: 0
     currentStageIndex: 0
     nextStageIndex: 0
-  propertyToDemolish:
-    name: 
-    JSONwaypointIndex: 0
-    priceStallBase: 0
-    stagePrices: 
-    rentPrices: 
-    buyoutPrices: 
-    stageIndexes: 
-    stageImages: []
-    rentTagImages: []
-    rentText: {fileID: 0}
-    owned: 0
-    ownerID: 0
-    teamownerID: 0
-    buyoutMultiplier: 0
-    buyoutCount: 0
-    currentStageIndex: 0
-    nextStageIndex: 0
-  propertyToSeize:
-    name: 
-    JSONwaypointIndex: 0
-    priceStallBase: 0
-    stagePrices: 
-    rentPrices: 
-    buyoutPrices: 
-    stageIndexes: 
-    stageImages: []
-    rentTagImages: []
-    rentText: {fileID: 0}
-    owned: 0
-    ownerID: 0
-    teamownerID: 0
-    buyoutMultiplier: 0
-    buyoutCount: 0
-    currentStageIndex: 0
-    nextStageIndex: 0
+    isComplimentaryMeal: 0
+  dice1Value: 0
+  dice2Value: 0
   MessageObject: {fileID: 1685648543}
   ChancePopUp: {fileID: 1455233872}
   buy012PopUp: {fileID: 61338422}
@@ -19234,7 +19098,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 22
+  m_SortingOrder: 23
   m_Sprite: {fileID: 21300000, guid: 3450513d558a50e479b6c1a8a4588e7c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -20790,7 +20654,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 24
+  m_SortingOrder: 25
   m_Sprite: {fileID: 21300000, guid: e55481665f6c5cd459b79a16b7726480, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
