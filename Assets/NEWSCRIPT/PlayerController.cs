@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour
     public List<PropertyManager.PropertyData> ListPropertiesForEffect;
     public PropertyManager.PropertyData propertyToBeEffected;
 
+    public List<HotSpringManager.HotSpringData> ownedHotSprings;
+
     // private PlayerController currentPlayerController;
     
     public int dice1Value;
@@ -23,6 +25,7 @@ public class PlayerController : MonoBehaviour
 
     public BuyPropertyPopup012 buy012PopUp;
     public BuyOutPopUp buyoutPopup;
+    public HotSpringPopUp hotspringpopup;
 
     public int playerID;
     public int teamID;
@@ -65,6 +68,7 @@ public class PlayerController : MonoBehaviour
     private int originalSortingOrder = 0;
     
     public bool isBuyPopUpActive = false;
+    public bool isHotSpringActive = false;
 
     public void AssignPlayerID(int id)
     {
@@ -372,6 +376,11 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator CheckPosition()
     {
+        if (currentPosition == 4 || currentPosition == 13 || currentPosition == 18 || currentPosition == 25)
+        {
+            yield return StartCoroutine(ShowMessage($"You've discovered a hot spring!"));
+
+        }
         if (currentPosition == 12 || currentPosition == 20 || currentPosition == 23 || currentPosition == 28)
         {
             yield return StartCoroutine(DisplayChancePopUp());
@@ -448,7 +457,6 @@ public class PlayerController : MonoBehaviour
         {
             direction = -1; // Change direction to backward if steps are negative
         }
-
         while (stepsRemaining > 0)
         {
             currentPosition = (currentPosition + direction) % waypoints.Length; // Calculate the new position
@@ -672,7 +680,6 @@ public class PlayerController : MonoBehaviour
         goToJailText.gameObject.SetActive(false);
     }
 
-
     public void UpdateMoneyText()
     {
         // Update the text displayed on the moneyText object
@@ -698,7 +705,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
     public void EndTurn()
     {
         isTurn = false;
@@ -706,9 +712,8 @@ public class PlayerController : MonoBehaviour
         rollButton.gameObject.SetActive(false);
         spriteRenderer.sortingOrder = originalSortingOrder;
         StartCoroutine(DelayedNextTurn());
-        
-
     }
+
     private IEnumerator DelayedNextTurn()
     {
         yield return StartCoroutine(WaitForPropertyDecision());
@@ -735,13 +740,17 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator WaitForPropertyDecision()
     {
-        while (buy012PopUp != null && buy012PopUp.gameObject.activeSelf|| buyoutPopup != null&& buyoutPopup.gameObject.activeSelf)
+        while (buy012PopUp != null && buy012PopUp.gameObject.activeSelf|| buyoutPopup != null&& buyoutPopup.gameObject.activeSelf || hotspringpopup!= null&& hotspringpopup.gameObject.activeSelf )
         {
             while (buy012PopUp.gameObject.activeSelf)
             {
                 yield return new WaitUntil(() => gameManager.buyPropertyDecisionMade);
             }
             while (buyoutPopup.gameObject.activeSelf)
+            {
+                yield return new WaitUntil(() => gameManager.buyOutDecisionMade);
+            }
+            while (hotspringpopup.gameObject.activeSelf)
             {
                 yield return new WaitUntil(() => gameManager.buyOutDecisionMade);
             }

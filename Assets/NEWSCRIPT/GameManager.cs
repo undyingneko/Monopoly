@@ -25,6 +25,8 @@ public class GameManager : MonoBehaviour
 
     public bool buyPropertyDecisionMade = false;
     public bool buyOutDecisionMade = false;
+    public bool HotSpringDecisionMade = false;
+    
     public bool EndedAllInteraction  = false;
     public bool HotSpotIsSet  = false;
     public event Action TileImagesLoaded;

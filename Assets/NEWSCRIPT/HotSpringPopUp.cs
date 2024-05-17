@@ -4,35 +4,36 @@ using UnityEngine.UI;
 using System.Collections;
 using Unity.Properties;
 
-public class BuyOutPopUp : MonoBehaviour
+public class HotSpringPopUp : MonoBehaviour
 {
     [SerializeField]
     private TextMeshProUGUI ownedByTeammateText;
     private TextMeshProUGUI propertyNameText;
     private Button closeButton;
 
-    private TextMeshProUGUI stageBuyOutPriceText;
+    private TextMeshProUGUI HotSpringPriceText;
     private Button buyButton;
-    private TextMeshProUGUI stageNumberText;
-
 
     private PropertyManager propertyManager;
+    private HotSpringManager hotSpringManager;
     public PlayerController playerController;
 
-
     private PlayerController currentPlayer;
-    private PropertyManager.PropertyData currentProperty;
+    private HotSpringManager.HotSpringData currentHotSpring;
+
 
     private float buyConfirmationTime = 10f; // Time limit for confirming the purchase
 
     private Coroutine buyConfirmationCoroutine; 
     private GameManager gameManager;
 
-    public GameObject stageImagePrefab;
+    // public GameObject HotSpringImage;
 
     private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
+        hotSpringManager = FindObjectOfType<HotSpringManager>();
+
         if (gameManager == null)
         {
             Debug.LogError("GameManager not found!");
@@ -69,10 +70,10 @@ public class BuyOutPopUp : MonoBehaviour
             Debug.LogError("CloseButton not found in the instantiated prefab.");
         }
 
-        Transform stageBuyOutPriceTextTransform = transform.Find("stageBuyOutPriceText");
-        if (stageBuyOutPriceTextTransform != null)
+        Transform HotSpringPriceTextTransform = transform.Find("HotSpringPriceText");
+        if (HotSpringPriceTextTransform != null)
         {
-            stageBuyOutPriceText = stageBuyOutPriceTextTransform.GetComponent<TextMeshProUGUI>();  
+            HotSpringPriceText = HotSpringPriceTextTransform.GetComponent<TextMeshProUGUI>();  
         }
         else
         {
@@ -89,23 +90,13 @@ public class BuyOutPopUp : MonoBehaviour
             Debug.LogError("Buy button not found");
         }    
 
-        Transform stageNumberTextTransform = transform.Find("StageNumberText");
-        if (stageNumberTextTransform != null)
-        {
-            stageNumberText = stageNumberTextTransform.GetComponent<TextMeshProUGUI>();   
-        }
-        else
-        {
-            Debug.LogError("Stage number text not found");
-        }
-
         if (playerController != null)
         {
             Debug.Log("Popup enabled");
-            playerController.isBuyPopUpActive = true;
+            playerController.isHotSpringActive = true;
             buyConfirmationCoroutine = StartCoroutine(BuyConfirmationTimer());
             closeButton.onClick.AddListener(Decline); // Add a listener to the close button
-            buyButton.onClick.AddListener(() => BuyOut(GameManager.currentPlayerIndex));
+            buyButton.onClick.AddListener(() => BuyHotSpring(GameManager.currentPlayerIndex));
         }
         else
         {
@@ -139,118 +130,79 @@ public class BuyOutPopUp : MonoBehaviour
 
     private void OnDisable()
     {   
-        playerController.isBuyPopUpActive = false;
+        playerController.isHotSpringActive = false;
         Debug.Log("Popup disabled");
         if (buyConfirmationCoroutine != null)
         {
             StopCoroutine(buyConfirmationCoroutine);
         }
-        buyButton.onClick.RemoveListener(() => BuyOut(GameManager.currentPlayerIndex));
+        buyButton.onClick.RemoveListener(() => BuyHotSpring(GameManager.currentPlayerIndex));
     }
 
-    public void DisplayBuyOut(PropertyManager.PropertyData property)
+    public void DisplayBuyHotSpring(HotSpringManager.HotSpringData hotspring)
     {
-        if (property == null)
+        if (hotspring == null)
         {
             Debug.LogError("PropertyData object is null!");
             return;
         }
-        currentProperty = property;
-        Debug.Log ("currentProperty name:"+ currentProperty.name);
+        currentHotSpring = hotspring;
+        Debug.Log ("currentHotSpring name:"+ currentHotSpring.name);
 
-        propertyNameText.text = property.name;
-        if (currentPlayer == null || currentProperty == null)
+        propertyNameText.text = hotspring.name;
+        if (currentPlayer == null || currentHotSpring == null)
         {
             Debug.LogError("Current player or property is null!");
             return;
         }
-
-        // int buyoutPrice = currentProperty.CalculateBuyoutPrice(currentProperty.currentStageIndex);
-
-        if (currentProperty.currentStageIndex < 2)
-        {
-            if (currentProperty.currentStageIndex == 0)
-            {
-                // Display "LAND" for stage 0
-                stageBuyOutPriceText.text = "Price: " + FormatBuyoutPrice(currentProperty.currentStageIndex, currentProperty); 
-                stageNumberText.text = "LAND";
-            }
-            else if (currentProperty.currentStageIndex == 1)
-            {
-                // Display "LAND" for stage 0
-                stageBuyOutPriceText.text = "Price: " + FormatBuyoutPrice(currentProperty.currentStageIndex, currentProperty); 
-                stageNumberText.text = "STAGE 1";
-            }          
-        }
-        else if (currentProperty.currentStageIndex == 2)
-        {
-
-            stageBuyOutPriceText.text = "Price: " + FormatBuyoutPrice(currentProperty.currentStageIndex, currentProperty);           
-            stageNumberText.text = "STAGE 3";
-        }
-        else if (currentProperty.currentStageIndex == 3)
-        {
-            stageBuyOutPriceText.text = "Price: " + FormatBuyoutPrice(currentProperty.currentStageIndex, currentProperty);  
-            stageNumberText.text = "HOTEL";
-        }
-        else
-        {
-            // If there are more stageBuyOutPriceTexts than prices, deactivate the extra buttons
-            stageBuyOutPriceText.gameObject.SetActive(false);
-            buyButton.gameObject.SetActive(false);
-        }
-        // Start the buy confirmation timer coroutine
+        HotSpringPriceText.text = "Price: " + FormatHotSpringPrice(currentHotSpring); 
         buyConfirmationCoroutine = StartCoroutine(BuyConfirmationTimer());
     }
 
 
-    public void BuyOut(int currentPlayerIndex)
+    private void BuyHotSpring(int currentPlayerIndex)
     {
-            int stageIndex = currentProperty.currentStageIndex;
-            // int buyoutPrice = currentProperty.buyoutPrices[stageIndex];
-            int buyoutPrice = currentProperty.CalculateBuyoutPrice(stageIndex);
+            // int buyoutPrice = currentHotSpring.buyoutPrices[stageIndex];
+            int newhotspringprice = currentHotSpring.CalculatePriceHotSpring();
             
             if (gameManager != null && currentPlayerIndex >= 0 && currentPlayerIndex < gameManager.players.Length)
             {
                 // PlayerController currentPlayer = gameManager.players[currentPlayerIndex];
                 if (currentPlayer != null)
                 {
-                    if (currentPlayer.Money >= buyoutPrice)
+                    if (currentPlayer.Money >= newhotspringprice)
                     {
-                        PlayerController ownerPlayer = playerController.FindPlayerByID(currentProperty.ownerID);
-                        currentPlayer.Money -= buyoutPrice; 
-                        ownerPlayer.Money += buyoutPrice;
+                        PlayerController ownerPlayer = playerController.FindPlayerByID(currentHotSpring.ownerID);
+                        currentPlayer.Money -= newhotspringprice; 
+                        ownerPlayer.Money += newhotspringprice;
                         
                         currentPlayer.UpdateMoneyText();
                         ownerPlayer.UpdateMoneyText();
 
-                        Debug.Log("Money deducted:" + buyoutPrice );
+                        Debug.Log("Money deducted:" + newhotspringprice );
 
-                        ownerPlayer.ownedProperties.Remove(currentProperty);
-                        currentPlayer.ownedProperties.Add(currentProperty);
+                        ownerPlayer.ownedHotSprings.Remove(currentHotSpring);
+                        currentPlayer.ownedHotSprings.Add(currentHotSpring);
 
-                        currentProperty.ownerID = currentPlayer.playerID;
-                        currentProperty.teamownerID = currentPlayer.teamID; 
+                        currentHotSpring.ownerID = currentPlayer.playerID;
+                        currentHotSpring.teamownerID = currentPlayer.teamID; 
 
-                        currentProperty.buyoutCount += 1;
-                        
-                        Debug.Log("Property bought out successfully.");
+                        Debug.Log("Hot Spring bought successfully.");
 
                         gameObject.SetActive(false); 
 
-                        // propertyManager.DeactivateOldStageImages(currentProperty);
-                        // currentProperty.stageImages[stageIndex].SetActive(true);
-                        propertyManager.ActivateRentTagImage(currentProperty);
-                        propertyManager.UpdateRentText(currentProperty, stageIndex);
-
-                        gameManager.buyOutDecisionMade = true;
-                        Debug.Log("gameManager.buyOutDecisionMade set to : " + gameManager.buyOutDecisionMade);
+                        // propertyManager.DeactivateOldStageImages(currentHotSpring);
+                        // currentHotSpring.stageImages[stageIndex].SetActive(true);
+                        hotSpringManager.ActivateRentTagImage(currentHotSpring);
+                        hotSpringManager.UpdatehotspringRentText(currentHotSpring);
+                        gameManager.HotSpringDecisionMade = true;
+                        Debug.Log("gameManager.HotSpringDecisionMade set to : " + gameManager.HotSpringDecisionMade);
                     }
                     else
                     {
                         Debug.LogWarning("Insufficient funds to buy the property.");
-                        gameManager.buyOutDecisionMade = true;
-                        Debug.Log("gameManager.buyOutDecisionMade set to : " + gameManager.buyOutDecisionMade);
+                        gameManager.HotSpringDecisionMade = true;
+                        Debug.Log("gameManager.HotSpringDecisionMade set to : " + gameManager.HotSpringDecisionMade);
                     }
                 }
                 else
@@ -276,23 +228,23 @@ public class BuyOutPopUp : MonoBehaviour
         // Close the popup after the confirmation time if no purchase is made
         gameObject.SetActive(false);
         // playerController.EndBuyPropertyInteraction();
-        gameManager.buyOutDecisionMade = true;
-        Debug.Log("gameManager.buyOutDecisionMade set to : " + gameManager.buyOutDecisionMade);
+        gameManager.HotSpringDecisionMade = true;
+        Debug.Log("gameManager.HotSpringDecisionMade set to : " + gameManager.HotSpringDecisionMade);
     }
     public void Decline()
     {
         // Close the popup immediately when the close button is pressed
         gameObject.SetActive(false);
         // playerController.EndBuyPropertyInteraction();
-        gameManager.buyOutDecisionMade = true;
-        Debug.Log("gameManager.buyOutDecisionMade set to : " + gameManager.buyOutDecisionMade);
+        gameManager.HotSpringDecisionMade = true;
+        Debug.Log("gameManager.HotSpringDecisionMade set to : " + gameManager.HotSpringDecisionMade);
         
     }
-    private string FormatBuyoutPrice (int stageIndex, PropertyManager.PropertyData property)
+    private string FormatHotSpringPrice (HotSpringManager.HotSpringData property)
     {
         gameManager = FindObjectOfType<GameManager>();
-        int buyoutPrice = property.CalculateBuyoutPrice(stageIndex);
-        string formattedbuyoutPrice = gameManager.FormatPrice(buyoutPrice);
+        int priceHotSpring = property.CalculatePriceHotSpring();
+        string formattedbuyoutPrice = gameManager.FormatPrice(priceHotSpring);
         return formattedbuyoutPrice;
     }
 
