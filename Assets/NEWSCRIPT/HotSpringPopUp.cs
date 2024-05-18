@@ -172,21 +172,17 @@ public class HotSpringPopUp : MonoBehaviour
                 {
                     if (currentPlayer.Money >= newhotspringprice)
                     {
-                        PlayerController ownerPlayer = playerController.FindPlayerByID(currentHotSpring.ownerID);
                         currentPlayer.Money -= newhotspringprice; 
-                        ownerPlayer.Money += newhotspringprice;
-                        
                         currentPlayer.UpdateMoneyText();
-                        ownerPlayer.UpdateMoneyText();
-
                         Debug.Log("Money deducted:" + newhotspringprice );
 
-                        ownerPlayer.ownedHotSprings.Remove(currentHotSpring);
-                        currentPlayer.ownedHotSprings.Add(currentHotSpring);
-
-                        currentHotSpring.ownerID = currentPlayer.playerID;
-                        currentHotSpring.teamownerID = currentPlayer.teamID; 
-
+                        if (!currentHotSpring.owned)
+                        {
+                            currentHotSpring.owned = true;            
+                            currentHotSpring.ownerID = currentPlayer.playerID;                        
+                            currentHotSpring.teamownerID = currentPlayer.teamID;
+                            currentPlayer.ownedHotSprings.Add(currentHotSpring);
+                        }   
                         Debug.Log("Hot Spring bought successfully.");
 
                         gameObject.SetActive(false); 
@@ -240,10 +236,10 @@ public class HotSpringPopUp : MonoBehaviour
         Debug.Log("gameManager.HotSpringDecisionMade set to : " + gameManager.HotSpringDecisionMade);
         
     }
-    private string FormatHotSpringPrice (HotSpringManager.HotSpringData property)
+    private string FormatHotSpringPrice (HotSpringManager.HotSpringData hotspring)
     {
         gameManager = FindObjectOfType<GameManager>();
-        int priceHotSpring = property.CalculatePriceHotSpring();
+        int priceHotSpring = hotspring.CalculateRentPriceHotSpring();
         string formattedbuyoutPrice = gameManager.FormatPrice(priceHotSpring);
         return formattedbuyoutPrice;
     }

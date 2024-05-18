@@ -33,13 +33,13 @@ public class PropertyManager : MonoBehaviour
         public int priceStallBase; 
         // public int numberOfStages;
 
-        public List<int> stagePrices = new List<int>(); // Stores prices for each stage
-        public List<int> rentPrices = new List<int>(); 
-        public List<int> buyoutPrices = new List<int>();// Stores rent prices for each stage
-        public List<int> stageIndexes = new List<int>();
+        public List<int> stagePrices;
+        public List<int> rentPrices;
+        public List<int> buyoutPrices;
+        public List<int> stageIndexes;
 
-        public List<GameObject> stageImages = new List<GameObject>();
-        public List<GameObject> rentTagImages = new List<GameObject>();
+        public List<GameObject> stageImages;
+        public List<GameObject> rentTagImages;
 
         public TextMeshProUGUI rentText;
         

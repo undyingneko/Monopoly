@@ -72,6 +72,7 @@ public class HotSpringManager : MonoBehaviour
             // {
             //     buyoutPrice *= 2;
             // }
+            rentPriceSHotSpring = priceHotSpring/10;
 
             return rentPriceSHotSpring;
         }
@@ -151,10 +152,11 @@ public class HotSpringManager : MonoBehaviour
     {
         foreach (HotSpringData hotspring in hotsprings)
         {
-            hotspring.isComplimentaryMeal = false;
-            hotspring.isHotSpot = false;
+            hotspring.InitializePrices();
             LoadImageForHotSpring(hotspring);
             LoadRentTagImagesHotSpring(hotspring);
+            hotspring.isComplimentaryMeal = false;
+            hotspring.isHotSpot = false;
         }
     }
 

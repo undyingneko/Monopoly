@@ -8619,6 +8619,65 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6dbf57067f509b4f8482e582481f147, type: 3}
+--- !u!1 &737263558
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 737263560}
+  - component: {fileID: 737263559}
+  m_Layer: 0
+  m_Name: HotSpringManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &737263559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 737263558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2de0eccf65ae0ce4591a61b01598cb1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHotspotProperty:
+    name: 
+    HOTSPRINGwaypointIndex: 0
+    priceHotSpring: 0
+    rentPriceSHotSpring: 0
+    hotspringRentText: {fileID: 0}
+    HotSpringImage: {fileID: 0}
+    rentTagImages: []
+    owned: 0
+    ownerID: 0
+    teamownerID: 0
+    isComplimentaryMeal: 0
+    isHotSpot: 0
+  canvasTransform: {fileID: 1311088092}
+  hotsprings: []
+--- !u!4 &737263560
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 737263558}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.32203645, y: -0.119526535, z: -0.039539818}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &746459774
 GameObject:
   m_ObjectHideFlags: 0
@@ -37118,3 +37177,4 @@ SceneRoots:
   - {fileID: 1650293160}
   - {fileID: 491577639}
   - {fileID: 394318140}
+  - {fileID: 737263560}
