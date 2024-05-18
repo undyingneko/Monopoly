@@ -57,7 +57,8 @@ public class PlayerController : MonoBehaviour
 
     public Transform canvasTransform;
     
-
+    public int fatigueLevel = 0;
+    private const int maxFatigueLevel = 5;
 
     private PropertyManager propertyManager;
     private HotSpringManager hotSpringManager;
@@ -417,6 +418,7 @@ public class PlayerController : MonoBehaviour
         {   
             Debug.Log ("inside isDouble");
             consecutiveDoublesCount++;
+            fatigueLevel = Mathf.Min(fatigueLevel + 1, maxFatigueLevel);
             
             if (consecutiveDoublesCount >= 3)
             {   
@@ -522,11 +524,16 @@ public class PlayerController : MonoBehaviour
                 if (hotspring.priceHotSpring <= Money)
                 {
                     yield return StartCoroutine(ShowMessage("You've discovered an onsen!"));
+                    fatigueLevel = 0;
+                    yield return StartCoroutine(ShowMessage("Your fatigue level has been reset to 0 after enjoying the natural onsen."));
                     ShowHotSpringPopup(hotspring, this);
+                    
                 }
                 else
                 {
                     yield return StartCoroutine(ShowMessage("You do not have enough money to build an onsen ryokan  at this onsen."));
+                    fatigueLevel = 0;
+                    yield return StartCoroutine(ShowMessage("Your fatigue level has been reset to 0 after enjoying the natural onsen."));
                     gameManager.EndedAllInteraction = true;
                 }
             }
@@ -536,14 +543,21 @@ public class PlayerController : MonoBehaviour
 
                 if (ownerPlayer != null && ownerPlayer.teamID != this.teamID)
                 {
-                    int rentPriceToDeduct = hotspring.rentPriceSHotSpring;
+                    int rentPriceToDeduct = hotspring.rentPriceSHotSpring + (20000 * fatigueLevel);
                     string formattedRent = FormatMoney(rentPriceToDeduct);
                     Money -= rentPriceToDeduct;
                     UpdateMoneyText();
                     ownerPlayer.Money += rentPriceToDeduct;
                     ownerPlayer.UpdateMoneyText();
-                    yield return StartCoroutine(ShowMessage($"You pay the hot spring entry fee of ${formattedRent}"));
+                    yield return StartCoroutine(ShowMessage($"You pay the hot spring entry fee of ${formattedRent}, plus a surcharge for deluxe relaxation amenities tailored to your fatigue level of" + fatigueLevel));
+                    yield return StartCoroutine(ShowMessage("Your fatigue level has decreased to 0."));
+                    fatigueLevel = 0;
                     gameManager.HotSpringDecisionMade = true;
+                }
+                else 
+                {
+                    fatigueLevel = 0;
+                    yield return StartCoroutine(ShowMessage("Your fatigue level has been reset to 0 after enjoying your onsen."));
                 }
             }
             yield return new WaitUntil(() => gameManager.HotSpringDecisionMade);

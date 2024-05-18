@@ -58,7 +58,7 @@ public class HotSpringManager : MonoBehaviour
         }
         public int CalculatePriceHotSpring()
         {
-            int basehotspringprice = 50000;
+            int basehotspringprice = 250000;
             priceHotSpring = basehotspringprice;
             return priceHotSpring;
         }
@@ -73,7 +73,6 @@ public class HotSpringManager : MonoBehaviour
             //     buyoutPrice *= 2;
             // }
             rentPriceSHotSpring = priceHotSpring/10;
-
             return rentPriceSHotSpring;
         }
     }
