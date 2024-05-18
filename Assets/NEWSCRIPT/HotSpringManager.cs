@@ -37,7 +37,7 @@ public class HotSpringManager : MonoBehaviour
 
         public GameObject HotSpringImage;
 
-        public List<GameObject> rentTagImages;
+        public List<GameObject> rentTagImages = new List<GameObject>();
 
         public bool owned;
         public int ownerID;
@@ -141,10 +141,10 @@ public class HotSpringManager : MonoBehaviour
     }
     private void InitializeHotSprings()
     {
-        hotsprings.Add(new HotSpringData { name = "HotSpring_no1", HOTSPRINGwaypointIndex = 4 });
-        hotsprings.Add(new HotSpringData { name = "HotSpring_no2", HOTSPRINGwaypointIndex = 13 });
-        hotsprings.Add(new HotSpringData { name = "HotSpring_no3", HOTSPRINGwaypointIndex = 18 });
-        hotsprings.Add(new HotSpringData { name = "HotSpring_no4", HOTSPRINGwaypointIndex = 25 });
+        hotsprings.Add(new HotSpringData { name = "Onsen 1", HOTSPRINGwaypointIndex = 4 });
+        hotsprings.Add(new HotSpringData { name = "Onsen 2", HOTSPRINGwaypointIndex = 13 });
+        hotsprings.Add(new HotSpringData { name = "Onsen 3", HOTSPRINGwaypointIndex = 18 });
+        hotsprings.Add(new HotSpringData { name = "Onsen 4", HOTSPRINGwaypointIndex = 25 });
     }
 
     private void LoadHotSprings()
@@ -180,7 +180,7 @@ public class HotSpringManager : MonoBehaviour
             return;
         }
         GameObject tileImage = gameManager.waypointIndexToTileMap[hotspring.HOTSPRINGwaypointIndex];
-        string HotSpringImageName = "HotSpring_" + hotspring.HOTSPRINGwaypointIndex;
+        string HotSpringImageName = "Onsen_" + hotspring.HOTSPRINGwaypointIndex;
         Transform HotSpringImageTransform = tileImage.transform.Find(HotSpringImageName);
         if (HotSpringImageTransform == null)
         {
@@ -206,21 +206,27 @@ public class HotSpringManager : MonoBehaviour
     private void LoadRentTagImagesHotSpring(HotSpringData hotspring)
     {
         string[] colors = { "pink", "turquois", "green", "purple" };
+
+        // Check if gameManager or waypointIndexToTileMap is null
+
         GameObject tileImage = gameManager.waypointIndexToTileMap[hotspring.HOTSPRINGwaypointIndex];
+
+        // Ensure rentTagImages list is initialized
+        // if (hotspring.rentTagImages == null)
+        // {
+        //     hotspring.rentTagImages = new List<GameObject>();
+        // }
 
         foreach (string color in colors)
         {
             string rentTagObjectName = "PriceTags_" + hotspring.HOTSPRINGwaypointIndex + "_" + color;
             Transform rentTagObject = tileImage.transform.Find(rentTagObjectName);
+
             if (rentTagObject != null)
             {
                 GameObject rentTagImageInstance = rentTagObject.gameObject;
                 rentTagImageInstance.SetActive(false);
                 hotspring.rentTagImages.Add(rentTagImageInstance);
-            }
-            else
-            {
-                Debug.LogWarning("Rent tag image object not found: " + rentTagObjectName);
             }
         }
 
@@ -235,16 +241,11 @@ public class HotSpringManager : MonoBehaviour
                 hotspring.hotspringRentText = hotspringRentTextInstance;
                 hotspringRentTextInstance.gameObject.SetActive(false);
             }
-            else
-            {
-                Debug.LogWarning("Rent text component not found on object: " + hotspringRentTextObjectName);
-            }
         }
-        else
-        {
-            Debug.LogWarning("Rent text object not found: " + hotspringRentTextObjectName);
-        }
+
     }
+
+
 
     public void DeactivateHotSpringRentTagImage(HotSpringData property)
     {

@@ -7,7 +7,7 @@ using Unity.Properties;
 public class BuyOutPopUp : MonoBehaviour
 {
     [SerializeField]
-    private TextMeshProUGUI ownedByTeammateText;
+    // private TextMeshProUGUI ownedByTeammateText;
     private TextMeshProUGUI propertyNameText;
     private Button closeButton;
 

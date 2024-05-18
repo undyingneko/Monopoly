@@ -12,7 +12,6 @@ public class PlayerController : MonoBehaviour
     public List<PropertyManager.PropertyData> ownedProperties;
     public List<PropertyManager.PropertyData> ListPropertiesForEffect;
     public PropertyManager.PropertyData propertyToBeEffected;
-
     public List<HotSpringManager.HotSpringData> ownedHotSprings;
 
     // private PlayerController currentPlayerController;
@@ -61,6 +60,7 @@ public class PlayerController : MonoBehaviour
 
 
     private PropertyManager propertyManager;
+    private HotSpringManager hotSpringManager;
 
     // private GameObject darkenScreenGameObject;
 
@@ -89,6 +89,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {   
         propertyManager = PropertyManager.Instance;
+        hotSpringManager = HotSpringManager.Instance;
        
         gameManager = FindObjectOfType<GameManager>();
 
@@ -119,7 +120,12 @@ public class PlayerController : MonoBehaviour
         // PropertyManager.Instance.OnPropertiesLoaded += OnPropertiesLoaded;
         // currentPlayer = gameManager.players[currentPlayerIndex]
     }
-
+    private void ShowHotSpringPopup(HotSpringManager.HotSpringData hotspring, PlayerController player)
+    {
+        hotspringpopup.playerController = player;
+        player.hotspringpopup.gameObject.SetActive(true);
+        player.hotspringpopup.DisplayBuyHotSpring(hotspring);
+    }
     private void ShowBuy012(PropertyManager.PropertyData property, PlayerController player)
     {
         buy012PopUp.playerController = player;
@@ -376,11 +382,11 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator CheckPosition()
     {
-        if (currentPosition == 4 || currentPosition == 13 || currentPosition == 18 || currentPosition == 25)
-        {
-            yield return StartCoroutine(ShowMessage($"You've discovered a hot spring!"));
-
-        }
+        // if (currentPosition == 4 || currentPosition == 13 || currentPosition == 18 || currentPosition == 25)
+        // {
+        //     yield return StartCoroutine(ShowMessage($"You've discovered a hot spring!"));
+        //     ShowHotSpringPopup(hotspring, this);
+        // }
         if (currentPosition == 12 || currentPosition == 20 || currentPosition == 23 || currentPosition == 28)
         {
             yield return StartCoroutine(DisplayChancePopUp());
@@ -480,22 +486,6 @@ public class PlayerController : MonoBehaviour
         yield return StartCoroutine(LandOnProperty());
     }
 
-    // public IEnumerator WaitForPlayerSelection()
-    // {
-
-    //     while (!gameManager.ChanceSelectionMade)
-    //     {
-    //         // Wait for the next frame to allow the player to click on a tile
-    //         yield return null;
-
-    //         // Check if the player has made a selection
-    //         if (gameManager.selectedProperty != null)
-    //         {
-    //             gameManager.ChanceSelectionMade = true;
-    //         }
-    //     }
-    // }
-
     public void MoveForward()
     {
         currentPosition = (currentPosition + 1) % waypoints.Length;
@@ -510,134 +500,154 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator LandOnProperty()
     {
-        // Check if propertyManager or waypoints array is null
         PropertyManager.PropertyData property = propertyManager.GetPropertyByWaypointIndex(currentPosition);
+        HotSpringManager.HotSpringData hotspring = hotSpringManager.GetHotSpringByWaypointIndex(currentPosition);
+        
         if (propertyManager == null)
         {
             Debug.LogError("propertyManager is null.");
             yield break;
         }
-
         if (waypoints == null)
         {
             Debug.LogError("waypoints array is null.");
             yield break;
         }
 
-        if (property == null)
+        // Handle hot spring properties
+        if (property == null && IsHotSpringPosition(currentPosition))
         {
+            if (!hotspring.owned)
+            {
+                if (hotspring.priceHotSpring <= Money)
+                {
+                    yield return StartCoroutine(ShowMessage("You've discovered an onsen!"));
+                    ShowHotSpringPopup(hotspring, this);
+                }
+                else
+                {
+                    yield return StartCoroutine(ShowMessage("You do not have enough money to build an onsen ryokan  at this onsen."));
+                    gameManager.EndedAllInteraction = true;
+                }
+            }
+            else
+            {
+                HandleOwnedHotSpring(hotspring);
+            }
+            
             yield return StartCoroutine(WaitForPropertyDecision());
             yield break;
         }
 
-        // Check if the property is unowned and the player has enough money to buy it
-        if (!property.owned && property.nextStageIndex <= 5 && property.stagePrices[property.nextStageIndex] <= Money)
+        // Handle standard properties
+        if (property != null)
         {
-            // Instantiate the buy property popup
+            if (!property.owned && property.nextStageIndex <= 5 && property.stagePrices[property.nextStageIndex] <= Money)
+            {
+                ShowBuy012(property, this);
+            }
+            else if (property.owned)
+            {
+                HandleOwnedProperty(property);
+            }
+            
+            yield return StartCoroutine(WaitForPropertyDecision());
+        }
+    }
+
+    private bool IsHotSpringPosition(int position)
+    {
+        return position == 4 || position == 13 || position == 18 || position == 25;
+    }
+
+    private void HandleOwnedHotSpring(HotSpringManager.HotSpringData hotspring)
+    {
+        PlayerController ownerPlayer = FindPlayerByID(hotspring.ownerID);
+
+        if (ownerPlayer != null && ownerPlayer.teamID != this.teamID)
+        {
+            int rentPriceToDeduct = hotspring.rentPriceSHotSpring;
+            string formattedRent = FormatMoney(rentPriceToDeduct);
+            Money -= rentPriceToDeduct;
+            UpdateMoneyText();
+            ownerPlayer.Money += rentPriceToDeduct;
+            ownerPlayer.UpdateMoneyText();
+            StartCoroutine(ShowMessage($"You pay the hot spring entry fee of ${formattedRent}"));
+        }
+    }
+
+    private void HandleOwnedProperty(PropertyManager.PropertyData property)
+    {
+        PlayerController ownerPlayer = FindPlayerByID(property.ownerID);
+
+        if (ownerPlayer != null && ownerPlayer.teamID == this.teamID)
+        {
+            HandleSameTeamProperty(property);
+        }
+        else if (ownerPlayer != null && ownerPlayer.teamID != this.teamID)
+        {
+            HandleDifferentTeamProperty(property, ownerPlayer);
+        }
+    }
+
+    private void HandleSameTeamProperty(PropertyManager.PropertyData property)
+    {
+        if (property.nextStageIndex <= property.stagePrices.Count && property.stagePrices[property.nextStageIndex] <= Money)
+        {
             ShowBuy012(property, this);
         }
-        else if (property.owned && property.currentStageIndex < 5)
+        else
         {
-            PlayerController ownerPlayer = FindPlayerByID(property.ownerID);
+            StartCoroutine(ShowMessage("Not enough money to acquire this property!"));
+            gameManager.EndedAllInteraction = true;
+        }
+    }
 
-            if (ownerPlayer != null && ownerPlayer.teamID == this.teamID)
+    private void HandleDifferentTeamProperty(PropertyManager.PropertyData property, PlayerController ownerPlayer)
+    {
+        int rentPriceToDeduct = property.rentPrices[property.currentStageIndex];
+        string formattedRent = FormatMoney(rentPriceToDeduct);
+
+        if (property.isComplimentaryMeal)
+        {
+            StartCoroutine(ShowMessage("This Food Stall offers a complimentary meal. No payment required"));
+        }
+        else
+        {
+            if (hasFreeRentTicket)
             {
-                if (property.nextStageIndex <= property.stagePrices.Count && property.stagePrices[property.nextStageIndex] <= Money)
-                {
-                    ShowBuy012(property, this);
-                }
-                else if (Money < property.stagePrices[property.nextStageIndex])
-                {
-                    yield return StartCoroutine(ShowMessage("Not enough money to acquire this property!"));
-                    // yield return new WaitForSecondsRealtime(2f);
-                    gameManager.EndedAllInteraction = true;
-                    yield break;
-                }
+                hasFreeRentTicket = false;
+                StartCoroutine(ShowMessage("Your Free Meal Ticket has been redeemed! Enjoy your complimentary meal."));
             }
-            else if (ownerPlayer != null && ownerPlayer.teamID != this.teamID)
+            else
             {
-                int rentPriceToDeduct = property.rentPrices[property.currentStageIndex];
-                string formattedRent = FormatMoney(rentPriceToDeduct);
-                
-                if (property.isComplimentaryMeal)
-                {
-                    yield return StartCoroutine(ShowMessage("This Food Stall offers a complimentary meal. No payment required"));
-                    yield return new WaitForSecondsRealtime(1f);
-                }
-                else
-                {
-                    yield return StartCoroutine(ShowMessage("You pay the meal expense of $" + formattedRent));
-                    if (hasFreeRentTicket)
-                    {
-                        hasFreeRentTicket = false;
-                        yield return StartCoroutine(ShowMessage("Your Free Meal Ticket has been redeemed! Enjoy your complimentary meal."));
-                        yield return new WaitForSecondsRealtime(1f);
-                    }
-                    else
-                    {
-                        Money -= rentPriceToDeduct;
-                        UpdateMoneyText();
-                        yield return new WaitForSecondsRealtime(1f);
-                        ownerPlayer.Money += rentPriceToDeduct;
-                        ownerPlayer.UpdateMoneyText();
-                    }
-                }
-                if (property.currentStageIndex < 4)
-                {
-                    if (property.buyoutPrices[property.currentStageIndex] <= Money )
-                    {
-                        ShowBuyOutPopUp(property, this);
-                    }
-                    else if (property.buyoutPrices[property.currentStageIndex] > Money)
-                    {
-                        yield return StartCoroutine(ShowMessage("Not enough money to acquire this property!"));
-                        // yield return new WaitForSecondsRealtime(2f);
-                        gameManager.EndedAllInteraction = true;
-                        yield break;                    
-                    }
-                    
-                    yield return StartCoroutine(WaitForPropertyDecision());
-                    yield return new WaitForSecondsRealtime(1f);
-                    PlayerController ownerPlayeragain = FindPlayerByID(property.ownerID);
-                    if (property.stagePrices[property.nextStageIndex] <= Money && ownerPlayeragain.teamID == this.teamID)
-                    {
-                        ShowBuy012(property, this);
-                        
-                    }
-                    else if (property.stagePrices[property.nextStageIndex] > Money && ownerPlayeragain.teamID == this.teamID)
-                    {
-                        yield return StartCoroutine(ShowMessage("Not enough money to acquire this property!"));
-                        // yield return new WaitForSecondsRealtime(2f);
-                        gameManager.EndedAllInteraction = true;
-                        yield break;
-                    }
-                }
-                
-                else if (property.currentStageIndex == 4)
-                {
-                    yield return StartCoroutine(ShowMessage("You can't buy out the hotel"));
-                    // yield return new WaitForSecondsRealtime(2f);
-                    yield return StartCoroutine(WaitForPropertyDecision());
-                    gameManager.EndedAllInteraction = true;
-                }
+                Money -= rentPriceToDeduct;
+                UpdateMoneyText();
+                ownerPlayer.Money += rentPriceToDeduct;
+                ownerPlayer.UpdateMoneyText();
+                StartCoroutine(ShowMessage($"You pay the meal expense of ${formattedRent}"));
             }
         }
-        // else
-        // {
-        //     // Player doesn't have enough money to buy the property
-        //     if (property.nextStageIndex >= 0 && property.nextStageIndex <= property.rentPrices.Count && Money < property.rentPrices[property.nextStageIndex])
-        //     {
-        //         ShowMessage("Not enough money to acquire this property!");
-        //         yield return new WaitForSecondsRealtime(2f);
-        //         buyPropertyPopup.buyPropertyDecisionMade = true;
-        //         yield break;
-        //     }
-        //     else
-        //     {
-        //         Debug.LogError("Rent price data is missing for property.");
-        //     }
-        // }
+
+        if (property.currentStageIndex < 4)
+        {
+            if (property.buyoutPrices[property.currentStageIndex] <= Money)
+            {
+                ShowBuyOutPopUp(property, this);
+            }
+            else
+            {
+                StartCoroutine(ShowMessage("Not enough money to acquire this property!"));
+                gameManager.EndedAllInteraction = true;
+            }
+        }
+        else
+        {
+            StartCoroutine(ShowMessage("You can't buy out the hotel"));
+            gameManager.EndedAllInteraction = true;
+        }
     }
+
 
     // Method to find player object by ID
     public PlayerController FindPlayerByID(int ID)
@@ -733,8 +743,6 @@ public class PlayerController : MonoBehaviour
             spriteRenderer.sortingOrder = originalSortingOrder + 1;
             rollButton.gameObject.SetActive(true);
             playerMoveText.gameObject.SetActive(true);
-
-
         }
     }
 
