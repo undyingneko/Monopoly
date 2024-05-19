@@ -101,9 +101,15 @@ public class GameManager : MonoBehaviour
         {
             StopCoroutine(turnCoroutine);
         }
-        currentPlayerIndex = (currentPlayerIndex + 1) % players.Length;
+        
+        do
+        {
+            currentPlayerIndex = (currentPlayerIndex + 1) % players.Length;
+        } while (players[currentPlayerIndex].isBankRupt);
+
         turnCoroutine = StartCoroutine(StartTurnCoroutine());
     }
+
 
     private void LoadDiceSides()
     {
