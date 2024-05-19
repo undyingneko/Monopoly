@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     public Dictionary<int, GameObject> waypointIndexToTileMap = new Dictionary<int, GameObject>();
 
     public PropertyManager.PropertyData selectedProperty;
+    public List<PropertyManager.PropertyData> selectedPropertiestoSell;
     public PlayerController[] players;
     public static int currentPlayerIndex;
     public static bool GameOver = false;
@@ -35,6 +36,10 @@ public class GameManager : MonoBehaviour
     public bool isCardEffect = false;
     public bool ChanceSelectionMade = false;
     public TextMeshProUGUI plus300Text;
+    public bool isSelling = false;
+    public bool SellSelectionMade = false;
+
+    public int rentToPay;
     void Awake()
     {
         if (Instance == null)

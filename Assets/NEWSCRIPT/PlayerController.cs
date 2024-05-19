@@ -14,6 +14,13 @@ public class PlayerController : MonoBehaviour
     public PropertyManager.PropertyData propertyToBeEffected;
     public List<HotSpringManager.HotSpringData> ownedHotSprings;
 
+    public List<PropertyManager.PropertyData> ListPropertiesForSelling;
+    public List<PropertyManager.PropertyData> propertiesToSell;
+
+    
+    
+    // public List<PropertyManager.PropertyData> propertyToSell;
+
     // private PlayerController currentPlayerController;
     
     public int dice1Value;
@@ -34,6 +41,10 @@ public class PlayerController : MonoBehaviour
     private bool isTurn;
 
     public Button rollButton;
+    public Button sellButton;
+    public TextMeshProUGUI selectedmoney;
+    public TextMeshProUGUI MoneyNeeded;
+    public int moneyneeded;
 
     public TextMeshProUGUI sumText;
     
@@ -120,6 +131,8 @@ public class PlayerController : MonoBehaviour
         SetFontSize(dice2InputField, 50);
         // PropertyManager.Instance.OnPropertiesLoaded += OnPropertiesLoaded;
         // currentPlayer = gameManager.players[currentPlayerIndex]
+        selectedmoney.gameObject.SetActive(false);
+        MoneyNeeded.gameObject.SetActive(false);
     }
     private void ShowHotSpringPopup(HotSpringManager.HotSpringData hotspring, PlayerController player)
     {
@@ -397,12 +410,12 @@ public class PlayerController : MonoBehaviour
 
         if (currentPosition == 31)
         {
-            int totalPropertyValue = 0;
+            int totalPropertyValueforTax = 0;
             foreach (PropertyManager.PropertyData property in ownedProperties)
             {
-                totalPropertyValue += property.stagePrices[property.currentStageIndex];
+                totalPropertyValueforTax += property.stagePrices[property.currentStageIndex];
             }
-            int taxAmount = (int)(totalPropertyValue * 0.1f);
+            int taxAmount = (int)(totalPropertyValueforTax * 0.1f);
             Money -= taxAmount;
             UpdateMoneyText();
             yield return StartCoroutine(ShowMessage($"You paid income tax of ${taxAmount}"));
@@ -592,7 +605,8 @@ public class PlayerController : MonoBehaviour
                 }
                 else if (ownerPlayer != null && ownerPlayer.teamID != this.teamID)
                 {
-                    int rentPriceToDeduct = property.rentPrices[property.currentStageIndex];
+                    // int rentPriceToDeduct = property.rentPrices[property.currentStageIndex];
+                    int rentPriceToDeduct = 1985000;
                     string formattedRent = FormatMoney(rentPriceToDeduct);
                     
                     if (property.isComplimentaryMeal)
@@ -611,11 +625,167 @@ public class PlayerController : MonoBehaviour
                         }
                         else
                         {
-                            Money -= rentPriceToDeduct;
-                            UpdateMoneyText();
-                            yield return new WaitForSecondsRealtime(1f);
-                            ownerPlayer.Money += rentPriceToDeduct;
-                            ownerPlayer.UpdateMoneyText();
+                            if (Money >= rentPriceToDeduct) // Check if player has enough money to pay the rent
+                            {
+                                Money -= rentPriceToDeduct;
+                                UpdateMoneyText();
+                                yield return new WaitForSecondsRealtime(1f);
+                                ownerPlayer.Money += rentPriceToDeduct;
+                                ownerPlayer.UpdateMoneyText();
+                            }
+                            else
+                            {
+                                yield return StartCoroutine(ShowMessage("You don't have enough money to pay the rent! You need to sell one of your properties."));
+                                // Implement logic for selling property here
+                                GameManager.Instance.rentToPay = rentPriceToDeduct;
+                        
+                                gameManager.isSelling = true;
+                                foreach (var tile in gameManager.waypointIndexToTileMap.Values)
+                                {
+                                    var tileScript = tile.GetComponent<TileScript>();
+                                    if (tileScript != null)
+                                    {
+                                        tileScript.enabled = false;
+                                    }
+                                }
+                                ListPropertiesForSelling.AddRange(ownedProperties); 
+
+                                if (ListPropertiesForSelling.Count > 0)
+                                {
+                                    gameManager.selectedProperty = null;
+                                    
+                                    int totalownedPropertyValue = 0;
+                                    foreach (var propertycalculated in ownedProperties)
+                                    {
+                                        totalownedPropertyValue += propertycalculated.stagePrices[propertycalculated.currentStageIndex];
+                                        
+                                    }
+                                    int moneyall = Money + totalownedPropertyValue;
+
+                                    if (moneyall >= GameManager.Instance.rentToPay)
+                                    {
+                                        Debug.Log("moneyall > GameManager.Instance.rentToPay");
+                                        yield return StartCoroutine(ShowMessage("Select a property to sell:"));
+                                        foreach (var playerProperty in ListPropertiesForSelling)
+                                        {
+                                            GameObject tileImage = gameManager.waypointIndexToTileMap[playerProperty.JSONwaypointIndex];
+
+                                            tileImage.transform.position += new Vector3(0, 1, 0);
+
+                                            // Assign click handler for selecting the property
+                                            SellingHandler clickHandler = tileImage.GetComponent<SellingHandler>();
+                                           
+
+                                            if (clickHandler == null)
+                                            {
+                                                clickHandler = tileImage.AddComponent<SellingHandler>();
+                                            }
+                                            clickHandler.SetAssociatedProperty(playerProperty);
+                                            clickHandler.playerController = this;
+                                            selectedmoney.gameObject.SetActive(true);
+                                            MoneyNeeded.gameObject.SetActive(true);
+                                            moneyneeded = GameManager.Instance.rentToPay - Money;
+                                            MoneyNeeded.text = FormatMoney(moneyneeded);
+                                        }
+
+                                        yield return new WaitUntil(() => gameManager.SellSelectionMade);
+                                    
+                                        // propertyToSell = gameManager.selectedPropertiestoSell;
+                                        propertiesToSell = gameManager.selectedPropertiestoSell;
+                                        if (propertiesToSell != null)
+                                        {
+                                            foreach (var propertyToSell in propertiesToSell)
+                                            {
+
+                                                int compensationAmount = propertyToSell.stagePrices[propertyToSell.currentStageIndex];
+                                                Money += compensationAmount;
+                                                ownedProperties.Remove(propertyToSell);
+                                                
+                                                propertyToSell.owned = false;
+                                                propertyToSell.ownerID = 0;
+                                                propertyToSell.teamownerID = 0;
+                                                propertyToSell.currentStageIndex = -1;
+
+                                                // Deactivate property images and UI elements
+                                                propertyManager.DeactivateOldStageImages(propertyToSell);
+                                                propertyManager.DeactivateRentTagImage(propertyToSell);
+                                                propertyToSell.rentText.gameObject.SetActive(false);
+                                                // StartCoroutine(ShowMessage($"You sold {propertyToSell.name} for $ {compensationAmount}."));
+                                            }
+                                            Money -= rentPriceToDeduct;
+                                            UpdateMoneyText();
+                                            selectedmoney.gameObject.SetActive(false);
+                                            MoneyNeeded.gameObject.SetActive(false);                                            
+                                        }
+                                        foreach (var foodstall in ListPropertiesForSelling)
+                                        {
+                                            GameObject tileImage = gameManager.waypointIndexToTileMap[foodstall.JSONwaypointIndex];
+                                            tileImage.transform.position += new Vector3(0, -1, 0);
+                                        }                                       
+
+                                    }
+                                    else
+                                    {
+                                        yield return StartCoroutine(ShowMessage("You have to sell all of your properties"));
+                                        Debug.Log("totalownedPropertyValue <= GameManager.Instance.rentToPay");
+                                        GameManager.Instance.selectedPropertiestoSell.Clear();
+                                        GameManager.Instance.selectedPropertiestoSell.AddRange(ownedProperties);
+                                        
+                                        propertiesToSell = gameManager.selectedPropertiestoSell;
+                                        if (propertiesToSell != null)
+                                        {
+                                            foreach (var propertyToSell in propertiesToSell)
+                                            {
+                                                int compensationAmount = propertyToSell.stagePrices[propertyToSell.currentStageIndex];
+                                                Money += compensationAmount;
+                                                
+                                                ownedProperties.Remove(propertyToSell);
+                                                
+                                                propertyToSell.owned = false;
+                                                propertyToSell.ownerID = 0;
+                                                propertyToSell.teamownerID = 0;
+                                                propertyToSell.currentStageIndex = -1;
+
+                                                // Deactivate property images and UI elements
+                                                propertyManager.DeactivateOldStageImages(propertyToSell);
+                                                propertyManager.DeactivateRentTagImage(propertyToSell);
+                                                propertyToSell.rentText.gameObject.SetActive(false);
+                                            }
+
+                                            Money -= rentPriceToDeduct;
+                                            UpdateMoneyText();       
+                                        }
+                                        GameManager.Instance.SellSelectionMade = true;
+                                        yield return StartCoroutine(ShowMessage("You have sold all of your properties"));                                       
+                                    }            
+                                }
+                                else
+                                {
+                                    // Inform the player if they don't own any properties to sell
+                                    yield return StartCoroutine(ShowMessage("You don't own any properties to sell."));
+                                }
+                                yield return new WaitUntil(() => gameManager.SellSelectionMade);
+                                
+
+                                gameManager.SellSelectionMade = false;
+                                ListPropertiesForSelling.Clear();
+                                gameManager.selectedPropertiestoSell.Clear();
+                                propertiesToSell.Clear();
+                                // totalPropertyValue =0;
+                                GameManager.Instance.rentToPay = 0;
+                                // propertyToSell = null;
+                                foreach (var tile in gameManager.waypointIndexToTileMap.Values)
+                                {
+                                    var tileScript = tile.GetComponent<TileScript>();
+                                    if (tileScript != null)
+                                    {
+                                        tileScript.enabled = true;
+                                    }
+                                }
+                                gameManager.isSelling = false;
+                                yield return new WaitForSecondsRealtime(2f); 
+                                yield return null;
+                            }
                         }
                     }
                     if (property.currentStageIndex < 4)
@@ -658,48 +828,13 @@ public class PlayerController : MonoBehaviour
                         gameManager.EndedAllInteraction = true;
                     }
                 }
-        
-        // else
-        // {
-        //     // Player doesn't have enough money to buy the property
-        //     if (property.nextStageIndex >= 0 && property.nextStageIndex <= property.rentPrices.Count && Money < property.rentPrices[property.nextStageIndex])
-        //     {
-        //         ShowMessage("Not enough money to acquire this property!");
-        //         yield return new WaitForSecondsRealtime(2f);
-        //         buyPropertyPopup.buyPropertyDecisionMade = true;
-        //         yield break;
-        //     }
-        //     else
-        //     {
-        //         Debug.LogError("Rent price data is missing for property.");
-        //     }
-        // }
             }
         }
     }
 
-    // private bool IsHotSpringPosition(int position)
-    // {
-    //     return position == 4 || position == 13 || position == 18 || position == 25;
-    // }
 
-    // private void HandleOwnedHotSpring(HotSpringManager.HotSpringData hotspring)
-    // {
-    //     PlayerController ownerPlayer = FindPlayerByID(hotspring.ownerID);
 
-    //     if (ownerPlayer != null && ownerPlayer.teamID != this.teamID)
-    //     {
-    //         int rentPriceToDeduct = hotspring.rentPriceSHotSpring;
-    //         string formattedRent = FormatMoney(rentPriceToDeduct);
-    //         Money -= rentPriceToDeduct;
-    //         UpdateMoneyText();
-    //         ownerPlayer.Money += rentPriceToDeduct;
-    //         ownerPlayer.UpdateMoneyText();
-    //         StartCoroutine(ShowMessage($"You pay the hot spring entry fee of ${formattedRent}"));
-    //     }
-    // }
 
-    // Method to find player object by ID
     public PlayerController FindPlayerByID(int ID)
     {
         PlayerController[] players = FindObjectsOfType<PlayerController>();
@@ -726,9 +861,6 @@ public class PlayerController : MonoBehaviour
         return null; // Return -1 if no player with the given ID is found
     }
 
-    // You may want to check if the player has landed on a property here
-    // and display the buy property popup if necessary
-    
     public void DisplayGoToJailText()
     {
         goToJailText.gameObject.SetActive(true);

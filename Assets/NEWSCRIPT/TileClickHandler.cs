@@ -19,6 +19,7 @@ public class TileClickHandler : MonoBehaviour
             GameManager.Instance.selectedProperty = associatedProperty;
             GameManager.Instance.ChanceSelectionMade =true;
 
+
             // Additional debug log
             Debug.Log("GameManager selected property: " + (GameManager.Instance.selectedProperty != null ? GameManager.Instance.selectedProperty.name : "null"));
         }

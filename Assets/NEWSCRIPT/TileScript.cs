@@ -27,7 +27,7 @@ public class TileScript : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (gameManager.isCardEffect)
+        if (gameManager.isCardEffect || gameManager.isSelling)
         {
             // Do nothing if Avenue Demolition is active
             return;
