@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     public Dictionary<int, GameObject> waypointIndexToTileMap = new Dictionary<int, GameObject>();
 
     public PropertyManager.PropertyData selectedProperty;
-    public List<PropertyManager.PropertyData> selectedPropertiestoSell;
+    public List<SellableItem> selectedPropertiestoSell;
     public PlayerController[] players;
     public static int currentPlayerIndex;
     public static bool GameOver = false;

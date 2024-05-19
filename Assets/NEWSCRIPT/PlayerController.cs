@@ -14,8 +14,8 @@ public class PlayerController : MonoBehaviour
     public PropertyManager.PropertyData propertyToBeEffected;
     public List<HotSpringManager.HotSpringData> ownedHotSprings;
 
-    public List<PropertyManager.PropertyData> ListPropertiesForSelling;
-    public List<PropertyManager.PropertyData> propertiesToSell;
+    public List<SellableItem> ListPropertiesForSelling;
+    public List<SellableItem> propertiesToSell;
 
     // public List<PropertyManager.PropertyData> propertyToSell;
 
@@ -647,11 +647,22 @@ public class PlayerController : MonoBehaviour
                                         tileScript.enabled = false;
                                     }
                                 }
-                                ListPropertiesForSelling.AddRange(ownedProperties); 
+                                ListPropertiesForSelling.Clear();
+                                // ListPropertiesForSelling.AddRange(ownedProperties);
+                                foreach (var propertytosell in ownedProperties)
+                                {
+                                    ListPropertiesForSelling.Add(new SellableItem { propertyData = property });
+                                }
+
+                                // Add hot springs
+                                foreach (var hotSpring in ownedHotSprings)
+                                {
+                                    ListPropertiesForSelling.Add(new SellableItem { hotSpringData = hotSpring });
+                                }
 
                                 if (ListPropertiesForSelling.Count > 0)
                                 {
-                                    gameManager.selectedProperty = null;
+                                    // gameManager.selectedProperty = null;
                                     
                                     int totalownedPropertyValue = 0;
                                     foreach (var propertycalculated in ownedProperties)
@@ -666,9 +677,8 @@ public class PlayerController : MonoBehaviour
                                         Debug.Log("moneyall >= GameManager.Instance.rentToPay");
                                         if (ListPropertiesForSelling.Count == 1)
                                         {
-                                            gameManager.selectedProperty = ListPropertiesForSelling[0];
-                                            gameManager.selectedPropertiestoSell.Clear();
-                                            gameManager.selectedPropertiestoSell.Add(gameManager.selectedProperty);
+                                            // gameManager.selectedProperty = ListPropertiesForSelling[0];
+                                            // gameManager.selectedPropertiestoSell.Add(gameManager.selectedProperty);
 
                                             propertiesToSell = gameManager.selectedPropertiestoSell;
                                             if (propertiesToSell != null)
