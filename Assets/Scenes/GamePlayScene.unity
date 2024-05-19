@@ -5034,6 +5034,7 @@ MonoBehaviour:
     rentPriceSHotSpring: 0
     hotspringRentText: {fileID: 0}
     HotSpringImage: {fileID: 0}
+    currentStageIndex: 0
     rentTagImages: []
     owned: 0
     ownerID: 0
@@ -9606,6 +9607,7 @@ MonoBehaviour:
     rentPriceSHotSpring: 0
     hotspringRentText: {fileID: 0}
     HotSpringImage: {fileID: 0}
+    currentStageIndex: 0
     rentTagImages: []
     owned: 0
     ownerID: 0

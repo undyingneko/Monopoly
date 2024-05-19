@@ -36,6 +36,7 @@ public class HotSpringManager : MonoBehaviour
         public TextMeshProUGUI hotspringRentText;
 
         public GameObject HotSpringImage;
+        public int currentStageIndex;
 
         public List<GameObject> rentTagImages = new List<GameObject>();
 
@@ -154,6 +155,7 @@ public class HotSpringManager : MonoBehaviour
             hotspring.InitializePrices();
             LoadImageForHotSpring(hotspring);
             LoadRentTagImagesHotSpring(hotspring);
+            hotspring.currentStageIndex = -1;
             hotspring.isComplimentaryMeal = false;
             hotspring.isHotSpot = false;
         }
