@@ -44,8 +44,8 @@ public class HotSpringManager : MonoBehaviour
         public int ownerID;
         public int teamownerID;
 
-        public bool isComplimentaryMeal;
-        public bool isHotSpot;
+        public bool isWelcomeEvent;
+        public bool isFireWork;
 
         public void InitializePrices()
         {

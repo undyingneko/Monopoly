@@ -4,9 +4,9 @@ using System.IO;
 using UnityEngine.UI;
 using TMPro;
 
-public class PropertyManager : MonoBehaviour
+public class StallManager : MonoBehaviour
 {
-    public PropertyData currentHotspotProperty = null;
+    public StallData currentHotspotProperty = null;
     private GameManager gameManager;
 
     public Dictionary<int, string> playerIDToColor  = new Dictionary<int, string>
@@ -20,13 +20,13 @@ public class PropertyManager : MonoBehaviour
     public Transform canvasTransform;
 
     [System.Serializable]
-    public class PropertyDataWrapper
+    public class StallDataWrapper
     {
-        public List<PropertyData> properties;
+        public List<StallData> stalls;
     }
     
     [System.Serializable]
-    public class PropertyData
+    public class StallData
     {
         public string name;
         public int JSONwaypointIndex;
@@ -53,8 +53,8 @@ public class PropertyManager : MonoBehaviour
         public int currentStageIndex; // Track the highest stage index that the player owns
         public int nextStageIndex;
 
-        public bool isComplimentaryMeal;
-        public bool isHotSpot;
+        public bool isWelcomeEvent;
+        public bool isFireWork;
 
         public void InitializePrices()
         {
@@ -114,25 +114,25 @@ public class PropertyManager : MonoBehaviour
         } 
     }
 
-    public List<PropertyData> properties = new List<PropertyData>();
+    public List<StallData> stalls = new List<StallData>();
     // Singleton instance
-    public static PropertyManager instance;
+    public static StallManager instance;
 
-    // public delegate void PropertiesLoadedCallback();
-    // public event PropertiesLoadedCallback OnPropertiesLoaded;
+    // public delegate void stallsLoadedCallback();
+    // public event stallsLoadedCallback OnstallsLoaded;
 
-    public static PropertyManager Instance
+    public static StallManager Instance
     {
         get
         {
             if (instance == null)
             {
-                instance = FindObjectOfType<PropertyManager>();
+                instance = FindObjectOfType<StallManager>();
                 if (instance == null)
                 {
                     GameObject obj = new GameObject();
-                    obj.name = typeof(PropertyManager).Name;
-                    instance = obj.AddComponent<PropertyManager>();
+                    obj.name = typeof(StallManager).Name;
+                    instance = obj.AddComponent<StallManager>();
                 }
             }
             return instance;
@@ -166,19 +166,19 @@ public class PropertyManager : MonoBehaviour
             gameManager.TileImagesLoaded += OnTileImagesLoaded;
         }
         DontDestroyOnLoad(gameObject);
-        // LoadProperties();
+        // Loadstalls();
         currentHotspotProperty = null;
     }
 
     private void OnTileImagesLoaded()
     {
-        // Load properties after tile images have been loaded
+        // Load stalls after tile images have been loaded
         LoadProperties();
     }
 
     private void LoadProperties()
     {
-        string jsonFilePath = Path.Combine(Application.dataPath, "JSON", "propertiesinfo.json");
+        string jsonFilePath = Path.Combine(Application.dataPath, "JSON", "stallsinfo.json");
 
         if (File.Exists(jsonFilePath))
         {
@@ -186,32 +186,32 @@ public class PropertyManager : MonoBehaviour
             string json = File.ReadAllText(jsonFilePath);
             Debug.Log("JSON Contents: " + json); // Print JSON contents
 
-            // Deserialize JSON data into PropertyDataWrapper
-            PropertyDataWrapper wrapper = JsonUtility.FromJson<PropertyDataWrapper>(json);
+            // Deserialize JSON data into StallDataWrapper
+            StallDataWrapper wrapper = JsonUtility.FromJson<StallDataWrapper>(json);
             
-            if (wrapper != null && wrapper.properties != null && wrapper.properties.Count > 0)
+            if (wrapper != null && wrapper.stalls != null && wrapper.stalls.Count > 0)
             {
                 // Properties loaded successfully
-                Debug.Log("Properties loaded successfully. Count: " + wrapper.properties.Count);
+                Debug.Log("Properties loaded successfully. Count: " + wrapper.stalls.Count);
 
-                // Assign properties from wrapper to PropertyManager's properties
-                properties = wrapper.properties;
+                // Assign stalls from wrapper to StallManager's stalls
+                stalls = wrapper.stalls;
 
-                // Calculate prices for each property
-                foreach (PropertyData property in properties)
+                // Calculate prices for each stall
+                foreach (StallData stall in stalls)
                 {
-                    property.InitializePrices();
-                    LoadStageImagesForProperty(property);
-                    LoadRentTagImages(property);
-                    property.currentStageIndex = -1;
-                    property.isComplimentaryMeal = false;
-                    property.isHotSpot = false;
+                    stall.InitializePrices();
+                    LoadStageImagesForProperty(stall);
+                    LoadRentTagImages(stall);
+                    stall.currentStageIndex = -1;
+                    stall.isWelcomeEvent = false;
+                    stall.isFireWork = false;
                 }
             }
             else
             {
-                // No properties data found
-                Debug.LogWarning("No properties data found.");
+                // No stalls data found
+                Debug.LogWarning("No stalls data found.");
             }
         }
         else
@@ -223,33 +223,33 @@ public class PropertyManager : MonoBehaviour
         
     }
 
-    public PropertyData GetPropertyByWaypointIndex(int JSONwaypointIndex)
+    public StallData GetPropertyByWaypointIndex(int JSONwaypointIndex)
     {
-        foreach (var property in properties)
+        foreach (var stall in stalls)
         {
-            if (property.JSONwaypointIndex == JSONwaypointIndex)
+            if (stall.JSONwaypointIndex == JSONwaypointIndex)
             {
-                Debug.Log("Property found: " + property.name);
+                Debug.Log("Property found: " + stall.name);
 
-                return property;
+                return stall;
             }
         }
         return null;
     }
 
-    private void LoadStageImagesForProperty(PropertyData property)
+    private void LoadStageImagesForProperty(StallData stall)
     {   
     // Check if the waypointIndexToTileMap dictionary contains the specified key
-    if (!gameManager.waypointIndexToTileMap.ContainsKey(property.JSONwaypointIndex))
+    if (!gameManager.waypointIndexToTileMap.ContainsKey(stall.JSONwaypointIndex))
     {
-        Debug.LogError("Tile image not found for waypoint index: " + property.JSONwaypointIndex);
+        Debug.LogError("Tile image not found for waypoint index: " + stall.JSONwaypointIndex);
         return;
     }
-        GameObject tileImage = gameManager.waypointIndexToTileMap[property.JSONwaypointIndex];
+        GameObject tileImage = gameManager.waypointIndexToTileMap[stall.JSONwaypointIndex];
   
-        for (int i = 0; i < property.stageIndexes.Count; i++)
+        for (int i = 0; i < stall.stageIndexes.Count; i++)
         {
-            string stageImageName = "P" + property.JSONwaypointIndex + "_S" + i;
+            string stageImageName = "P" + stall.JSONwaypointIndex + "_S" + i;
             Transform stageImageTransform = tileImage.transform.Find(stageImageName);
             if (stageImageTransform == null)
             {
@@ -258,68 +258,68 @@ public class PropertyManager : MonoBehaviour
             }
             GameObject stageImageInstance = stageImageTransform.gameObject;
             stageImageInstance.SetActive(false);
-            property.stageImages.Add(stageImageInstance);
+            stall.stageImages.Add(stageImageInstance);
         }
 
-        Debug.Log("Number of stage images after loaded for property " + property.name + ": " + property.stageImages.Count);
+        Debug.Log("Number of stage images after loaded for stall " + stall.name + ": " + stall.stageImages.Count);
 
         // Ensure the number of loaded images matches the number of stages
-        if (property.stageImages.Count == property.stageIndexes.Count)
+        if (stall.stageImages.Count == stall.stageIndexes.Count)
         {
-            for (int i = 0; i < property.stageImages.Count; i++)
+            for (int i = 0; i < stall.stageImages.Count; i++)
             {
                 // Assign the image to its corresponding stage
-                GameObject stageImage = property.stageImages[i];
-                Debug.Log("Stage Image for stage " + i + " associated with property " + property.name);
+                GameObject stageImage = stall.stageImages[i];
+                Debug.Log("Stage Image for stage " + i + " associated with stall " + stall.name);
                 
             }
         }
         else
         {
-            Debug.LogWarning("Number of loaded images does not match the number of stages for property: " + property.name);
+            Debug.LogWarning("Number of loaded images does not match the number of stages for stall: " + stall.name);
         }
     }
 
-    public void DeactivateOldStageImages(PropertyData property)
+    public void DeactivateOldStageImages(StallData stall)
     {
-        // Ensure the property has stage images
-        if (property.stageImages != null && property.stageImages.Count > 0)
+        // Ensure the stall has stage images
+        if (stall.stageImages != null && stall.stageImages.Count > 0)
         {
             // Iterate through each stage image
-            foreach (GameObject stageImage in property.stageImages)
+            foreach (GameObject stageImage in stall.stageImages)
             {
                 // Deactivate the stage image
                 stageImage.SetActive(false);
             }
-            Debug.Log("Old stage images deactivated for property: " + property.name);
+            Debug.Log("Old stage images deactivated for stall: " + stall.name);
         }
         else
         {
-            Debug.LogWarning("No stage images found for property: " + property.name);
+            Debug.LogWarning("No stage images found for stall: " + stall.name);
         }
     }
 
-    private void LoadRentTagImages(PropertyData property)
+    private void LoadRentTagImages(StallData stall)
     {
         string[] colors = { "pink", "turquois", "green", "purple" };
-        GameObject tileImage = gameManager.waypointIndexToTileMap[property.JSONwaypointIndex];
+        GameObject tileImage = gameManager.waypointIndexToTileMap[stall.JSONwaypointIndex];
 
         foreach (string color in colors)
         {
-            string rentTagObjectName = "PriceTags_" + property.JSONwaypointIndex + "_" + color;
+            string rentTagObjectName = "PriceTags_" + stall.JSONwaypointIndex + "_" + color;
             Transform rentTagObject = tileImage.transform.Find(rentTagObjectName);
             if (rentTagObject != null)
             {
                 GameObject rentTagImageInstance = rentTagObject.gameObject;
                 rentTagImageInstance.SetActive(false);
-                property.rentTagImages.Add(rentTagImageInstance);
+                stall.rentTagImages.Add(rentTagImageInstance);
             }
             else
             {
                 Debug.LogWarning("Rent tag image object not found: " + rentTagObjectName);
             }
         }
-        string rentTextObjectName = "RentText_" + property.JSONwaypointIndex;
+        string rentTextObjectName = "RentText_" + stall.JSONwaypointIndex;
         Transform rentTextObject = tileImage.transform.Find(rentTextObjectName);
         if (rentTextObject != null)
         {
@@ -327,7 +327,7 @@ public class PropertyManager : MonoBehaviour
 
             if (rentTextInstance != null)
             {
-                property.rentText = rentTextInstance;
+                stall.rentText = rentTextInstance;
                 rentTextInstance.gameObject.SetActive(false);
             }
             else
@@ -341,23 +341,23 @@ public class PropertyManager : MonoBehaviour
         }
     }
 
-    public void DeactivateRentTagImage(PropertyData property)
+    public void DeactivateRentTagImage(StallData stall)
     {
-            foreach (GameObject rentTagImage in property.rentTagImages)
+            foreach (GameObject rentTagImage in stall.rentTagImages)
             {
                 rentTagImage.SetActive(false);
             }
     }
     
-    public void ActivateRentTagImage(PropertyData property)
+    public void ActivateRentTagImage(StallData stall)
     {
-        DeactivateRentTagImage(property);
+        DeactivateRentTagImage(stall);
 
         // Get the color associated with the player ID
-        string color = playerIDToColor[property.ownerID];
+        string color = playerIDToColor[stall.ownerID];
 
         // Find the rent tag image corresponding to the color
-        foreach (GameObject rentTagImage in property.rentTagImages)
+        foreach (GameObject rentTagImage in stall.rentTagImages)
         {
             // Get the color variation of the rent tag image
             string rentTagColor = rentTagImage.name.Split('_')[2]; 
@@ -377,19 +377,19 @@ public class PropertyManager : MonoBehaviour
         Debug.LogWarning("Rent tag image not found for color: " + color);
     }
 
-    public void UpdateRentText(PropertyData property, int stageIndex)
+    public void UpdateRentText(StallData stall, int stageIndex)
     {
-        Debug.Log("Updating rent text for property: " + property.name + " at stage index: " + stageIndex);
+        Debug.Log("Updating rent text for stall: " + stall.name + " at stage index: " + stageIndex);
         Debug.Log(System.Environment.StackTrace);
-        if (property.rentText != null)
+        if (stall.rentText != null)
         {
-            Debug.Log("Rent text is assigned for property: " + property.name);
-            property.rentText.text = FormatPrice(property.rentPrices[stageIndex]);
-            property.rentText.gameObject.SetActive(true);
+            Debug.Log("Rent text is assigned for stall: " + stall.name);
+            stall.rentText.text = FormatPrice(stall.rentPrices[stageIndex]);
+            stall.rentText.gameObject.SetActive(true);
         }
         else
         {
-            Debug.LogWarning("Rent text not found for property: " + property.name);
+            Debug.LogWarning("Rent text not found for stall: " + stall.name);
         }
     }
     

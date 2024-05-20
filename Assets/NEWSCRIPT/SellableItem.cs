@@ -6,14 +6,14 @@ using System.Collections.Generic;
 [System.Serializable]
 public class SellableItem
 {
-    public PropertyManager.PropertyData propertyData;
+    public StallManager.StallData stallData;
     public HotSpringManager.HotSpringData hotSpringData;
 
     public string name
     {
         get
         {
-            if (propertyData != null) return propertyData.name;
+            if (stallData != null) return stallData.name;
             if (hotSpringData != null) return hotSpringData.name;
             return string.Empty;
         }
@@ -23,7 +23,7 @@ public class SellableItem
     // {
     //     get
     //     {
-    //         if (propertyData != null) return propertyData.stagePrices[propertyData.currentStageIndex];
+    //         if (stallData != null) return stallData.stagePrices[stallData.currentStageIndex];
     //         if (hotSpringData != null) return hotSpringData.priceHotSpring;
     //         return 0;
     //     }
@@ -32,11 +32,11 @@ public class SellableItem
     {
         get
         {
-            if (propertyData != null)
+            if (stallData != null)
             {
-                if (propertyData.currentStageIndex >= 0 && propertyData.currentStageIndex < propertyData.stagePrices.Count)
+                if (stallData.currentStageIndex >= 0 && stallData.currentStageIndex < stallData.stagePrices.Count)
                 {
-                    return propertyData.stagePrices[propertyData.currentStageIndex];
+                    return stallData.stagePrices[stallData.currentStageIndex];
                 }
                 else
                 {
@@ -58,13 +58,13 @@ public class SellableItem
     {
         get
         {
-            if (propertyData != null) return propertyData.JSONwaypointIndex;
+            if (stallData != null) return stallData.JSONwaypointIndex;
             if (hotSpringData != null) return hotSpringData.HOTSPRINGwaypointIndex;
             return -1;
         }
         set
         {
-            if (propertyData != null) propertyData.JSONwaypointIndex = value;
+            if (stallData != null) stallData.JSONwaypointIndex = value;
             if (hotSpringData != null) hotSpringData.HOTSPRINGwaypointIndex = value;
         }
     }    
@@ -72,13 +72,13 @@ public class SellableItem
     {
         get
         {
-            if (propertyData != null) return propertyData.currentStageIndex;
+            if (stallData != null) return stallData.currentStageIndex;
             if (hotSpringData != null) return hotSpringData.currentStageIndex;
             return -1;
         }
         set
         {
-            if (propertyData != null) propertyData.currentStageIndex = value;
+            if (stallData != null) stallData.currentStageIndex = value;
             if (hotSpringData != null) hotSpringData.currentStageIndex = value;
         }
     }
@@ -86,41 +86,55 @@ public class SellableItem
     {
         get
         {
-            if (propertyData != null) return propertyData.owned;
+            if (stallData != null) return stallData.owned;
             if (hotSpringData != null) return hotSpringData.owned;
             return false;
         }
         set
         {
-            if (propertyData != null) propertyData.owned = value;
+            if (stallData != null) stallData.owned = value;
             if (hotSpringData != null) hotSpringData.owned = value;
         }
     }
-    public bool isHotSpot
+    public bool isFireWork
     {
         get
         {
-            if (propertyData != null) return propertyData.isHotSpot;
-            if (hotSpringData != null) return hotSpringData.isHotSpot;
+            if (stallData != null) return stallData.isFireWork;
+            if (hotSpringData != null) return hotSpringData.isFireWork;
             return false;
         }
         set
         {
-            if (propertyData != null) propertyData.isHotSpot = value;
-            if (hotSpringData != null) hotSpringData.isHotSpot = value;
+            if (stallData != null) stallData.isFireWork = value;
+            if (hotSpringData != null) hotSpringData.isFireWork = value;
         }
     }
+    public bool isWelcomeEvent
+    {
+        get
+        {
+            if (stallData != null) return stallData.isWelcomeEvent;
+            if (hotSpringData != null) return hotSpringData.isWelcomeEvent;
+            return false;
+        }
+        set
+        {
+            if (stallData != null) stallData.isWelcomeEvent = value;
+            if (hotSpringData != null) hotSpringData.isWelcomeEvent = value;
+        }
+    }    
     public int ownerID
     {
         get
         {
-            if (propertyData != null) return propertyData.ownerID;
+            if (stallData != null) return stallData.ownerID;
             if (hotSpringData != null) return hotSpringData.ownerID;
             return 0;
         }
         set
         {
-            if (propertyData != null) propertyData.ownerID = value;
+            if (stallData != null) stallData.ownerID = value;
             if (hotSpringData != null) hotSpringData.ownerID = value;
         }
     }
@@ -129,13 +143,13 @@ public class SellableItem
     {
         get
         {
-            if (propertyData != null) return propertyData.teamownerID;
+            if (stallData != null) return stallData.teamownerID;
             if (hotSpringData != null) return hotSpringData.teamownerID;
             return 0;
         }
         set
         {
-            if (propertyData != null) propertyData.teamownerID = value;
+            if (stallData != null) stallData.teamownerID = value;
             if (hotSpringData != null) hotSpringData.teamownerID = value;
         }
     }
@@ -143,7 +157,7 @@ public class SellableItem
     {
         get
         {
-            if (propertyData != null) return propertyData.rentTagImages;
+            if (stallData != null) return stallData.rentTagImages;
             if (hotSpringData != null) return hotSpringData.rentTagImages;
             return null;
         }
@@ -153,7 +167,7 @@ public class SellableItem
     {
         get
         {
-            if (propertyData != null) return propertyData.rentText;
+            if (stallData != null) return stallData.rentText;
             if (hotSpringData != null) return hotSpringData.hotspringRentText;
             return null;
         }
@@ -162,10 +176,10 @@ public class SellableItem
     {
         get
         {
-            if (propertyData != null)
+            if (stallData != null)
             {
                 // If it's a property, return the list of stage images
-                return propertyData.stageImages;
+                return stallData.stageImages;
             }
             else if (hotSpringData != null)
             {
@@ -174,7 +188,7 @@ public class SellableItem
             }
             else
             {
-                // Neither propertyData nor hotSpringData is set, return null
+                // Neither stallData nor hotSpringData is set, return null
                 return null;
             }
         }
@@ -184,9 +198,9 @@ public class SellableItem
     // {
     //     get
     //     {
-    //         if (propertyData != null && propertyData.stageImages != null && propertyData.currentStageIndex >= 0 && propertyData.currentStageIndex < propertyData.stageImages.Count)
+    //         if (stallData != null && stallData.stageImages != null && stallData.currentStageIndex >= 0 && stallData.currentStageIndex < stallData.stageImages.Count)
     //         {
-    //             return propertyData.stageImages[propertyData.currentStageIndex];
+    //             return stallData.stageImages[stallData.currentStageIndex];
     //         }
     //         else if (hotSpringData != null)
     //         {
@@ -194,8 +208,8 @@ public class SellableItem
     //         }
     //         else
     //         {
-    //             // Handle the case where neither propertyData nor hotSpringData is set
-    //             Debug.LogWarning("Both propertyData and hotSpringData are null.");
+    //             // Handle the case where neither stallData nor hotSpringData is set
+    //             Debug.LogWarning("Both stallData and hotSpringData are null.");
     //             return null; // Or return a default GameObject if appropriate
     //         }
     //     }
