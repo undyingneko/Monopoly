@@ -16,12 +16,12 @@ public class BuyOutPopUp : MonoBehaviour
     private TextMeshProUGUI stageNumberText;
 
 
-    private PropertyManager propertyManager;
+    private StallManager propertyManager;
     public PlayerController playerController;
 
 
     private PlayerController currentPlayer;
-    private PropertyManager.PropertyData currentProperty;
+    private StallManager.StallData currentProperty;
 
     private float buyConfirmationTime = 10f; // Time limit for confirming the purchase
 
@@ -38,11 +38,11 @@ public class BuyOutPopUp : MonoBehaviour
             Debug.LogError("GameManager not found!");
             return; 
         }
-        propertyManager = PropertyManager.Instance;
+        propertyManager = StallManager.Instance;
 
         if (propertyManager == null)
         {
-            Debug.LogError("PropertyManager reference is not set");
+            Debug.LogError("StallManager reference is not set");
             return;
         }
     }
@@ -148,20 +148,20 @@ public class BuyOutPopUp : MonoBehaviour
         buyButton.onClick.RemoveListener(() => BuyOut(GameManager.currentPlayerIndex));
     }
 
-    public void DisplayBuyOut(PropertyManager.PropertyData property)
+    public void DisplayBuyOut(StallManager.StallData stall)
     {
-        if (property == null)
+        if (stall == null)
         {
-            Debug.LogError("PropertyData object is null!");
+            Debug.LogError("StallData object is null!");
             return;
         }
-        currentProperty = property;
+        currentProperty = stall;
         Debug.Log ("currentProperty name:"+ currentProperty.name);
 
-        propertyNameText.text = property.name;
+        propertyNameText.text = stall.name;
         if (currentPlayer == null || currentProperty == null)
         {
-            Debug.LogError("Current player or property is null!");
+            Debug.LogError("Current player or stall is null!");
             return;
         }
 
@@ -226,15 +226,15 @@ public class BuyOutPopUp : MonoBehaviour
 
                         Debug.Log("Money deducted:" + buyoutPrice );
 
-                        ownerPlayer.ownedProperties.Remove(currentProperty);
-                        currentPlayer.ownedProperties.Add(currentProperty);
+                        ownerPlayer.ownedStalls.Remove(currentProperty);
+                        currentPlayer.ownedStalls.Add(currentProperty);
 
                         currentProperty.ownerID = currentPlayer.playerID;
                         currentProperty.teamownerID = currentPlayer.teamID; 
 
                         currentProperty.buyoutCount += 1;
                         
-                        Debug.Log("Property bought out successfully.");
+                        Debug.Log("Stall bought out successfully.");
 
                         gameObject.SetActive(false); 
 
@@ -248,7 +248,7 @@ public class BuyOutPopUp : MonoBehaviour
                     }
                     else
                     {
-                        Debug.LogWarning("Insufficient funds to buy the property.");
+                        Debug.LogWarning("Insufficient funds to buy the stall.");
                         gameManager.buyOutDecisionMade = true;
                         Debug.Log("gameManager.buyOutDecisionMade set to : " + gameManager.buyOutDecisionMade);
                     }
@@ -288,10 +288,10 @@ public class BuyOutPopUp : MonoBehaviour
         Debug.Log("gameManager.buyOutDecisionMade set to : " + gameManager.buyOutDecisionMade);
         
     }
-    private string FormatBuyoutPrice (int stageIndex, PropertyManager.PropertyData property)
+    private string FormatBuyoutPrice (int stageIndex, StallManager.StallData stall)
     {
         gameManager = FindObjectOfType<GameManager>();
-        int buyoutPrice = property.CalculateBuyoutPrice(stageIndex);
+        int buyoutPrice = stall.CalculateBuyoutPrice(stageIndex);
         string formattedbuyoutPrice = gameManager.FormatPrice(buyoutPrice);
         return formattedbuyoutPrice;
     }

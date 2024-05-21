@@ -15,13 +15,13 @@ public class TileScript : MonoBehaviour
     // public TextMeshProUGUI Tilepopup_RentPrice;
     public Button Tilepopup_closeButton;
 
-    private PropertyManager propertyManager;
+    private StallManager propertyManager;
     private static GameObject activePopupInstance;
     private GameManager gameManager;
 
     private void Start()
     {
-        propertyManager = PropertyManager.Instance;
+        propertyManager = StallManager.Instance;
         gameManager = FindObjectOfType<GameManager>();
     }
 
@@ -51,7 +51,7 @@ public class TileScript : MonoBehaviour
                 int Tilepopup_waypointIndex = GetWaypointIndexFromName(hit.collider.gameObject.name);
 
                 // Get property data based on the JSON waypoint index
-                PropertyManager.PropertyData propertyData = propertyManager.GetPropertyByWaypointIndex(Tilepopup_waypointIndex);
+                StallManager.StallData propertyData = propertyManager.GetPropertyByWaypointIndex(Tilepopup_waypointIndex);
 
                 // Check if property data is not null
                 if (propertyData != null)
@@ -95,7 +95,7 @@ public class TileScript : MonoBehaviour
             return -1; // Return -1 if unable to extract waypoint index
         }
     }
-    private void UpdatePopupContent(GameObject popupInstance, PropertyManager.PropertyData propertyData)
+    private void UpdatePopupContent(GameObject popupInstance, StallManager.StallData propertyData)
     {
         gameManager = FindObjectOfType<GameManager>();
         // // Get references to the Text elements within the popup window

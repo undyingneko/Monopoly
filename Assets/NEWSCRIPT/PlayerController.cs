@@ -11,17 +11,17 @@ public class PlayerController : MonoBehaviour
     // public List<StallManager.StallData> properties;
     // public List<StallManager.StallData> ownedStalls = new List<StallManager.StallData>();
     public List<StallManager.StallData> ownedStalls;
-    public List<StallManager.StallData> ListPropertiesForEffect;
-    public StallManager.StallData propertyToBeEffected;
     public List<OnsenManager.OnsenData> ownedOnsens;
 
+    public List<SellableItem> ListPropertiesForEffect;
+    public SellableItem propertyToBeEffected;
+    
     public SellableItem itemToLandOn;
+
     public List<SellableItem> ListPropertiesForSelling;
     public List<SellableItem> propertiesToSell;
 
-
     // public List<StallManager.StallData> propertyToSell;
-
     // private PlayerController currentPlayerController;
     
     public int dice1Value;
@@ -414,9 +414,9 @@ public class PlayerController : MonoBehaviour
         if (currentPosition == 31)
         {
             int totalPropertyValueforTax = 0;
-            foreach (StallManager.StallData property in ownedStalls)
+            foreach (StallManager.StallData stall in ownedStalls)
             {
-                totalPropertyValueforTax += property.stagePrices[property.currentStageIndex];
+                totalPropertyValueforTax += stall.stagePrices[stall.currentStageIndex];
             }
             int taxAmount = (int)(totalPropertyValueforTax * 0.1f);
             Money -= taxAmount;
@@ -530,7 +530,7 @@ public class PlayerController : MonoBehaviour
         }
         itemToLandOn = null;
         var stall = stallManager.GetPropertyByWaypointIndex(currentPosition);
-        var hotSpring = hotSpringManager.GetHotSpringByWaypointIndex(currentPosition);
+        var hotSpring = onsenManager.GetOnsenByWaypointIndex(currentPosition);
 
         if (stall != null)
         {
@@ -543,7 +543,7 @@ public class PlayerController : MonoBehaviour
 
         if (itemToLandOn == null)
         {
-            Debug.LogError("No property or hot spring found at the current position.");
+            Debug.LogError("No stall or hot spring found at the current position.");
             yield break;
         }
         if (!itemToLandOn.owned)
@@ -574,27 +574,30 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                 {
-                    yield return StartCoroutine(ShowMessage("You do not have enough money to buy this property."));
+                    yield return StartCoroutine(ShowMessage("You do not have enough money to buy this stall."));
                     gameManager.EndedAllInteraction = true;
                 }
             }
         }
-        else
+        else //if (itemToLandOn.owned)
         {
             PlayerController ownerPlayer = FindPlayerByID(itemToLandOn.ownerID);
             if (itemToLandOn.onsenData != null)
             {
-                int rentPriceToDeduct = itemToLandOn.onsenData.rentPriceOnsen + (20000 * fatigueLevel);
-                string formattedRent = FormatMoney(rentPriceToDeduct);  
-                if (ownerPlayer != null && ownerPlayer.teamID != this.teamID)
+                int rentPriceToDeduct = 3000000;
+                // int rentPriceToDeduct = itemToLandOn.onsenData.rentPriceOnsen + (20000 * fatigueLevel);
+                string formattedRent = FormatMoney(rentPriceToDeduct); 
+                yield return StartCoroutine(ShowMessage($"You pay the hot spring entry fee of ${formattedRent}, plus a surcharge for deluxe relaxation amenities tailored to your fatigue level of {fatigueLevel}.")); 
+
+                if (ownerPlayer.teamID != this.teamID)
                 {
-                    Money -= rentPriceToDeduct;
-                    UpdateMoneyText();
-                    ownerPlayer.Money += rentPriceToDeduct;
-                    ownerPlayer.UpdateMoneyText();
-                    yield return StartCoroutine(ShowMessage($"You pay the hot spring entry fee of ${formattedRent}, plus a surcharge for deluxe relaxation amenities tailored to your fatigue level of {fatigueLevel}."));
-                    yield return StartCoroutine(ShowMessage("Your fatigue level has decreased to 0."));
+                    yield return StartCoroutine(HandleRent(rentPriceToDeduct,itemToLandOn));
+                    // Money -= rentPriceToDeduct;
+                    // UpdateMoneyText();
+                    // ownerPlayer.Money += rentPriceToDeduct;
+                    // ownerPlayer.UpdateMoneyText();
                     fatigueLevel = 0;
+                    yield return StartCoroutine(ShowMessage("Your fatigue level has decreased to 0."));
                     gameManager.HotSpringDecisionMade = true;
                 }
                 else
@@ -607,15 +610,15 @@ public class PlayerController : MonoBehaviour
             {
                 if (itemToLandOn.currentStageIndex < 5)
                 {
-                    if (ownerPlayer != null && ownerPlayer.teamID == this.teamID)
+                    if (ownerPlayer.teamID == this.teamID)
                     {
-                        if (property.nextStageIndex <= property.stagePrices.Count && property.stagePrices[property.nextStageIndex] <= Money)
+                        if (stall.nextStageIndex <= stall.stagePrices.Count && stall.stagePrices[stall.nextStageIndex] <= Money)
                         {
-                            ShowBuy012(property, this);
+                            ShowBuy012(stall, this);
                         }
-                        else if (Money < property.stagePrices[property.nextStageIndex])
+                        else if (Money < stall.stagePrices[stall.nextStageIndex])
                         {
-                            yield return StartCoroutine(ShowMessage("Not enough money to acquire this property!"));
+                            yield return StartCoroutine(ShowMessage("Not enough money to acquire this stall!"));
                             // yield return new WaitForSecondsRealtime(2f);
                             gameManager.EndedAllInteraction = true;
                             yield break;
@@ -623,20 +626,21 @@ public class PlayerController : MonoBehaviour
                     }
                     else if (ownerPlayer.teamID != this.teamID)
                     {
-                        // int rentPriceToDeduct = property.rentPrices[property.currentStageIndex];
+                        // int rentPriceToDeduct = stall.rentPrices[stall.currentStageIndex];
                         int rentPriceToDeduct = 3000000;
+                        string formattedRent = FormatMoney(rentPriceToDeduct);  
+                        yield return StartCoroutine(ShowMessage("You have to pay the meal expense of $" + formattedRent));
                         yield return StartCoroutine(HandleRent(rentPriceToDeduct,itemToLandOn));
 
-
-                        if (property.currentStageIndex < 4)
+                        if (stall.currentStageIndex < 4)
                         {
-                            if (property.buyoutPrices[property.currentStageIndex] <= Money )
+                            if (stall.buyoutPrices[stall.currentStageIndex] <= Money )
                             {
-                                ShowBuyOutPopUp(property, this);
+                                ShowBuyOutPopUp(stall, this);
                             }
-                            else if (property.buyoutPrices[property.currentStageIndex] > Money)
+                            else if (stall.buyoutPrices[stall.currentStageIndex] > Money)
                             {
-                                yield return StartCoroutine(ShowMessage("Not enough money to acquire this property!"));
+                                yield return StartCoroutine(ShowMessage("Not enough money to acquire this stall!"));
                                 // yield return new WaitForSecondsRealtime(2f);
                                 gameManager.EndedAllInteraction = true;
                                 yield break;                    
@@ -645,46 +649,44 @@ public class PlayerController : MonoBehaviour
                             // yield return StartCoroutine(WaitForPropertyDecision());
                             yield return new WaitUntil(() => gameManager.buyOutDecisionMade);
                             yield return new WaitForSecondsRealtime(1f);
-                            PlayerController ownerPlayeragain = FindPlayerByID(property.ownerID);
-                            if (property.stagePrices[property.nextStageIndex] <= Money && ownerPlayeragain.teamID == this.teamID)
+                            PlayerController ownerPlayeragain = FindPlayerByID(stall.ownerID);
+                            if (stall.stagePrices[stall.nextStageIndex] <= Money && ownerPlayeragain.teamID == this.teamID)
                             {
-                                ShowBuy012(property, this);
+                                ShowBuy012(stall, this);
                                 
                             }
-                            else if (property.stagePrices[property.nextStageIndex] > Money && ownerPlayeragain.teamID == this.teamID)
+                            else if (stall.stagePrices[stall.nextStageIndex] > Money && ownerPlayeragain.teamID == this.teamID)
                             {
-                                yield return StartCoroutine(ShowMessage("Not enough money to acquire this property!"));
+                                yield return StartCoroutine(ShowMessage("Not enough money to acquire this stall!"));
                                 // yield return new WaitForSecondsRealtime(2f);
                                 gameManager.EndedAllInteraction = true;
                                 yield break;
                             }
                         }
-                    
-                    else if (property.currentStageIndex == 4)
-                    {
-                        yield return StartCoroutine(ShowMessage("You can't buy out the hotel"));
-                        // yield return new WaitForSecondsRealtime(2f);
-                        // yield return StartCoroutine(WaitForPropertyDecision());
-                        gameManager.EndedAllInteraction = true;
+                        else if (stall.currentStageIndex == 4)
+                        {
+                            yield return StartCoroutine(ShowMessage("You can't buy out the hotel"));
+                            // yield return new WaitForSecondsRealtime(2f);
+                            // yield return StartCoroutine(WaitForPropertyDecision());
+                            gameManager.EndedAllInteraction = true;
+                        }
                     }
                 }
             }
         }
     }
-    }
 
     private IEnumerator HandleRent( int rentPriceToDeduct, SellableItem itemToLandOn)
     {
-        string formattedRent = FormatMoney(rentPriceToDeduct);
+        // string formattedRent = FormatMoney(rentPriceToDeduct);
         PlayerController ownerPlayer = FindPlayerByID(itemToLandOn.ownerID);
         if (itemToLandOn.isWelcomeEvent)
         {
-            yield return StartCoroutine(ShowMessage("This Food Stall offers a complimentary meal. No payment required"));
+            yield return StartCoroutine(ShowMessage("This property offers a complimentary meal. No payment required"));
             yield return new WaitForSecondsRealtime(1f);
         }
         else
         {
-            yield return StartCoroutine(ShowMessage("You have to pay the meal expense of $" + formattedRent));
             if (hasVipExperienceTicket)
             {
                 hasVipExperienceTicket = false;
@@ -720,7 +722,6 @@ public class PlayerController : MonoBehaviour
                     {
                         ListPropertiesForSelling.Add(new SellableItem { stallData = stalltosell });
                     }
-
                     // Add hot springs
                     foreach (var onsentosell in ownedOnsens)
                     {
@@ -731,79 +732,34 @@ public class PlayerController : MonoBehaviour
                     {
                         int totalownedStallValue = 0;
                         int totalownedOnsenValue = 0;
-                        foreach (var propertycalculated in ownedStalls)
+                        foreach (var stallcalculated in ownedStalls)
                         {
-                            totalownedStallValue += propertycalculated.stagePrices[propertycalculated.currentStageIndex];                        
+                            totalownedStallValue += stallcalculated.stagePrices[stallcalculated.currentStageIndex];                        
                         }
                         foreach (var onsencalculated in ownedOnsens)
                         {
                             totalownedOnsenValue += onsencalculated.priceOnsen;
                         }
-
                         int moneyall = Money + totalownedStallValue + totalownedOnsenValue;
-
                         if (moneyall >= GameManager.Instance.rentToPay)
                         {
                             if (ListPropertiesForSelling.Count == 1)
                             {
-                                foreach (var propertyToSell in ListPropertiesForSelling)
-                                {
-                                    int compensationAmount = propertyToSell.Price;
-                                    Money += compensationAmount;
-                                    UpdateMoneyText();
-                                    if (propertyToSell.stallData != null)
-                                    {
-                                        // It's a property
-                                        StallManager.StallData stalltosell = propertyToSell.stallData;
-                                        ownedStalls.Remove(stalltosell);
-                                    }
-                                    else if (propertyToSell.onsenData != null)
-                                    {
-                                        // It's a hot spring
-                                        OnsenManager.OnsenData onsentosell = propertyToSell.onsenData;
-                                        ownedOnsens.Remove(onsentosell);
-                                    }
-                                    propertyToSell.owned = false;
-                                    propertyToSell.ownerID = 0;
-                                    propertyToSell.teamownerID = 0;
-                                    propertyToSell.currentStageIndex = -1;
-                                    propertyToSell.isFireWork = false;
-                                    propertyToSell.isWelcomeEvent = false;
-
-
-                                    foreach (GameObject stageImage in propertyToSell.StageImages)
-                                    {
-                                        stageImage.SetActive(false);
-                                    }
-                                    foreach (GameObject rentTagImage in propertyToSell.RentTagImages)
-                                    {
-                                        rentTagImage.SetActive(false);
-                                    }
-                                    propertyToSell.rentText.gameObject.SetActive(false);
-                                }
-                                Money -= rentPriceToDeduct;
-                                UpdateMoneyText();
-                                ownerPlayer.Money += rentPriceToDeduct;
-                                ownerPlayer.UpdateMoneyText();                                                
-                                selectedmoney.gameObject.SetActive(false);
-                                MoneyNeeded.gameObject.SetActive(false);
-                                            
-                                // foreach (var propertyToSell in propertiesToSell)
+                                yield return StartCoroutine(ApplySell(rentPriceToDeduct));
+ 
+                                // foreach (var stallToSell in propertiesToSell)
                                 // {
-                                //     yield return StartCoroutine(ShowMessage("You have sold all your " + propertyToSell.name ));
+                                    yield return StartCoroutine(ShowMessage("You have sold all your properties!"));
                                 // }
                                 GameManager.Instance.SellSelectionMade = true;                                               
                             }
                             else if (ListPropertiesForSelling.Count > 1)
                             {
-                                yield return StartCoroutine(ShowMessage("Select a property to sell:"));
+                                yield return StartCoroutine(ShowMessage("Select a stall to sell:"));
                                 foreach (var playerProperty in ListPropertiesForSelling)
                                 {
                                     GameObject tileImage = gameManager.waypointIndexToTileMap[playerProperty.JSONwaypointIndex];
-
                                     tileImage.transform.position += new Vector3(0, 1, 0);
-
-                                    // Assign click handler for selecting the property
                                     SellingHandler clickHandler = tileImage.GetComponent<SellingHandler>();
                                     if (clickHandler == null)
                                     {
@@ -822,48 +778,7 @@ public class PlayerController : MonoBehaviour
                                 propertiesToSell = gameManager.selectedPropertiestoSell;
                                 if (propertiesToSell != null)
                                 {
-                                    foreach (var propertyToSell in propertiesToSell)
-                                    {
-                                        int compensationAmount = propertyToSell.Price;
-                                        Money += compensationAmount;
-                                        if (propertyToSell.stallData != null)
-                                        {
-                                            // It's a property
-                                            StallManager.StallData propertytosell = propertyToSell.stallData;
-                                            ownedStalls.Remove(propertytosell);
-                                        }
-                                        else if (propertyToSell.onsenData != null)
-                                        {
-                                            // It's a hot spring
-                                            OnsenManager.OnsenData hotSpring = propertyToSell.onsenData;
-                                            ownedOnsens.Remove(hotSpring);
-                                        }
-                                        
-                                        propertyToSell.owned = false;
-                                        propertyToSell.ownerID = 0;
-                                        propertyToSell.teamownerID = 0;
-                                        propertyToSell.currentStageIndex = -1;
-                                        propertyToSell.isFireWork = false;
-
-                                        foreach (GameObject stageImage in propertyToSell.StageImages)
-                                        {
-                                            stageImage.SetActive(false);
-                                        }
-                                        foreach (GameObject rentTagImage in propertyToSell.RentTagImages)
-                                        {
-                                            rentTagImage.SetActive(false);
-                                        }                                                    
-                                        // stallManager.DeactivateOldStageImages(propertyToSell);
-                                        // stallManager.DeactivateRentTagImage(propertyToSell);
-                                        propertyToSell.rentText.gameObject.SetActive(false);
-                                        // StartCoroutine(ShowMessage($"You sold {propertyToSell.name} for $ {compensationAmount}."));
-                                    }
-                                    Money -= rentPriceToDeduct;
-                                    UpdateMoneyText();
-                                    ownerPlayer.Money += rentPriceToDeduct;
-                                    ownerPlayer.UpdateMoneyText();                                      
-                                    selectedmoney.gameObject.SetActive(false);
-                                    MoneyNeeded.gameObject.SetActive(false);                                            
+                                    yield return StartCoroutine(ApplySell(rentPriceToDeduct));                                            
                                 }
                                 foreach (var foodstall in ListPropertiesForSelling)
                                 {
@@ -874,46 +789,11 @@ public class PlayerController : MonoBehaviour
                         }
                         else
                         {
-                            foreach (var propertyToSell in ListPropertiesForSelling)
-                            {
-                                int compensationAmount = propertyToSell.Price;
-                                Money += compensationAmount;
-                                UpdateMoneyText();
-                                if (propertyToSell.stallData != null)
-                                {
-                                    StallManager.StallData propertytosell = propertyToSell.stallData;
-                                    ownedStalls.Remove(propertytosell);
-                                }
-                                else if (propertyToSell.onsenData != null)
-                                {
-                                    onsenManager.onsenData hotSpring = propertyToSell.onsenData;
-                                    ownedOnsens.Remove(hotSpring);
-                                }
-                                propertyToSell.owned = false;
-                                propertyToSell.ownerID = 0;
-                                propertyToSell.teamownerID = 0;
-                                propertyToSell.currentStageIndex = -1;
-                                propertyToSell.isFireWork = false;
-
-                                // Deactivate property images and UI elements
-                                foreach (GameObject stageImage in propertyToSell.StageImages)
-                                {
-                                    stageImage.SetActive(false);
-                                }
-                                foreach (GameObject rentTagImage in propertyToSell.RentTagImages)
-                                {
-                                    rentTagImage.SetActive(false);
-                                }
-                                // stallManager.DeactivateRentTagImage(propertyToSell);
-                                propertyToSell.rentText.gameObject.SetActive(false);
-                            } 
-                                // Money -= rentPriceToDeduct;
-                                // UpdateMoneyText();       
-                            // }
-                            Money = 0;
-                            UpdateMoneyText();
-                            ownerPlayer.Money += moneyall;
-                            ownerPlayer.UpdateMoneyText();                                            
+                            yield return StartCoroutine(ApplySell(rentPriceToDeduct));  
+                            // Money = 0;
+                            // UpdateMoneyText();
+                            // ownerPlayer.Money += moneyall;
+                            // ownerPlayer.UpdateMoneyText();                                            
                             isBankRupt = true;                                          
                             yield return StartCoroutine(ShowMessage("You have sold all of your properties"));
                             yield return StartCoroutine(ShowMessage("BANKRUPT!!!"));
@@ -935,7 +815,6 @@ public class PlayerController : MonoBehaviour
                     gameManager.selectedPropertiestoSell.Clear();
                     propertiesToSell.Clear();
                     moneyneeded =0;
-
                     // totalPropertyValue =0;
                     GameManager.Instance.rentToPay = 0;
                     foreach (var tile in gameManager.waypointIndexToTileMap.Values)
@@ -954,9 +833,48 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private IEnumerator ApplySell()
+    private IEnumerator ApplySell(int rentPriceToDeduct)
     {
-
+        PlayerController ownerPlayer = FindPlayerByID(itemToLandOn.ownerID);
+        foreach (var propertyToSell in ListPropertiesForSelling)
+        {
+            int compensationAmount = propertyToSell.Price;
+            Money += compensationAmount;
+            UpdateMoneyText();
+            if (propertyToSell.stallData != null)
+            {
+                StallManager.StallData stalltosell = propertyToSell.stallData;
+                ownedStalls.Remove(stalltosell);
+            }
+            else if (propertyToSell.onsenData != null)
+            {
+                OnsenManager.OnsenData onsentosell = propertyToSell.onsenData;
+                ownedOnsens.Remove(onsentosell);
+            }
+            propertyToSell.owned = false;
+            propertyToSell.ownerID = 0;
+            propertyToSell.teamownerID = 0;
+            propertyToSell.currentStageIndex = -1;
+            propertyToSell.isFireWork = false;
+            propertyToSell.isWelcomeEvent = false;
+            foreach (GameObject stageImage in propertyToSell.StageImages)
+            {
+                stageImage.SetActive(false);
+            }
+            foreach (GameObject rentTagImage in propertyToSell.RentTagImages)
+            {
+                rentTagImage.SetActive(false);
+            }
+            propertyToSell.rentText.gameObject.SetActive(false);
+            yield return StartCoroutine(ShowMessage("You have sold  your" + propertyToSell.name));
+        }
+        Money -= rentPriceToDeduct;
+        UpdateMoneyText();
+        ownerPlayer.Money += rentPriceToDeduct;
+        ownerPlayer.UpdateMoneyText();                                                
+        selectedmoney.gameObject.SetActive(false);
+        MoneyNeeded.gameObject.SetActive(false);
+        yield return null;
     }
 
     public PlayerController FindPlayerByID(int ID)

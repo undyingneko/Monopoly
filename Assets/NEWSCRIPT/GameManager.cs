@@ -10,11 +10,11 @@ public class GameManager : MonoBehaviour
     public Dictionary<int, GameObject> dice2Sides;
     private Coroutine turnCoroutine;
 
-    public Dictionary<GameObject, StallManager.StallData> tileToPropertyMap = new Dictionary<GameObject, StallManager.StallData>();
+    public Dictionary<GameObject, SellableItem> tileToPropertyMap = new Dictionary<GameObject, SellableItem>();
 
     public Dictionary<int, GameObject> waypointIndexToTileMap = new Dictionary<int, GameObject>();
 
-    public StallManager.StallData selectedProperty;
+    public SellableItem selectedProperty;
     public List<SellableItem> selectedPropertiestoSell;
     public PlayerController[] players;
     public static int currentPlayerIndex;
@@ -194,7 +194,7 @@ public class GameManager : MonoBehaviour
             return null;
         }
     } 
-    public void AssignPropertyToTile(GameObject tile, StallManager.StallData property)
+    public void AssignPropertyToTile(GameObject tile, SellableItem property)
     {
         if (!tileToPropertyMap.ContainsKey(tile))
         {
@@ -207,7 +207,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("Property assigned to tile: " + property.name);
     }
 
-    public StallManager.StallData GetPropertyFromTile(GameObject tile)
+    public SellableItem GetPropertyFromTile(GameObject tile)
     {
         if (tileToPropertyMap.TryGetValue(tile, out var property))
         {
@@ -216,7 +216,7 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
-    public void HandleTileClick(StallManager.StallData property)
+    public void HandleTileClick(SellableItem property)
     {
         // Update the selected property based on the clicked tile
         selectedProperty = property;

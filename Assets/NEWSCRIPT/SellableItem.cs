@@ -53,7 +53,44 @@ public class SellableItem
             }
         }
     }
-   
+
+    public List<int> rentPrices
+    {
+        get
+        {
+            if (stallData != null)
+            {
+                return stallData.rentPrices;
+            }
+            else if (onsenData != null)
+            {
+                return new List<int> { onsenData.rentPriceOnsen };
+            }
+            else
+            {
+                return new List<int>();
+            }
+        }
+    }
+    public List<int> stagePrices
+    {
+        get
+        {
+            if (stallData != null)
+            {
+                return stallData.stagePrices;
+            }
+            else if (onsenData != null)
+            {
+                return new List<int> { onsenData.priceOnsen };
+            }
+            else
+            {
+                return new List<int>();
+            }
+        }
+    }
+
     public int JSONwaypointIndex
     {
         get

@@ -23,9 +23,7 @@ public class SellingHandler : MonoBehaviour
             Debug.Log("Tile clicked for demolition: " + associatedProperty.name);
             totalPropertyValue = 0;
             playerController.selectedmoney.text = playerController.FormatMoney(totalPropertyValue);
-
-
-            
+  
             if (GameManager.Instance.selectedPropertiestoSell.Contains(associatedProperty))
             {
                 // Property is already selected, remove it from the list
@@ -50,7 +48,6 @@ public class SellingHandler : MonoBehaviour
                 playerController.selectedmoney.text = playerController.FormatMoney(totalPropertyValue);
              
             }
-            
             Debug.Log("Selected properties count: " + GameManager.Instance.selectedPropertiestoSell.Count);
             Debug.Log("GameManager selected property: " + (GameManager.Instance.selectedProperty != null ? GameManager.Instance.selectedProperty.name : "null"));
             

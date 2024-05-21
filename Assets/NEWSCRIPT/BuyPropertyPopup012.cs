@@ -8,18 +8,18 @@ public class BuyPropertyPopup012 : MonoBehaviour
 {
     [SerializeField]
     private TextMeshProUGUI ownedByTeammateText;
-    public TextMeshProUGUI BuyPropertyPopup_propertyNameText;
+    public TextMeshProUGUI BuyPropertyPopup_stallNameText;
     public TextMeshProUGUI[] BuyPropertyPopup_stagePriceTexts;
     public Button[] BuyPropertyPopup_buyButtons;
     public TextMeshProUGUI[] BuyPropertyPopup_stageNumberTexts;
     public Button BuyPropertyPopup_closeButton; // Reference to the close button
 
-    private PropertyManager propertyManager;
+    private StallManager stallManager;
     public PlayerController playerController;
 
 
     private PlayerController currentPlayer;
-    private PropertyManager.PropertyData currentProperty;
+    private StallManager.StallData currentStall;
 
     private float buyConfirmationTime = 10f; // Time limit for confirming the purchase
 
@@ -47,13 +47,13 @@ public class BuyPropertyPopup012 : MonoBehaviour
             return; // Exit the method if GameManager is not found to avoid null reference errors
         }
 
-        propertyManager = PropertyManager.Instance;
+        stallManager = StallManager.Instance;
         // ownedByTeammateText.gameObject.SetActive(false);
 
-        // Ensure that the PropertyManager reference is not null
-        if (propertyManager == null)
+        // Ensure that the StallManager reference is not null
+        if (stallManager == null)
         {
-            Debug.LogError("PropertyManager reference is not set in BuyPropertyPopup012!");
+            Debug.LogError("StallManager reference is not set in BuyPropertyPopup012!");
             return;
         }
     }
@@ -121,27 +121,27 @@ public class BuyPropertyPopup012 : MonoBehaviour
            
     }
 
-    public void Display012(PropertyManager.PropertyData property)
+    public void Display012(StallManager.StallData stall)
     {
-        if (property == null)
+        if (stall == null)
         {
-            Debug.LogError("PropertyData object is null!");
+            Debug.LogError("StallData object is null!");
             return;
         }
-        currentProperty = property;
-        Debug.Log ("currentProperty name:"+ currentProperty.name);
+        currentStall = stall;
+        Debug.Log ("currentStall name:"+ currentStall.name);
 
-        BuyPropertyPopup_propertyNameText.text = property.name;
-        // property.stageImageInstances.Clear();  
+        BuyPropertyPopup_stallNameText.text = stall.name;
+        // stall.stageImageInstances.Clear();  
 
-        if (currentPlayer == null || currentProperty == null)
+        if (currentPlayer == null || currentStall == null)
         {
-            Debug.LogError("Current player or property is null!");
+            Debug.LogError("Current player or stall is null!");
             return;
         }
-        if (currentProperty != null && currentPlayer != null)
+        if (currentStall != null && currentPlayer != null)
         {
-            if (currentProperty.owned && currentProperty.teamownerID == currentPlayer.teamID && currentProperty.ownerID != currentPlayer.playerID)
+            if (currentStall.owned && currentStall.teamownerID == currentPlayer.teamID && currentStall.ownerID != currentPlayer.playerID)
             {
                 ownedByTeammateText.gameObject.SetActive(true);
             }
@@ -152,16 +152,16 @@ public class BuyPropertyPopup012 : MonoBehaviour
         }
         else
         {
-            Debug.LogError("currentProperty or currentPlayer is null!");
+            Debug.LogError("currentStall or currentPlayer is null!");
         }
 
-        if (currentProperty.currentStageIndex < 2)
+        if (currentStall.currentStageIndex < 2)
         {
 
-        // Ensure the length of the stagePriceTexts array matches the number of prices in the property
+        // Ensure the length of the stagePriceTexts array matches the number of prices in the stall
             for (int i = 0; i < 3; i++)
             {
-                if (i < property.stagePrices.Count)
+                if (i < stall.stagePrices.Count)
                 {
                     if (i == 0)
                     {
@@ -177,9 +177,9 @@ public class BuyPropertyPopup012 : MonoBehaviour
                         BuyPropertyPopup_stageNumberTexts[i].text = "STAGE " + i; // Add 1 to stage index to display stage number
                     } 
                                 
-                    if (currentProperty.owned && i <= currentProperty.currentStageIndex)
+                    if (currentStall.owned && i <= currentStall.currentStageIndex)
                     {
-                        // If the player owns the property and the current stage is already bought or lower, display an "Owned" mark
+                        // If the player owns the stall and the current stage is already bought or lower, display an "Owned" mark
                         BuyPropertyPopup_stagePriceTexts[i].gameObject.SetActive(true);
                         BuyPropertyPopup_stagePriceTexts[i].text = "Owned";
                         BuyPropertyPopup_buyButtons[i].interactable = false;
@@ -187,9 +187,9 @@ public class BuyPropertyPopup012 : MonoBehaviour
                     }
                     else
                     {
-                        // If the player doesn't own the property or the current stage is not bought, display the price and enable the buy button
+                        // If the player doesn't own the stall or the current stage is not bought, display the price and enable the buy button
                         BuyPropertyPopup_stagePriceTexts[i].gameObject.SetActive(true);
-                        BuyPropertyPopup_stagePriceTexts[i].text = "Price: " + FormatStagePrice(i, property);
+                        BuyPropertyPopup_stagePriceTexts[i].text = "Price: " + FormatStagePrice(i, stall);
                         BuyPropertyPopup_buyButtons[i].interactable = true;
                         BuyPropertyPopup_buyButtons[i].gameObject.SetActive(true);
                     }
@@ -202,20 +202,20 @@ public class BuyPropertyPopup012 : MonoBehaviour
                 }
             }
         }
-        else if (currentProperty.currentStageIndex == 2)
+        else if (currentStall.currentStageIndex == 2)
         {
             BuyPropertyPopup_buyButtons[3].interactable = true;
             BuyPropertyPopup_buyButtons[3].gameObject.SetActive(true);
             BuyPropertyPopup_stagePriceTexts[3].gameObject.SetActive(true);
-            BuyPropertyPopup_stagePriceTexts[3].text = "Price: " + FormatStagePrice(3, property);         
+            BuyPropertyPopup_stagePriceTexts[3].text = "Price: " + FormatStagePrice(3, stall);         
             BuyPropertyPopup_stageNumberTexts[3].text = "STAGE " + 3;
         }
-        else if (currentProperty.currentStageIndex == 3)
+        else if (currentStall.currentStageIndex == 3)
         {
             BuyPropertyPopup_buyButtons[4].interactable = true;
             BuyPropertyPopup_buyButtons[4].gameObject.SetActive(true);
             BuyPropertyPopup_stagePriceTexts[4].gameObject.SetActive(true);
-            BuyPropertyPopup_stagePriceTexts[4].text = "Price: " + FormatStagePrice(4, property); 
+            BuyPropertyPopup_stagePriceTexts[4].text = "Price: " + FormatStagePrice(4, stall); 
             BuyPropertyPopup_stageNumberTexts[4].text = "HOTEL";
         }
 
@@ -224,7 +224,7 @@ public class BuyPropertyPopup012 : MonoBehaviour
     }
     public void BuyStage(int stageIndex, int currentPlayerIndex)
     {
-            int stagePrice = currentProperty.stagePrices[stageIndex];
+            int stagePrice = currentStall.stagePrices[stageIndex];
             
             if (gameManager != null && currentPlayerIndex >= 0 && currentPlayerIndex < gameManager.players.Length)
             {
@@ -237,34 +237,34 @@ public class BuyPropertyPopup012 : MonoBehaviour
                         currentPlayer.UpdateMoneyText(); 
                         Debug.Log("Money deducted successfully. Remaining money: " + currentPlayer.Money);
                         
-                        if (!currentProperty.owned)
+                        if (!currentStall.owned)
                         {
-                            currentProperty.owned = true;            
-                            currentProperty.ownerID = currentPlayer.playerID;                        
-                            currentProperty.teamownerID = currentPlayer.teamID;
-                            currentPlayer.ownedProperties.Add(currentProperty);
+                            currentStall.owned = true;            
+                            currentStall.ownerID = currentPlayer.playerID;                        
+                            currentStall.teamownerID = currentPlayer.teamID;
+                            currentPlayer.ownedStalls.Add(currentStall);
                         }                    
-                        if (stageIndex > currentProperty.currentStageIndex)
+                        if (stageIndex > currentStall.currentStageIndex)
                         {
-                            currentProperty.currentStageIndex = stageIndex;
-                            currentProperty.nextStageIndex = stageIndex + 1;
+                            currentStall.currentStageIndex = stageIndex;
+                            currentStall.nextStageIndex = stageIndex + 1;
                         }     
-                        Debug.Log("Property bought successfully.");
+                        Debug.Log("Stall bought successfully.");
                         gameObject.SetActive(false); 
 
-                        propertyManager.DeactivateOldStageImages(currentProperty);
-                        currentProperty.stageImages[stageIndex].SetActive(true);
-                        propertyManager.ActivateRentTagImage(currentProperty);
-                        propertyManager.UpdateRentText(currentProperty, stageIndex);
+                        stallManager.DeactivateOldStageImages(currentStall);
+                        currentStall.stageImages[stageIndex].SetActive(true);
+                        stallManager.ActivateRentTagImage(currentStall);
+                        stallManager.UpdateRentText(currentStall, stageIndex);
 
-                        Debug.Log("JSONwaypointIndex = "+ currentProperty.JSONwaypointIndex + "+" + "currentStageIndex = " + currentProperty.currentStageIndex);
-                        Debug.Log("Image Count " + currentProperty.stageImages.Count);
+                        Debug.Log("JSONwaypointIndex = "+ currentStall.JSONwaypointIndex + "+" + "currentStageIndex = " + currentStall.currentStageIndex);
+                        Debug.Log("Image Count " + currentStall.stageImages.Count);
                         gameManager.buyPropertyDecisionMade = true;
                         Debug.Log("gameManager.buyPropertyDecisionMade set to : " + gameManager.buyPropertyDecisionMade);
                     }
                     else
                     {
-                        Debug.LogWarning("Insufficient funds to buy the property.");
+                        Debug.LogWarning("Insufficient funds to buy the stall.");
                         gameManager.buyPropertyDecisionMade = true;
                         Debug.Log("gameManager.buyPropertyDecisionMade set to : " + gameManager.buyPropertyDecisionMade);
                     }
@@ -304,11 +304,11 @@ public class BuyPropertyPopup012 : MonoBehaviour
         Debug.Log("gameManager.buyPropertyDecisionMade set to : " + gameManager.buyPropertyDecisionMade);  
     }
 
-    private string FormatStagePrice(int stageIndex, PropertyManager.PropertyData property)
+    private string FormatStagePrice(int stageIndex, StallManager.StallData stall)
     {
         gameManager = FindObjectOfType<GameManager>();
-        // int stagePrice = property.CalculateStagePrice(stageIndex);
-        int stagePrice = property.stagePrices[stageIndex];
+        // int stagePrice = stall.CalculateStagePrice(stageIndex);
+        int stagePrice = stall.stagePrices[stageIndex];
         string formattedstagePrice = gameManager.FormatPrice(stagePrice);
         return formattedstagePrice;
     }
