@@ -4,9 +4,9 @@ using System.IO;
 using UnityEngine.UI;
 using TMPro;
 
-public class HotSpringManager : MonoBehaviour
+public class OnsenManager : MonoBehaviour
 {
-    public HotSpringData currentHotspotProperty = null;
+    public OnsenData currentHotspotProperty = null;
     private GameManager gameManager;
 
     public Dictionary<int, string> playerIDToColor  = new Dictionary<int, string>
@@ -20,22 +20,22 @@ public class HotSpringManager : MonoBehaviour
     public Transform canvasTransform;
 
     [System.Serializable]
-    public class HotSpringDataWrapper
+    public class OnsenDataWrapper
     {
-        public List<HotSpringData> properties;
+        public List<OnsenData> properties;
     }
     
     [System.Serializable]
-    public class HotSpringData
+    public class OnsenData
     {
         public string name;
-        public int HOTSPRINGwaypointIndex;
+        public int ONSENwaypointIndex;
 
-        public int priceHotSpring;
-        public int rentPriceSHotSpring;
-        public TextMeshProUGUI hotspringRentText;
+        public int priceOnsen;
+        public int rentPriceOnsen;
+        public TextMeshProUGUI onsenRentText;
 
-        public GameObject HotSpringImage;
+        public GameObject OnsenImage;
         public int currentStageIndex;
 
         public List<GameObject> rentTagImages = new List<GameObject>();
@@ -49,23 +49,23 @@ public class HotSpringManager : MonoBehaviour
 
         public void InitializePrices()
         {
-            // priceHotSpring.Clear();
-            // rentPriceSHotSpring.Clear();
+            // priceOnsen.Clear();
+            // rentPriceOnsen.Clear();
             // stageIndexes.Clear();
             // stageImages.Clear();  
             // rentTagImages.Clear();   
-            priceHotSpring = CalculatePriceHotSpring();
-            rentPriceSHotSpring = CalculateRentPriceHotSpring();
+            priceOnsen = CalculatePriceOnsen();
+            rentPriceOnsen = CalculateRentPriceOnsen();
         }
-        public int CalculatePriceHotSpring()
+        public int CalculatePriceOnsen()
         {
-            int basehotspringprice = 250000;
-            priceHotSpring = basehotspringprice;
-            return priceHotSpring;
+            int baseonsenprice = 250000;
+            priceOnsen = baseonsenprice;
+            return priceOnsen;
         }
-        public int CalculateRentPriceHotSpring()
+        public int CalculateRentPriceOnsen()
         {
-            // int basePrice = priceHotSpring[stageIndex];
+            // int basePrice = priceOnsen[stageIndex];
             // int buyoutPrice = basePrice;
 
             // // Calculate buyout price based on buyout count
@@ -73,30 +73,30 @@ public class HotSpringManager : MonoBehaviour
             // {
             //     buyoutPrice *= 2;
             // }
-            rentPriceSHotSpring = priceHotSpring/10;
-            return rentPriceSHotSpring;
+            rentPriceOnsen = priceOnsen/10;
+            return rentPriceOnsen;
         }
     }
 
-    public List<HotSpringData> hotsprings = new List<HotSpringData>();
+    public List<OnsenData> onsens = new List<OnsenData>();
     // Singleton instance
-    public static HotSpringManager instance;
+    public static OnsenManager instance;
 
-    // public delegate void hotspringsLoadedCallback();
-    // public event hotspringsLoadedCallback OnhotspringsLoaded;
+    // public delegate void onsensLoadedCallback();
+    // public event onsensLoadedCallback OnonsensLoaded;
 
-    public static HotSpringManager Instance
+    public static OnsenManager Instance
     {
         get
         {
             if (instance == null)
             {
-                instance = FindObjectOfType<HotSpringManager>();
+                instance = FindObjectOfType<OnsenManager>();
                 if (instance == null)
                 {
                     GameObject obj = new GameObject();
-                    obj.name = typeof(HotSpringManager).Name;
-                    instance = obj.AddComponent<HotSpringManager>();
+                    obj.name = typeof(OnsenManager).Name;
+                    instance = obj.AddComponent<OnsenManager>();
                 }
             }
             return instance;
@@ -130,119 +130,119 @@ public class HotSpringManager : MonoBehaviour
             gameManager.TileImagesLoaded += OnTileImagesLoaded;
         }
         DontDestroyOnLoad(gameObject);
-        // Loadhotsprings();
+        // Loadonsens();
         currentHotspotProperty = null;
-        InitializeHotSprings();
+        InitializeOnsens();
     }
 
     private void OnTileImagesLoaded()
     {
-        // Load hotsprings after tile images have been loaded
-        LoadHotSprings();
+        // Load onsens after tile images have been loaded
+        LoadOnsens();
     }
-    private void InitializeHotSprings()
+    private void InitializeOnsens()
     {
-        hotsprings.Add(new HotSpringData { name = "Onsen 1", HOTSPRINGwaypointIndex = 4 });
-        hotsprings.Add(new HotSpringData { name = "Onsen 2", HOTSPRINGwaypointIndex = 13 });
-        hotsprings.Add(new HotSpringData { name = "Onsen 3", HOTSPRINGwaypointIndex = 18 });
-        hotsprings.Add(new HotSpringData { name = "Onsen 4", HOTSPRINGwaypointIndex = 25 });
+        onsens.Add(new OnsenData { name = "Onsen 1", ONSENwaypointIndex = 4 });
+        onsens.Add(new OnsenData { name = "Onsen 2", ONSENwaypointIndex = 13 });
+        onsens.Add(new OnsenData { name = "Onsen 3", ONSENwaypointIndex = 18 });
+        onsens.Add(new OnsenData { name = "Onsen 4", ONSENwaypointIndex = 25 });
     }
 
-    private void LoadHotSprings()
+    private void LoadOnsens()
     {
-        foreach (HotSpringData hotspring in hotsprings)
+        foreach (OnsenData onsen in onsens)
         {
-            hotspring.InitializePrices();
-            LoadImageForHotSpring(hotspring);
-            LoadRentTagImagesHotSpring(hotspring);
-            hotspring.currentStageIndex = -1;
-            hotspring.isComplimentaryMeal = false;
-            hotspring.isHotSpot = false;
+            onsen.InitializePrices();
+            LoadImageForOnsen(onsen);
+            LoadRentTagImagesOnsens(onsen);
+            onsen.currentStageIndex = -1;
+            onsen.isWelcomeEvent = false;
+            onsen.isFireWork = false;
         }
     }
 
-    public HotSpringData GetHotSpringByWaypointIndex(int HOTSPRINGwaypointIndex)
+    public OnsenData GetOnsenByWaypointIndex(int ONSENwaypointIndex)
     {
-        foreach (var hotspring in hotsprings)
+        foreach (var onsen in onsens)
         {
-            if (hotspring.HOTSPRINGwaypointIndex == HOTSPRINGwaypointIndex)
+            if (onsen.ONSENwaypointIndex == ONSENwaypointIndex)
             {
-                Debug.Log("HotSpring found: " + hotspring.name);
+                Debug.Log("Onsen found: " + onsen.name);
 
-                return hotspring;
+                return onsen;
             }
         }
         return null;
     }
 
-    private void LoadImageForHotSpring(HotSpringData hotspring)
+    private void LoadImageForOnsen(OnsenData onsen)
     {
-        if (!gameManager.waypointIndexToTileMap.ContainsKey(hotspring.HOTSPRINGwaypointIndex))
+        if (!gameManager.waypointIndexToTileMap.ContainsKey(onsen.ONSENwaypointIndex))
         {
-            Debug.LogError("Tile image not found for waypoint index: " + hotspring.HOTSPRINGwaypointIndex);
+            Debug.LogError("Tile image not found for waypoint index: " + onsen.ONSENwaypointIndex);
             return;
         }
-        GameObject tileImage = gameManager.waypointIndexToTileMap[hotspring.HOTSPRINGwaypointIndex];
-        string HotSpringImageName = "Onsen_" + hotspring.HOTSPRINGwaypointIndex;
-        Transform HotSpringImageTransform = tileImage.transform.Find(HotSpringImageName);
-        if (HotSpringImageTransform == null)
+        GameObject tileImage = gameManager.waypointIndexToTileMap[onsen.ONSENwaypointIndex];
+        string OnsenImageName = "Onsen_" + onsen.ONSENwaypointIndex;
+        Transform OnsenImageTransform = tileImage.transform.Find(OnsenImageName);
+        if (OnsenImageTransform == null)
         {
-            Debug.LogError("HotSpring image object not found with name: " + HotSpringImageName);
+            Debug.LogError("Onsen image object not found with name: " + OnsenImageName);
             return;
         }
-        hotspring.HotSpringImage = HotSpringImageTransform.gameObject;
-        hotspring.HotSpringImage.SetActive(false);
+        onsen.OnsenImage = OnsenImageTransform.gameObject;
+        onsen.OnsenImage.SetActive(false);
     }
 
-    public void DeactivateHotSpringImages(HotSpringData hotspring)
+    public void DeactivateOnsenImages(OnsenData onsen)
     {
-        if (hotspring.HotSpringImage != null)
+        if (onsen.OnsenImage != null)
         {
-            hotspring.HotSpringImage.SetActive(false);
+            onsen.OnsenImage.SetActive(false);
         }
         else
         {
-            Debug.LogWarning("No HotSpring image found for property: " + hotspring.name);
+            Debug.LogWarning("No Onsen image found for property: " + onsen.name);
         }
     }
 
-    private void LoadRentTagImagesHotSpring(HotSpringData hotspring)
+    private void LoadRentTagImagesOnsens(OnsenData onsen)
     {
         string[] colors = { "pink", "turquois", "green", "purple" };
 
         // Check if gameManager or waypointIndexToTileMap is null
 
-        GameObject tileImage = gameManager.waypointIndexToTileMap[hotspring.HOTSPRINGwaypointIndex];
+        GameObject tileImage = gameManager.waypointIndexToTileMap[onsen.ONSENwaypointIndex];
 
         // Ensure rentTagImages list is initialized
-        // if (hotspring.rentTagImages == null)
+        // if (onsen.rentTagImages == null)
         // {
-        //     hotspring.rentTagImages = new List<GameObject>();
+        //     onsen.rentTagImages = new List<GameObject>();
         // }
 
         foreach (string color in colors)
         {
-            string rentTagObjectName = "PriceTags_" + hotspring.HOTSPRINGwaypointIndex + "_" + color;
+            string rentTagObjectName = "PriceTags_" + onsen.ONSENwaypointIndex + "_" + color;
             Transform rentTagObject = tileImage.transform.Find(rentTagObjectName);
 
             if (rentTagObject != null)
             {
                 GameObject rentTagImageInstance = rentTagObject.gameObject;
                 rentTagImageInstance.SetActive(false);
-                hotspring.rentTagImages.Add(rentTagImageInstance);
+                onsen.rentTagImages.Add(rentTagImageInstance);
             }
         }
 
-        string hotspringRentTextObjectName = "RentText_" + hotspring.HOTSPRINGwaypointIndex;
-        Transform hotspringRentTextObject = tileImage.transform.Find(hotspringRentTextObjectName);
-        if (hotspringRentTextObject != null)
+        string onsenRentTextObjectName = "RentText_" + onsen.ONSENwaypointIndex;
+        Transform onsenRentTextObject = tileImage.transform.Find(onsenRentTextObjectName);
+        if (onsenRentTextObject != null)
         {
-            TextMeshProUGUI hotspringRentTextInstance = hotspringRentTextObject.GetComponent<TextMeshProUGUI>();
+            TextMeshProUGUI onsenRentTextInstance = onsenRentTextObject.GetComponent<TextMeshProUGUI>();
 
-            if (hotspringRentTextInstance != null)
+            if (onsenRentTextInstance != null)
             {
-                hotspring.hotspringRentText = hotspringRentTextInstance;
-                hotspringRentTextInstance.gameObject.SetActive(false);
+                onsen.onsenRentText = onsenRentTextInstance;
+                onsenRentTextInstance.gameObject.SetActive(false);
             }
         }
 
@@ -250,7 +250,7 @@ public class HotSpringManager : MonoBehaviour
 
 
 
-    public void DeactivateHotSpringRentTagImage(HotSpringData property)
+    public void DeactivateOnsenRentTagImage(OnsenData property)
     {
         foreach (GameObject rentTagImage in property.rentTagImages)
         {
@@ -258,15 +258,15 @@ public class HotSpringManager : MonoBehaviour
         }
     }
     
-    public void ActivateRentTagImage(HotSpringData hotspring)
+    public void ActivateRentTagImage(OnsenData onsen)
     {
-        DeactivateHotSpringRentTagImage(hotspring);
+        DeactivateOnsenRentTagImage(onsen);
 
         // Get the color associated with the player ID
-        string color = playerIDToColor[hotspring.ownerID];
+        string color = playerIDToColor[onsen.ownerID];
 
         // Find the rent tag image corresponding to the color
-        foreach (GameObject rentTagImage in hotspring.rentTagImages)
+        foreach (GameObject rentTagImage in onsen.rentTagImages)
         {
             // Get the color variation of the rent tag image
             string rentTagColor = rentTagImage.name.Split('_')[2]; 
@@ -286,19 +286,19 @@ public class HotSpringManager : MonoBehaviour
         Debug.LogWarning("Rent tag image not found for color: " + color);
     }
 
-    public void UpdatehotspringRentText(HotSpringData hotspring)
+    public void UpdateonsenRentText(OnsenData onsen)
     {
-        Debug.Log("Updating rent text for property: " + hotspring.name);
+        Debug.Log("Updating rent text for property: " + onsen.name);
         Debug.Log(System.Environment.StackTrace);
-        if (hotspring.hotspringRentText != null)
+        if (onsen.onsenRentText != null)
         {
-            Debug.Log("Rent text is assigned for property: " + hotspring.name);
-            hotspring.hotspringRentText.text = FormatPrice(hotspring.rentPriceSHotSpring);
-            hotspring.hotspringRentText.gameObject.SetActive(true);
+            Debug.Log("Rent text is assigned for property: " + onsen.name);
+            onsen.onsenRentText.text = FormatPrice(onsen.rentPriceOnsen);
+            onsen.onsenRentText.gameObject.SetActive(true);
         }
         else
         {
-            Debug.LogWarning("Rent text not found for property: " + hotspring.name);
+            Debug.LogWarning("Rent text not found for property: " + onsen.name);
         }
     }
     

@@ -14,12 +14,12 @@ public class HotSpringPopUp : MonoBehaviour
     private TextMeshProUGUI HotSpringPriceText;
     private Button buyButton;
 
-    private PropertyManager propertyManager;
-    private HotSpringManager hotSpringManager;
+    private StallManager stallManager;
+    private OnsenManager onsenManager;
     public PlayerController playerController;
 
     private PlayerController currentPlayer;
-    private HotSpringManager.HotSpringData currentHotSpring;
+    private OnsenManager.OnsenData currentOnsen;
 
 
     private float buyConfirmationTime = 10f; // Time limit for confirming the purchase
@@ -32,18 +32,18 @@ public class HotSpringPopUp : MonoBehaviour
     private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
-        hotSpringManager = FindObjectOfType<HotSpringManager>();
+        onsenManager = FindObjectOfType<OnsenManager>();
 
         if (gameManager == null)
         {
             Debug.LogError("GameManager not found!");
             return; 
         }
-        propertyManager = PropertyManager.Instance;
+        stallManager = StallManager.Instance;
 
-        if (propertyManager == null)
+        if (stallManager == null)
         {
-            Debug.LogError("PropertyManager reference is not set");
+            Debug.LogError("StallManager reference is not set");
             return;
         }
     }
@@ -139,31 +139,31 @@ public class HotSpringPopUp : MonoBehaviour
         buyButton.onClick.RemoveListener(() => BuyHotSpring(GameManager.currentPlayerIndex));
     }
 
-    public void DisplayBuyHotSpring(HotSpringManager.HotSpringData hotspring)
+    public void DisplayBuyHotSpring(OnsenManager.OnsenData hotspring)
     {
         if (hotspring == null)
         {
             Debug.LogError("PropertyData object is null!");
             return;
         }
-        currentHotSpring = hotspring;
-        Debug.Log ("currentHotSpring name:"+ currentHotSpring.name);
+        currentOnsen = hotspring;
+        Debug.Log ("currentOnsen name:"+ currentOnsen.name);
 
         propertyNameText.text = hotspring.name;
-        if (currentPlayer == null || currentHotSpring == null)
+        if (currentPlayer == null || currentOnsen == null)
         {
             Debug.LogError("Current player or property is null!");
             return;
         }
-        HotSpringPriceText.text = "Price: " + FormatHotSpringPrice(currentHotSpring); 
+        HotSpringPriceText.text = "Price: " + FormatHotSpringPrice(currentOnsen); 
         buyConfirmationCoroutine = StartCoroutine(BuyConfirmationTimer());
     }
 
 
     private void BuyHotSpring(int currentPlayerIndex)
     {
-            // int buyoutPrice = currentHotSpring.buyoutPrices[stageIndex];
-            int newhotspringprice = currentHotSpring.CalculatePriceHotSpring();
+            // int buyoutPrice = currentOnsen.buyoutPrices[stageIndex];
+            int newhotspringprice = currentOnsen.CalculatePriceOnsen();
             
             if (gameManager != null && currentPlayerIndex >= 0 && currentPlayerIndex < gameManager.players.Length)
             {
@@ -176,21 +176,21 @@ public class HotSpringPopUp : MonoBehaviour
                         currentPlayer.UpdateMoneyText();
                         Debug.Log("Money deducted:" + newhotspringprice );
 
-                        if (!currentHotSpring.owned)
+                        if (!currentOnsen.owned)
                         {
-                            currentHotSpring.owned = true;            
-                            currentHotSpring.ownerID = currentPlayer.playerID;                        
-                            currentHotSpring.teamownerID = currentPlayer.teamID;
-                            currentPlayer.ownedHotSprings.Add(currentHotSpring);
+                            currentOnsen.owned = true;            
+                            currentOnsen.ownerID = currentPlayer.playerID;                        
+                            currentOnsen.teamownerID = currentPlayer.teamID;
+                            currentPlayer.ownedOnsens.Add(currentOnsen);
                         }   
                         Debug.Log("Hot Spring bought successfully.");
 
                         gameObject.SetActive(false); 
 
-                        // propertyManager.DeactivateOldStageImages(currentHotSpring);
-                        // currentHotSpring.stageImages[stageIndex].SetActive(true);
-                        hotSpringManager.ActivateRentTagImage(currentHotSpring);
-                        hotSpringManager.UpdatehotspringRentText(currentHotSpring);
+                        // stallManager.DeactivateOldStageImages(currentOnsen);
+                        // currentOnsen.stageImages[stageIndex].SetActive(true);
+                        onsenManager.ActivateRentTagImage(currentOnsen);
+                        onsenManager.UpdateonsenRentText(currentOnsen);
                         gameManager.HotSpringDecisionMade = true;
                         Debug.Log("gameManager.HotSpringDecisionMade set to : " + gameManager.HotSpringDecisionMade);
                     }
@@ -236,10 +236,10 @@ public class HotSpringPopUp : MonoBehaviour
         Debug.Log("gameManager.HotSpringDecisionMade set to : " + gameManager.HotSpringDecisionMade);
         
     }
-    private string FormatHotSpringPrice (HotSpringManager.HotSpringData hotspring)
+    private string FormatHotSpringPrice (OnsenManager.OnsenData hotspring)
     {
         gameManager = FindObjectOfType<GameManager>();
-        int priceHotSpring = hotspring.CalculateRentPriceHotSpring();
+        int priceHotSpring = hotspring.CalculateRentPriceOnsen();
         string formattedbuyoutPrice = gameManager.FormatPrice(priceHotSpring);
         return formattedbuyoutPrice;
     }

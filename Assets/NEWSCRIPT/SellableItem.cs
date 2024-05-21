@@ -7,14 +7,14 @@ using System.Collections.Generic;
 public class SellableItem
 {
     public StallManager.StallData stallData;
-    public HotSpringManager.HotSpringData hotSpringData;
+    public OnsenManager.OnsenData onsenData;
 
     public string name
     {
         get
         {
             if (stallData != null) return stallData.name;
-            if (hotSpringData != null) return hotSpringData.name;
+            if (onsenData != null) return onsenData.name;
             return string.Empty;
         }
     }
@@ -24,7 +24,7 @@ public class SellableItem
     //     get
     //     {
     //         if (stallData != null) return stallData.stagePrices[stallData.currentStageIndex];
-    //         if (hotSpringData != null) return hotSpringData.priceHotSpring;
+    //         if (onsenData != null) return onsenData.priceOnsen;
     //         return 0;
     //     }
     // }
@@ -43,9 +43,9 @@ public class SellableItem
                     return 0;
                 }
             }
-            else if (hotSpringData != null)
+            else if (onsenData != null)
             {
-                return hotSpringData.priceHotSpring;
+                return onsenData.priceOnsen;
             }
             else
             {
@@ -59,13 +59,13 @@ public class SellableItem
         get
         {
             if (stallData != null) return stallData.JSONwaypointIndex;
-            if (hotSpringData != null) return hotSpringData.HOTSPRINGwaypointIndex;
+            if (onsenData != null) return onsenData.ONSENwaypointIndex;
             return -1;
         }
         set
         {
             if (stallData != null) stallData.JSONwaypointIndex = value;
-            if (hotSpringData != null) hotSpringData.HOTSPRINGwaypointIndex = value;
+            if (onsenData != null) onsenData.ONSENwaypointIndex = value;
         }
     }    
     public int currentStageIndex
@@ -73,13 +73,13 @@ public class SellableItem
         get
         {
             if (stallData != null) return stallData.currentStageIndex;
-            if (hotSpringData != null) return hotSpringData.currentStageIndex;
+            if (onsenData != null) return onsenData.currentStageIndex;
             return -1;
         }
         set
         {
             if (stallData != null) stallData.currentStageIndex = value;
-            if (hotSpringData != null) hotSpringData.currentStageIndex = value;
+            if (onsenData != null) onsenData.currentStageIndex = value;
         }
     }
     public bool owned
@@ -87,13 +87,13 @@ public class SellableItem
         get
         {
             if (stallData != null) return stallData.owned;
-            if (hotSpringData != null) return hotSpringData.owned;
+            if (onsenData != null) return onsenData.owned;
             return false;
         }
         set
         {
             if (stallData != null) stallData.owned = value;
-            if (hotSpringData != null) hotSpringData.owned = value;
+            if (onsenData != null) onsenData.owned = value;
         }
     }
     public bool isFireWork
@@ -101,13 +101,13 @@ public class SellableItem
         get
         {
             if (stallData != null) return stallData.isFireWork;
-            if (hotSpringData != null) return hotSpringData.isFireWork;
+            if (onsenData != null) return onsenData.isFireWork;
             return false;
         }
         set
         {
             if (stallData != null) stallData.isFireWork = value;
-            if (hotSpringData != null) hotSpringData.isFireWork = value;
+            if (onsenData != null) onsenData.isFireWork = value;
         }
     }
     public bool isWelcomeEvent
@@ -115,13 +115,13 @@ public class SellableItem
         get
         {
             if (stallData != null) return stallData.isWelcomeEvent;
-            if (hotSpringData != null) return hotSpringData.isWelcomeEvent;
+            if (onsenData != null) return onsenData.isWelcomeEvent;
             return false;
         }
         set
         {
             if (stallData != null) stallData.isWelcomeEvent = value;
-            if (hotSpringData != null) hotSpringData.isWelcomeEvent = value;
+            if (onsenData != null) onsenData.isWelcomeEvent = value;
         }
     }    
     public int ownerID
@@ -129,13 +129,13 @@ public class SellableItem
         get
         {
             if (stallData != null) return stallData.ownerID;
-            if (hotSpringData != null) return hotSpringData.ownerID;
+            if (onsenData != null) return onsenData.ownerID;
             return 0;
         }
         set
         {
             if (stallData != null) stallData.ownerID = value;
-            if (hotSpringData != null) hotSpringData.ownerID = value;
+            if (onsenData != null) onsenData.ownerID = value;
         }
     }
 
@@ -144,13 +144,13 @@ public class SellableItem
         get
         {
             if (stallData != null) return stallData.teamownerID;
-            if (hotSpringData != null) return hotSpringData.teamownerID;
+            if (onsenData != null) return onsenData.teamownerID;
             return 0;
         }
         set
         {
             if (stallData != null) stallData.teamownerID = value;
-            if (hotSpringData != null) hotSpringData.teamownerID = value;
+            if (onsenData != null) onsenData.teamownerID = value;
         }
     }
     public List<GameObject> RentTagImages
@@ -158,7 +158,7 @@ public class SellableItem
         get
         {
             if (stallData != null) return stallData.rentTagImages;
-            if (hotSpringData != null) return hotSpringData.rentTagImages;
+            if (onsenData != null) return onsenData.rentTagImages;
             return null;
         }
     }
@@ -168,7 +168,7 @@ public class SellableItem
         get
         {
             if (stallData != null) return stallData.rentText;
-            if (hotSpringData != null) return hotSpringData.hotspringRentText;
+            if (onsenData != null) return onsenData.onsenRentText;
             return null;
         }
     }
@@ -181,14 +181,14 @@ public class SellableItem
                 // If it's a property, return the list of stage images
                 return stallData.stageImages;
             }
-            else if (hotSpringData != null)
+            else if (onsenData != null)
             {
-                // If it's a hot spring, return a list containing the HotSpringImage
-                return new List<GameObject> { hotSpringData.HotSpringImage };
+                // If it's a hot spring, return a list containing the OnsenImage
+                return new List<GameObject> { onsenData.OnsenImage };
             }
             else
             {
-                // Neither stallData nor hotSpringData is set, return null
+                // Neither stallData nor onsenData is set, return null
                 return null;
             }
         }
@@ -202,14 +202,14 @@ public class SellableItem
     //         {
     //             return stallData.stageImages[stallData.currentStageIndex];
     //         }
-    //         else if (hotSpringData != null)
+    //         else if (onsenData != null)
     //         {
-    //             return hotSpringData.HotSpringImage;
+    //             return onsenData.OnsenImage;
     //         }
     //         else
     //         {
-    //             // Handle the case where neither stallData nor hotSpringData is set
-    //             Debug.LogWarning("Both stallData and hotSpringData are null.");
+    //             // Handle the case where neither stallData nor onsenData is set
+    //             Debug.LogWarning("Both stallData and onsenData are null.");
     //             return null; // Or return a default GameObject if appropriate
     //         }
     //     }
