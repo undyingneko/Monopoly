@@ -295,17 +295,17 @@ public class CardManager : MonoBehaviour
             StartCoroutine(currentPlayer.ShowMessage("There are no opponent-owned property available for the effect."));
         }
 
-        AfterSelctioon(currentPlayer);
+        AfterSelection(currentPlayer);
         yield return null;
     }
 
     private IEnumerator AvenueDemolitionEffect(PlayerController currentPlayer)
     {
         gameManager.isCardEffect = true;
-        BeforeSelection(currentPlayer);
+        BeforeSelection(currentPlayer);//-------------
             if (currentPlayer.ListPropertiesForEffect.Count > 0)
             {
-                yield return StartCoroutine(Selecting(currentPlayer));
+                yield return StartCoroutine(Selecting(currentPlayer));//---------
 
                 if (currentPlayer.propertyToBeEffected != null)
                 {
@@ -349,22 +349,9 @@ public class CardManager : MonoBehaviour
             }
             else
             {
-                // If no opponent-owned properties are available for demolition, show a message
                 StartCoroutine(currentPlayer.ShowMessage("There are no opponent-owned properties available for demolition."));
             }
-            gameManager.ChanceSelectionMade = false;
-            currentPlayer.ListPropertiesForEffect.Clear();
-            currentPlayer.propertyToBeEffected = null;
-            foreach (var tile in gameManager.waypointIndexToTileMap.Values)
-            {
-                var tileScript = tile.GetComponent<TileScript>();
-                if (tileScript != null)
-                {
-                    tileScript.enabled = true;
-                }
-            }
-            gameManager.isCardEffect = false;
-            yield return null;
+            AfterSelection(currentPlayer);
     }
 
     private IEnumerator PropertySeizureEffect(PlayerController currentPlayer)
@@ -781,7 +768,7 @@ public class CardManager : MonoBehaviour
             Debug.Log("Selected property " + currentPlayer.propertyToBeEffected.name);
     }
 
-    private void AfterSelctioon(PlayerController currentPlayer)
+    private void AfterSelection(PlayerController currentPlayer)
     {
         gameManager.ChanceSelectionMade = false;
         currentPlayer.ListPropertiesForEffect.Clear();
