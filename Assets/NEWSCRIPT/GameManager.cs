@@ -11,9 +11,8 @@ public class GameManager : MonoBehaviour
     public Dictionary<int, GameObject> dice2Sides;
     private Coroutine turnCoroutine;
 
-    public Dictionary<GameObject, SellableItem> tileToPropertyMap = new Dictionary<GameObject, SellableItem>();
-
-    public Dictionary<int, GameObject> waypointIndexToTileMap = new Dictionary<int, GameObject>();
+    private Dictionary<GameObject, SellableItem> tileToPropertyMap;
+    public Dictionary<int, GameObject> waypointIndexToTileMap;
 
     public SellableItem selectedProperty;
     public List<SellableItem> selectedPropertiestoSell;
@@ -173,6 +172,11 @@ public class GameManager : MonoBehaviour
 
    public void AssignTileToWaypointIndex(int waypointIndex, GameObject tileImage)
     {
+        if (waypointIndexToTileMap == null)
+        {
+            waypointIndexToTileMap = new Dictionary<int, GameObject>();
+        } 
+
         if (!waypointIndexToTileMap.ContainsKey(waypointIndex))
         {
             waypointIndexToTileMap.Add(waypointIndex, tileImage);

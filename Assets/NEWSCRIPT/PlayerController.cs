@@ -521,7 +521,7 @@ public class PlayerController : MonoBehaviour
             yield break;
         }
         itemToLandOn = null;
-        var stall = stallManager.GetPropertyByWaypointIndex(currentPosition);
+        var stall = stallManager.GetStallByWaypointIndex(currentPosition);
         var hotSpring = onsenManager.GetOnsenByWaypointIndex(currentPosition);
 
         if (stall != null)

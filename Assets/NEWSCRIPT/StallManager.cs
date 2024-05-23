@@ -223,7 +223,7 @@ public class StallManager : MonoBehaviour
         
     }
 
-    public StallData GetPropertyByWaypointIndex(int JSONwaypointIndex)
+    public StallData GetStallByWaypointIndex(int JSONwaypointIndex)
     {
         foreach (var stall in stalls)
         {

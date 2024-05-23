@@ -124,7 +124,7 @@ public class SellableItem
             if (onsenData != null) onsenData.ONSENwaypointIndex = value;
         }
     }  
-      
+
     public int currentStageIndex
     {
         get
@@ -251,25 +251,18 @@ public class SellableItem
         }
     }
 
-    // public List<GameObject> StageImages
+    // public List<SellableItem> ietms = new List<ItemData>();
+    // public SellableItem GetItemByWaypointIndex(int JSONwaypointIndex)
     // {
-    //     get
+    //     foreach (var item in items)
     //     {
-    //         if (stallData != null && stallData.stageImages != null && stallData.currentStageIndex >= 0 && stallData.currentStageIndex < stallData.stageImages.Count)
+    //         if (item.JSONwaypointIndex == JSONwaypointIndex)
     //         {
-    //             return stallData.stageImages[stallData.currentStageIndex];
-    //         }
-    //         else if (onsenData != null)
-    //         {
-    //             return onsenData.OnsenImage;
-    //         }
-    //         else
-    //         {
-    //             // Handle the case where neither stallData nor onsenData is set
-    //             Debug.LogWarning("Both stallData and onsenData are null.");
-    //             return null; // Or return a default GameObject if appropriate
+    //             Debug.Log("Property found: " + item.name);
+
+    //             return item;
     //         }
     //     }
+    //     return null;
     // }
-
 }
