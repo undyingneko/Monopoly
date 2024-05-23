@@ -6,7 +6,7 @@ public class FileManager : MonoBehaviour
     private void Start()
     {
         string directoryPath = Application.dataPath + "/JSON"; // Example directory path
-        string fileName = "propertiesinfo.json"; // Example file name
+        string fileName = "stallsinfo.json"; // Example file name
         string jsonFilePath = Path.Combine(directoryPath, fileName);
 
         if (File.Exists(jsonFilePath))

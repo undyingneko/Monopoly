@@ -6,6 +6,7 @@ using System.Collections.Generic;
 [System.Serializable]
 public class SellableItem
 {
+    // public SellableItem currentHotspotProperty = null;
     public StallManager.StallData stallData;
     public OnsenManager.OnsenData onsenData;
 
@@ -72,6 +73,24 @@ public class SellableItem
             }
         }
     }
+    public List<int> buyoutPrices
+    {
+        get
+        {
+            if (stallData != null)
+            {
+                return stallData.buyoutPrices;
+            }
+            else if (onsenData != null)
+            {
+                return new List<int>();
+            }
+            else
+            {
+                return new List<int>();
+            }
+        }
+    }
     public List<int> stagePrices
     {
         get
@@ -104,7 +123,8 @@ public class SellableItem
             if (stallData != null) stallData.JSONwaypointIndex = value;
             if (onsenData != null) onsenData.ONSENwaypointIndex = value;
         }
-    }    
+    }  
+      
     public int currentStageIndex
     {
         get

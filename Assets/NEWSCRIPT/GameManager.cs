@@ -6,6 +6,7 @@ using System;
 
 public class GameManager : MonoBehaviour
 {
+    public SellableItem currentHostingFireWork;
     public Dictionary<int, GameObject> dice1Sides;
     public Dictionary<int, GameObject> dice2Sides;
     private Coroutine turnCoroutine;
@@ -20,16 +21,15 @@ public class GameManager : MonoBehaviour
     public static int currentPlayerIndex;
     public static bool GameOver = false;
     
-    private static TextMeshProUGUI[] playerMoney;
     private PlayerController playerController;
     public static GameManager Instance;
 
     public bool buyPropertyDecisionMade = false;
     public bool buyOutDecisionMade = false;
-    public bool HotSpringDecisionMade = false;
+    public bool OnsenDecisionMade = false;
     
     public bool EndedAllInteraction  = false;
-    public bool HotSpotIsSet  = false;
+    public bool FireworkPlaceIsSet  = false;
     public event Action TileImagesLoaded;
     // public bool isAvenueDemolitionActive = false;
     // public bool isPropertySeizureActive = false;
@@ -59,6 +59,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(LoadTileImages());
         LoadDiceSides();
         StartGame();
+        currentHostingFireWork = null;
     }
 
     void StartGame()

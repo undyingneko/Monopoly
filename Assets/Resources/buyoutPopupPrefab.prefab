@@ -514,12 +514,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d85a6fed69eed92449a5d8a806299a17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ownedByTeammateText: {fileID: 0}
   propertyNameText: {fileID: 0}
-  closeButton: {fileID: 0}
-  stageBuyOutPriceText: {fileID: 0}
-  buyButton: {fileID: 0}
-  stageNumberText: {fileID: 0}
+  playerController: {fileID: 0}
   stageImagePrefab: {fileID: 0}
 --- !u!1 &4705118854351209210
 GameObject:

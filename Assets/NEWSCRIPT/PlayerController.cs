@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour
 
     public BuyPropertyPopup012 buy012PopUp;
     public BuyOutPopUp buyoutPopup;
-    public HotSpringPopUp onsenpopup;
+    public OnsenPopUp onsenpopup;
 
     public int playerID;
     public int teamID;
@@ -448,11 +448,9 @@ public class PlayerController : MonoBehaviour
                 EndTurn();
                 yield break;
                 // coroutineAllowed = false;
-
             }
             else
-            {   
-                
+            {      
                 yield return StartCoroutine(WaitForPropertyDecision());
                 StartTurn();  
             }
@@ -484,12 +482,8 @@ public class PlayerController : MonoBehaviour
         while (stepsRemaining > 0)
         {
             currentPosition = (currentPosition + direction) % waypoints.Length; // Calculate the new position
-
-            // Move the player's game object to the new waypoint position
             transform.position = waypoints[currentPosition].position;
-
             stepsRemaining--;
-
             if (currentPosition == 0 && direction == 1)
             {
                 // Add $300,000 to the player's money
@@ -499,8 +493,6 @@ public class PlayerController : MonoBehaviour
             }
             yield return new WaitForSecondsRealtime(0.3f);
         }
-
-        // Update the current position
         yield return StartCoroutine(LandOnProperty());
     }
 
@@ -543,7 +535,7 @@ public class PlayerController : MonoBehaviour
 
         if (itemToLandOn == null)
         {
-            Debug.LogError("No stall or hot spring found at the current position.");
+            Debug.Log("No stall or hot spring found at the current position.");
             yield break;
         }
         if (!itemToLandOn.owned)
@@ -598,7 +590,7 @@ public class PlayerController : MonoBehaviour
                     // ownerPlayer.UpdateMoneyText();
                     fatigueLevel = 0;
                     yield return StartCoroutine(ShowMessage("Your fatigue level has decreased to 0."));
-                    gameManager.HotSpringDecisionMade = true;
+                    gameManager.OnsenDecisionMade = true;
                 }
                 else
                 {
@@ -717,6 +709,8 @@ public class PlayerController : MonoBehaviour
                         }
                     }
                     ListPropertiesForSelling.Clear();
+                    propertiesToSell.Clear();
+                    gameManager.selectedPropertiestoSell.Clear();
                     // ListPropertiesForSelling.AddRange(ownedStalls);
                     foreach (var stalltosell in ownedStalls)
                     {
@@ -857,6 +851,11 @@ public class PlayerController : MonoBehaviour
             propertyToSell.currentStageIndex = -1;
             propertyToSell.isFireWork = false;
             propertyToSell.isWelcomeEvent = false;
+            if (gameManager.currentHostingFireWork == propertyToSell)
+            {
+                gameManager.currentHostingFireWork = null;
+                gameManager.FireworkPlaceIsSet = false;
+            }           
             foreach (GameObject stageImage in propertyToSell.StageImages)
             {
                 stageImage.SetActive(false);
@@ -984,7 +983,7 @@ public class PlayerController : MonoBehaviour
             }
             while (onsenpopup.gameObject.activeSelf)
             {
-                yield return new WaitUntil(() => gameManager.buyOutDecisionMade);
+                yield return new WaitUntil(() => gameManager.OnsenDecisionMade);
             }
         }
         gameManager.EndedAllInteraction = true;

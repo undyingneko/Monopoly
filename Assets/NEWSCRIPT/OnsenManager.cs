@@ -6,7 +6,7 @@ using TMPro;
 
 public class OnsenManager : MonoBehaviour
 {
-    public OnsenData currentHotspotProperty = null;
+    // public OnsenData currentHostingFireWork = null;
     private GameManager gameManager;
 
     public Dictionary<int, string> playerIDToColor  = new Dictionary<int, string>
@@ -110,7 +110,7 @@ public class OnsenManager : MonoBehaviour
             Debug.LogError("Canvas transform reference not set. Please assign the Canvas transform in the Inspector.");
             return;
         }
-        currentHotspotProperty = null;
+        // currentHostingFireWork = null;
         
     }
 
@@ -131,7 +131,7 @@ public class OnsenManager : MonoBehaviour
         }
         DontDestroyOnLoad(gameObject);
         // Loadonsens();
-        currentHotspotProperty = null;
+        // currentHostingFireWork = null;
         InitializeOnsens();
     }
 

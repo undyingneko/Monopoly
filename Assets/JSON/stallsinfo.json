@@ -1,5 +1,5 @@
 {
-    "properties": [
+    "stalls": [
         {
             "name": "Vending Machine",
             "JSONwaypointIndex": 1,

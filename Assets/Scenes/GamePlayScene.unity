@@ -276,29 +276,79 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3710db7ca05f0e146bfc8f3b1cad70db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ownedProperties: []
+  ownedStalls: []
+  ownedOnsens: []
   ListPropertiesForEffect: []
   propertyToBeEffected:
-    name: 
-    JSONwaypointIndex: 0
-    priceStallBase: 0
-    stagePrices: 
-    rentPrices: 
-    buyoutPrices: 
-    stageIndexes: 
-    stageImages: []
-    rentTagImages: []
-    rentText: {fileID: 0}
-    owned: 0
-    ownerID: 0
-    teamownerID: 0
-    buyoutMultiplier: 0
-    buyoutCount: 0
-    currentStageIndex: 0
-    nextStageIndex: 0
-    isComplimentaryMeal: 0
-    isHotSpot: 0
-  ownedHotSprings: []
+    stallData:
+      name: 
+      JSONwaypointIndex: 0
+      priceStallBase: 0
+      stagePrices: 
+      rentPrices: 
+      buyoutPrices: 
+      stageIndexes: 
+      stageImages: []
+      rentTagImages: []
+      rentText: {fileID: 0}
+      owned: 0
+      ownerID: 0
+      teamownerID: 0
+      buyoutMultiplier: 0
+      buyoutCount: 0
+      currentStageIndex: 0
+      nextStageIndex: 0
+      isWelcomeEvent: 0
+      isFireWork: 0
+    onsenData:
+      name: 
+      ONSENwaypointIndex: 0
+      priceOnsen: 0
+      rentPriceOnsen: 0
+      onsenRentText: {fileID: 0}
+      OnsenImage: {fileID: 0}
+      currentStageIndex: 0
+      rentTagImages: []
+      owned: 0
+      ownerID: 0
+      teamownerID: 0
+      isWelcomeEvent: 0
+      isFireWork: 0
+  itemToLandOn:
+    stallData:
+      name: 
+      JSONwaypointIndex: 0
+      priceStallBase: 0
+      stagePrices: 
+      rentPrices: 
+      buyoutPrices: 
+      stageIndexes: 
+      stageImages: []
+      rentTagImages: []
+      rentText: {fileID: 0}
+      owned: 0
+      ownerID: 0
+      teamownerID: 0
+      buyoutMultiplier: 0
+      buyoutCount: 0
+      currentStageIndex: 0
+      nextStageIndex: 0
+      isWelcomeEvent: 0
+      isFireWork: 0
+    onsenData:
+      name: 
+      ONSENwaypointIndex: 0
+      priceOnsen: 0
+      rentPriceOnsen: 0
+      onsenRentText: {fileID: 0}
+      OnsenImage: {fileID: 0}
+      currentStageIndex: 0
+      rentTagImages: []
+      owned: 0
+      ownerID: 0
+      teamownerID: 0
+      isWelcomeEvent: 0
+      isFireWork: 0
   ListPropertiesForSelling: []
   propertiesToSell: []
   dice1Value: 0
@@ -308,7 +358,7 @@ MonoBehaviour:
   ChancePopUp: {fileID: 624023700}
   buy012PopUp: {fileID: 1441252303}
   buyoutPopup: {fileID: 300168892}
-  hotspringpopup: {fileID: 265026969}
+  onsenpopup: {fileID: 265026969}
   playerID: 0
   teamID: 0
   teamNumberText: {fileID: 1736353393}
@@ -366,7 +416,7 @@ MonoBehaviour:
   isBuyPopUpActive: 0
   isHotSpringActive: 0
   hasGetOutOfJailCard: 0
-  hasFreeRentTicket: 0
+  hasVipExperienceTicket: 0
   dice1InputField: {fileID: 1479226503133869407}
   dice2InputField: {fileID: 1974608350515488990}
 --- !u!1001 &24911590
@@ -476,6 +526,7 @@ GameObject:
   m_Component:
   - component: {fileID: 32433899}
   - component: {fileID: 32433898}
+  - component: {fileID: 32433900}
   m_Layer: 0
   m_Name: tile_4
   m_TagString: Tile
@@ -556,6 +607,27 @@ Transform:
   - {fileID: 1819281467}
   m_Father: {fileID: 1003896591}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &32433900
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 32433897}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 7.74, y: 5.7, z: 0.2}
+  m_Center: {x: 0, y: -0.0000009536743, z: -0.0000033908436}
 --- !u!224 &36127449 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 542117287431148104, guid: 116aa0c3487039545beebdca96177ae2, type: 3}
@@ -5027,22 +5099,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2de0eccf65ae0ce4591a61b01598cb1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHotspotProperty:
-    name: 
-    HOTSPRINGwaypointIndex: 0
-    priceHotSpring: 0
-    rentPriceSHotSpring: 0
-    hotspringRentText: {fileID: 0}
-    HotSpringImage: {fileID: 0}
-    currentStageIndex: 0
-    rentTagImages: []
-    owned: 0
-    ownerID: 0
-    teamownerID: 0
-    isComplimentaryMeal: 0
-    isHotSpot: 0
   canvasTransform: {fileID: 1311088092}
-  hotsprings: []
+  onsens: []
 --- !u!4 &394318140
 Transform:
   m_ObjectHideFlags: 0
@@ -7105,6 +7163,7 @@ GameObject:
   m_Component:
   - component: {fileID: 583307068}
   - component: {fileID: 583307067}
+  - component: {fileID: 583307069}
   m_Layer: 0
   m_Name: tile_28
   m_TagString: Tile
@@ -7179,6 +7238,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1003896591}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &583307069
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 583307066}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 7.78, y: 5.86, z: 0.2}
+  m_Center: {x: -0.0000009536743, y: -0.0000009536743, z: -0.00000339084}
 --- !u!1001 &584697425
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9600,22 +9680,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2de0eccf65ae0ce4591a61b01598cb1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHotspotProperty:
-    name: 
-    HOTSPRINGwaypointIndex: 0
-    priceHotSpring: 0
-    rentPriceSHotSpring: 0
-    hotspringRentText: {fileID: 0}
-    HotSpringImage: {fileID: 0}
-    currentStageIndex: 0
-    rentTagImages: []
-    owned: 0
-    ownerID: 0
-    teamownerID: 0
-    isComplimentaryMeal: 0
-    isHotSpot: 0
   canvasTransform: {fileID: 1311088092}
-  hotsprings: []
+  onsens: []
 --- !u!4 &737263560
 Transform:
   m_ObjectHideFlags: 0
@@ -10249,29 +10315,79 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3710db7ca05f0e146bfc8f3b1cad70db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ownedProperties: []
+  ownedStalls: []
+  ownedOnsens: []
   ListPropertiesForEffect: []
   propertyToBeEffected:
-    name: 
-    JSONwaypointIndex: 0
-    priceStallBase: 0
-    stagePrices: 
-    rentPrices: 
-    buyoutPrices: 
-    stageIndexes: 
-    stageImages: []
-    rentTagImages: []
-    rentText: {fileID: 0}
-    owned: 0
-    ownerID: 0
-    teamownerID: 0
-    buyoutMultiplier: 0
-    buyoutCount: 0
-    currentStageIndex: 0
-    nextStageIndex: 0
-    isComplimentaryMeal: 0
-    isHotSpot: 0
-  ownedHotSprings: []
+    stallData:
+      name: 
+      JSONwaypointIndex: 0
+      priceStallBase: 0
+      stagePrices: 
+      rentPrices: 
+      buyoutPrices: 
+      stageIndexes: 
+      stageImages: []
+      rentTagImages: []
+      rentText: {fileID: 0}
+      owned: 0
+      ownerID: 0
+      teamownerID: 0
+      buyoutMultiplier: 0
+      buyoutCount: 0
+      currentStageIndex: 0
+      nextStageIndex: 0
+      isWelcomeEvent: 0
+      isFireWork: 0
+    onsenData:
+      name: 
+      ONSENwaypointIndex: 0
+      priceOnsen: 0
+      rentPriceOnsen: 0
+      onsenRentText: {fileID: 0}
+      OnsenImage: {fileID: 0}
+      currentStageIndex: 0
+      rentTagImages: []
+      owned: 0
+      ownerID: 0
+      teamownerID: 0
+      isWelcomeEvent: 0
+      isFireWork: 0
+  itemToLandOn:
+    stallData:
+      name: 
+      JSONwaypointIndex: 0
+      priceStallBase: 0
+      stagePrices: 
+      rentPrices: 
+      buyoutPrices: 
+      stageIndexes: 
+      stageImages: []
+      rentTagImages: []
+      rentText: {fileID: 0}
+      owned: 0
+      ownerID: 0
+      teamownerID: 0
+      buyoutMultiplier: 0
+      buyoutCount: 0
+      currentStageIndex: 0
+      nextStageIndex: 0
+      isWelcomeEvent: 0
+      isFireWork: 0
+    onsenData:
+      name: 
+      ONSENwaypointIndex: 0
+      priceOnsen: 0
+      rentPriceOnsen: 0
+      onsenRentText: {fileID: 0}
+      OnsenImage: {fileID: 0}
+      currentStageIndex: 0
+      rentTagImages: []
+      owned: 0
+      ownerID: 0
+      teamownerID: 0
+      isWelcomeEvent: 0
+      isFireWork: 0
   ListPropertiesForSelling: []
   propertiesToSell: []
   dice1Value: 0
@@ -10281,7 +10397,7 @@ MonoBehaviour:
   ChancePopUp: {fileID: 1707998966}
   buy012PopUp: {fileID: 478391559}
   buyoutPopup: {fileID: 1496075055}
-  hotspringpopup: {fileID: 1314405645}
+  onsenpopup: {fileID: 1314405645}
   playerID: 0
   teamID: 0
   teamNumberText: {fileID: 1306345115}
@@ -10339,7 +10455,7 @@ MonoBehaviour:
   isBuyPopUpActive: 0
   isHotSpringActive: 0
   hasGetOutOfJailCard: 0
-  hasFreeRentTicket: 0
+  hasVipExperienceTicket: 0
   dice1InputField: {fileID: 1479226503133869407}
   dice2InputField: {fileID: 1974608350515488990}
 --- !u!1 &797593589
@@ -10750,29 +10866,79 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3710db7ca05f0e146bfc8f3b1cad70db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ownedProperties: []
+  ownedStalls: []
+  ownedOnsens: []
   ListPropertiesForEffect: []
   propertyToBeEffected:
-    name: 
-    JSONwaypointIndex: 0
-    priceStallBase: 0
-    stagePrices: 
-    rentPrices: 
-    buyoutPrices: 
-    stageIndexes: 
-    stageImages: []
-    rentTagImages: []
-    rentText: {fileID: 0}
-    owned: 0
-    ownerID: 0
-    teamownerID: 0
-    buyoutMultiplier: 0
-    buyoutCount: 0
-    currentStageIndex: 0
-    nextStageIndex: 0
-    isComplimentaryMeal: 0
-    isHotSpot: 0
-  ownedHotSprings: []
+    stallData:
+      name: 
+      JSONwaypointIndex: 0
+      priceStallBase: 0
+      stagePrices: 
+      rentPrices: 
+      buyoutPrices: 
+      stageIndexes: 
+      stageImages: []
+      rentTagImages: []
+      rentText: {fileID: 0}
+      owned: 0
+      ownerID: 0
+      teamownerID: 0
+      buyoutMultiplier: 0
+      buyoutCount: 0
+      currentStageIndex: 0
+      nextStageIndex: 0
+      isWelcomeEvent: 0
+      isFireWork: 0
+    onsenData:
+      name: 
+      ONSENwaypointIndex: 0
+      priceOnsen: 0
+      rentPriceOnsen: 0
+      onsenRentText: {fileID: 0}
+      OnsenImage: {fileID: 0}
+      currentStageIndex: 0
+      rentTagImages: []
+      owned: 0
+      ownerID: 0
+      teamownerID: 0
+      isWelcomeEvent: 0
+      isFireWork: 0
+  itemToLandOn:
+    stallData:
+      name: 
+      JSONwaypointIndex: 0
+      priceStallBase: 0
+      stagePrices: 
+      rentPrices: 
+      buyoutPrices: 
+      stageIndexes: 
+      stageImages: []
+      rentTagImages: []
+      rentText: {fileID: 0}
+      owned: 0
+      ownerID: 0
+      teamownerID: 0
+      buyoutMultiplier: 0
+      buyoutCount: 0
+      currentStageIndex: 0
+      nextStageIndex: 0
+      isWelcomeEvent: 0
+      isFireWork: 0
+    onsenData:
+      name: 
+      ONSENwaypointIndex: 0
+      priceOnsen: 0
+      rentPriceOnsen: 0
+      onsenRentText: {fileID: 0}
+      OnsenImage: {fileID: 0}
+      currentStageIndex: 0
+      rentTagImages: []
+      owned: 0
+      ownerID: 0
+      teamownerID: 0
+      isWelcomeEvent: 0
+      isFireWork: 0
   ListPropertiesForSelling: []
   propertiesToSell: []
   dice1Value: 0
@@ -10782,7 +10948,7 @@ MonoBehaviour:
   ChancePopUp: {fileID: 983940245}
   buy012PopUp: {fileID: 1600060962}
   buyoutPopup: {fileID: 1600246662}
-  hotspringpopup: {fileID: 2060203993}
+  onsenpopup: {fileID: 2060203993}
   playerID: 0
   teamID: 0
   teamNumberText: {fileID: 2077393189}
@@ -10840,7 +11006,7 @@ MonoBehaviour:
   isBuyPopUpActive: 0
   isHotSpringActive: 0
   hasGetOutOfJailCard: 0
-  hasFreeRentTicket: 0
+  hasVipExperienceTicket: 0
   dice1InputField: {fileID: 1479226503133869407}
   dice2InputField: {fileID: 1974608350515488990}
 --- !u!224 &820935822 stripped
@@ -11697,28 +11863,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34fbde47ccd54064faf0a402121f9dc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHotspotProperty:
-    name: 
-    JSONwaypointIndex: 0
-    priceStallBase: 0
-    stagePrices: 
-    rentPrices: 
-    buyoutPrices: 
-    stageIndexes: 
-    stageImages: []
-    rentTagImages: []
-    rentText: {fileID: 0}
-    owned: 0
-    ownerID: 0
-    teamownerID: 0
-    buyoutMultiplier: 0
-    buyoutCount: 0
-    currentStageIndex: 0
-    nextStageIndex: 0
-    isComplimentaryMeal: 0
-    isHotSpot: 0
   canvasTransform: {fileID: 1311088092}
-  properties: []
+  stalls: []
 --- !u!4 &948943369
 Transform:
   m_ObjectHideFlags: 0
@@ -15540,6 +15686,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1252861937}
   - component: {fileID: 1252861936}
+  - component: {fileID: 1252861938}
   m_Layer: 0
   m_Name: tile_12
   m_TagString: Tile
@@ -15614,6 +15761,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1003896591}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1252861938
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1252861935}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 7.78, y: 5.86, z: 0.2}
+  m_Center: {x: 0, y: -0.00000047683716, z: -0.00000339084}
 --- !u!224 &1253323478 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 746077332049612074, guid: fc3d93c9bf81c15468e9b62d683a10d5, type: 3}
@@ -15824,6 +15992,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1277477900}
   - component: {fileID: 1277477899}
+  - component: {fileID: 1277477901}
   m_Layer: 0
   m_Name: tile_20
   m_TagString: Tile
@@ -15898,6 +16067,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1003896591}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1277477901
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1277477898}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 7.74, y: 5.86, z: 0.2}
+  m_Center: {x: 0, y: 0, z: -0.00000339084}
 --- !u!1 &1288277757
 GameObject:
   m_ObjectHideFlags: 0
@@ -15927,26 +16117,76 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81603feafd31f5c449529e6487cea457, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentHostingFireWork:
+    stallData:
+      name: 
+      JSONwaypointIndex: 0
+      priceStallBase: 0
+      stagePrices: 
+      rentPrices: 
+      buyoutPrices: 
+      stageIndexes: 
+      stageImages: []
+      rentTagImages: []
+      rentText: {fileID: 0}
+      owned: 0
+      ownerID: 0
+      teamownerID: 0
+      buyoutMultiplier: 0
+      buyoutCount: 0
+      currentStageIndex: 0
+      nextStageIndex: 0
+      isWelcomeEvent: 0
+      isFireWork: 0
+    onsenData:
+      name: 
+      ONSENwaypointIndex: 0
+      priceOnsen: 0
+      rentPriceOnsen: 0
+      onsenRentText: {fileID: 0}
+      OnsenImage: {fileID: 0}
+      currentStageIndex: 0
+      rentTagImages: []
+      owned: 0
+      ownerID: 0
+      teamownerID: 0
+      isWelcomeEvent: 0
+      isFireWork: 0
   selectedProperty:
-    name: 
-    JSONwaypointIndex: 0
-    priceStallBase: 0
-    stagePrices: 
-    rentPrices: 
-    buyoutPrices: 
-    stageIndexes: 
-    stageImages: []
-    rentTagImages: []
-    rentText: {fileID: 0}
-    owned: 0
-    ownerID: 0
-    teamownerID: 0
-    buyoutMultiplier: 0
-    buyoutCount: 0
-    currentStageIndex: 0
-    nextStageIndex: 0
-    isComplimentaryMeal: 0
-    isHotSpot: 0
+    stallData:
+      name: 
+      JSONwaypointIndex: 0
+      priceStallBase: 0
+      stagePrices: 
+      rentPrices: 
+      buyoutPrices: 
+      stageIndexes: 
+      stageImages: []
+      rentTagImages: []
+      rentText: {fileID: 0}
+      owned: 0
+      ownerID: 0
+      teamownerID: 0
+      buyoutMultiplier: 0
+      buyoutCount: 0
+      currentStageIndex: 0
+      nextStageIndex: 0
+      isWelcomeEvent: 0
+      isFireWork: 0
+    onsenData:
+      name: 
+      ONSENwaypointIndex: 0
+      priceOnsen: 0
+      rentPriceOnsen: 0
+      onsenRentText: {fileID: 0}
+      OnsenImage: {fileID: 0}
+      currentStageIndex: 0
+      rentTagImages: []
+      owned: 0
+      ownerID: 0
+      teamownerID: 0
+      isWelcomeEvent: 0
+      isFireWork: 0
   selectedPropertiestoSell: []
   players:
   - {fileID: 793143341}
@@ -15955,9 +16195,9 @@ MonoBehaviour:
   - {fileID: 817987055}
   buyPropertyDecisionMade: 0
   buyOutDecisionMade: 0
-  HotSpringDecisionMade: 0
+  OnsenDecisionMade: 0
   EndedAllInteraction: 0
-  HotSpotIsSet: 0
+  FireworkPlaceIsSet: 0
   isCardEffect: 0
   ChanceSelectionMade: 0
   plus300Text: {fileID: 1259017702}
@@ -20599,29 +20839,79 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3710db7ca05f0e146bfc8f3b1cad70db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ownedProperties: []
+  ownedStalls: []
+  ownedOnsens: []
   ListPropertiesForEffect: []
   propertyToBeEffected:
-    name: 
-    JSONwaypointIndex: 0
-    priceStallBase: 0
-    stagePrices: 
-    rentPrices: 
-    buyoutPrices: 
-    stageIndexes: 
-    stageImages: []
-    rentTagImages: []
-    rentText: {fileID: 0}
-    owned: 0
-    ownerID: 0
-    teamownerID: 0
-    buyoutMultiplier: 0
-    buyoutCount: 0
-    currentStageIndex: 0
-    nextStageIndex: 0
-    isComplimentaryMeal: 0
-    isHotSpot: 0
-  ownedHotSprings: []
+    stallData:
+      name: 
+      JSONwaypointIndex: 0
+      priceStallBase: 0
+      stagePrices: 
+      rentPrices: 
+      buyoutPrices: 
+      stageIndexes: 
+      stageImages: []
+      rentTagImages: []
+      rentText: {fileID: 0}
+      owned: 0
+      ownerID: 0
+      teamownerID: 0
+      buyoutMultiplier: 0
+      buyoutCount: 0
+      currentStageIndex: 0
+      nextStageIndex: 0
+      isWelcomeEvent: 0
+      isFireWork: 0
+    onsenData:
+      name: 
+      ONSENwaypointIndex: 0
+      priceOnsen: 0
+      rentPriceOnsen: 0
+      onsenRentText: {fileID: 0}
+      OnsenImage: {fileID: 0}
+      currentStageIndex: 0
+      rentTagImages: []
+      owned: 0
+      ownerID: 0
+      teamownerID: 0
+      isWelcomeEvent: 0
+      isFireWork: 0
+  itemToLandOn:
+    stallData:
+      name: 
+      JSONwaypointIndex: 0
+      priceStallBase: 0
+      stagePrices: 
+      rentPrices: 
+      buyoutPrices: 
+      stageIndexes: 
+      stageImages: []
+      rentTagImages: []
+      rentText: {fileID: 0}
+      owned: 0
+      ownerID: 0
+      teamownerID: 0
+      buyoutMultiplier: 0
+      buyoutCount: 0
+      currentStageIndex: 0
+      nextStageIndex: 0
+      isWelcomeEvent: 0
+      isFireWork: 0
+    onsenData:
+      name: 
+      ONSENwaypointIndex: 0
+      priceOnsen: 0
+      rentPriceOnsen: 0
+      onsenRentText: {fileID: 0}
+      OnsenImage: {fileID: 0}
+      currentStageIndex: 0
+      rentTagImages: []
+      owned: 0
+      ownerID: 0
+      teamownerID: 0
+      isWelcomeEvent: 0
+      isFireWork: 0
   ListPropertiesForSelling: []
   propertiesToSell: []
   dice1Value: 0
@@ -20631,7 +20921,7 @@ MonoBehaviour:
   ChancePopUp: {fileID: 1455233872}
   buy012PopUp: {fileID: 61338422}
   buyoutPopup: {fileID: 2099122993}
-  hotspringpopup: {fileID: 146907672}
+  onsenpopup: {fileID: 146907672}
   playerID: 0
   teamID: 0
   teamNumberText: {fileID: 989305671}
@@ -20689,7 +20979,7 @@ MonoBehaviour:
   isBuyPopUpActive: 0
   isHotSpringActive: 0
   hasGetOutOfJailCard: 0
-  hasFreeRentTicket: 0
+  hasVipExperienceTicket: 0
   dice1InputField: {fileID: 1479226503133869407}
   dice2InputField: {fileID: 1974608350515488990}
 --- !u!224 &1682997558 stripped

@@ -1561,7 +1561,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ownedByTeammateText: {fileID: 6977126618214970440}
-  BuyPropertyPopup_propertyNameText: {fileID: 3295771986349976592}
+  BuyPropertyPopup_stallNameText: {fileID: 3295771986349976592}
   BuyPropertyPopup_stagePriceTexts:
   - {fileID: 1587165969597844210}
   - {fileID: 2635298637795039258}

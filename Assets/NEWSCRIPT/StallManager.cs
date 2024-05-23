@@ -6,7 +6,7 @@ using TMPro;
 
 public class StallManager : MonoBehaviour
 {
-    public StallData currentHotspotProperty = null;
+    // public StallData currentHostingFireWork = null;
     private GameManager gameManager;
 
     public Dictionary<int, string> playerIDToColor  = new Dictionary<int, string>
@@ -147,7 +147,7 @@ public class StallManager : MonoBehaviour
             Debug.LogError("Canvas transform reference not set. Please assign the Canvas transform in the Inspector.");
             return;
         }
-        currentHotspotProperty = null;
+        // currentHostingFireWork = null;
     }
 
     private void Awake()
@@ -167,7 +167,7 @@ public class StallManager : MonoBehaviour
         }
         DontDestroyOnLoad(gameObject);
         // Loadstalls();
-        currentHotspotProperty = null;
+        // currentHostingFireWork = null;
     }
 
     private void OnTileImagesLoaded()

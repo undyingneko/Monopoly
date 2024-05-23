@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using System.Collections;
 using Unity.Properties;
 
-public class HotSpringPopUp : MonoBehaviour
+public class OnsenPopUp : MonoBehaviour
 {
     [SerializeField]
     // private TextMeshProUGUI ownedByTeammateText;
@@ -191,14 +191,15 @@ public class HotSpringPopUp : MonoBehaviour
                         // currentOnsen.stageImages[stageIndex].SetActive(true);
                         onsenManager.ActivateRentTagImage(currentOnsen);
                         onsenManager.UpdateonsenRentText(currentOnsen);
-                        gameManager.HotSpringDecisionMade = true;
-                        Debug.Log("gameManager.HotSpringDecisionMade set to : " + gameManager.HotSpringDecisionMade);
+                        currentOnsen.OnsenImage.SetActive(true);
+                        gameManager.OnsenDecisionMade = true;
+                        Debug.Log("gameManager.OnsenDecisionMade set to : " + gameManager.OnsenDecisionMade);
                     }
                     else
                     {
                         Debug.LogWarning("Insufficient funds to buy the property.");
-                        gameManager.HotSpringDecisionMade = true;
-                        Debug.Log("gameManager.HotSpringDecisionMade set to : " + gameManager.HotSpringDecisionMade);
+                        gameManager.OnsenDecisionMade = true;
+                        Debug.Log("gameManager.OnsenDecisionMade set to : " + gameManager.OnsenDecisionMade);
                     }
                 }
                 else
@@ -224,16 +225,16 @@ public class HotSpringPopUp : MonoBehaviour
         // Close the popup after the confirmation time if no purchase is made
         gameObject.SetActive(false);
         // playerController.EndBuyPropertyInteraction();
-        gameManager.HotSpringDecisionMade = true;
-        Debug.Log("gameManager.HotSpringDecisionMade set to : " + gameManager.HotSpringDecisionMade);
+        gameManager.OnsenDecisionMade = true;
+        Debug.Log("gameManager.OnsenDecisionMade set to : " + gameManager.OnsenDecisionMade);
     }
     public void Decline()
     {
         // Close the popup immediately when the close button is pressed
         gameObject.SetActive(false);
         // playerController.EndBuyPropertyInteraction();
-        gameManager.HotSpringDecisionMade = true;
-        Debug.Log("gameManager.HotSpringDecisionMade set to : " + gameManager.HotSpringDecisionMade);
+        gameManager.OnsenDecisionMade = true;
+        Debug.Log("gameManager.OnsenDecisionMade set to : " + gameManager.OnsenDecisionMade);
         
     }
     private string FormatHotSpringPrice (OnsenManager.OnsenData hotspring)
