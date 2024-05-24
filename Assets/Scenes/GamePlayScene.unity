@@ -123,6 +123,107 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &5220690
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1311088092}
+    m_Modifications:
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 827.80005
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_Name
+      value: TilepopupPrefab_3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
 --- !u!224 &5381024 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6460250147205460556, guid: 85da8ce292a093d4b9ebf1f7935291bf, type: 3}
@@ -359,6 +460,7 @@ MonoBehaviour:
   buy012PopUp: {fileID: 1441252303}
   buyoutPopup: {fileID: 300168892}
   onsenpopup: {fileID: 265026969}
+  tilePopup: {fileID: 1631320401}
   playerID: 0
   teamID: 0
   teamNumberText: {fileID: 1736353393}
@@ -654,11 +756,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupName: TilepopupPrefab
-  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
-  canvas: {fileID: 1311088091}
-  assignedPopup: {fileID: 0}
-  Tilepopup_closeButton: {fileID: 0}
+  currentPlayerController: {fileID: 0}
 --- !u!224 &36127449 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 542117287431148104, guid: 116aa0c3487039545beebdca96177ae2, type: 3}
@@ -1393,11 +1491,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupName: TilepopupPrefab
-  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
-  canvas: {fileID: 1311088091}
-  assignedPopup: {fileID: 0}
-  Tilepopup_closeButton: {fileID: 0}
+  currentPlayerController: {fileID: 0}
 --- !u!65 &113239165
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3116,11 +3210,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupName: TilepopupPrefab
-  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
-  canvas: {fileID: 1311088091}
-  assignedPopup: {fileID: 0}
-  Tilepopup_closeButton: {fileID: 0}
+  currentPlayerController: {fileID: 0}
 --- !u!65 &226369774
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4448,11 +4538,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupName: TilepopupPrefab
-  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
-  canvas: {fileID: 1311088091}
-  assignedPopup: {fileID: 0}
-  Tilepopup_closeButton: {fileID: 0}
+  currentPlayerController: {fileID: 0}
 --- !u!65 &355771000
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6911,11 +6997,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupName: TilepopupPrefab
-  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
-  canvas: {fileID: 1311088091}
-  assignedPopup: {fileID: 0}
-  Tilepopup_closeButton: {fileID: 0}
+  currentPlayerController: {fileID: 0}
 --- !u!65 &550673980
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7051,11 +7133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupName: TilepopupPrefab
-  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
-  canvas: {fileID: 1311088091}
-  assignedPopup: {fileID: 0}
-  Tilepopup_closeButton: {fileID: 0}
+  currentPlayerController: {fileID: 0}
 --- !u!65 &567536206
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8126,11 +8204,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupName: TilepopupPrefab
-  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
-  canvas: {fileID: 1311088091}
-  assignedPopup: {fileID: 0}
-  Tilepopup_closeButton: {fileID: 0}
+  currentPlayerController: {fileID: 0}
 --- !u!65 &644995776
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8838,11 +8912,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupName: TilepopupPrefab
-  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
-  canvas: {fileID: 1311088091}
-  assignedPopup: {fileID: 0}
-  Tilepopup_closeButton: {fileID: 0}
+  currentPlayerController: {fileID: 0}
 --- !u!65 &699870123
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8876,6 +8946,107 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86c7e890d93936d4e9be9ebc01fd6b30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &700467782
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1311088092}
+    m_Modifications:
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 827.80005
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_Name
+      value: TilepopupPrefab_2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
 --- !u!1 &702703698
 GameObject:
   m_ObjectHideFlags: 0
@@ -8985,11 +9156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupName: TilepopupPrefab
-  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
-  canvas: {fileID: 1311088091}
-  assignedPopup: {fileID: 0}
-  Tilepopup_closeButton: {fileID: 0}
+  currentPlayerController: {fileID: 0}
 --- !u!65 &702703702
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9333,11 +9500,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupName: TilepopupPrefab
-  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
-  canvas: {fileID: 1311088091}
-  assignedPopup: {fileID: 0}
-  Tilepopup_closeButton: {fileID: 0}
+  currentPlayerController: {fileID: 0}
 --- !u!65 &714587846
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9858,11 +10021,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupName: TilepopupPrefab
-  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
-  canvas: {fileID: 1311088091}
-  assignedPopup: {fileID: 0}
-  Tilepopup_closeButton: {fileID: 0}
+  currentPlayerController: {fileID: 0}
 --- !u!65 &746459778
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -10446,6 +10605,7 @@ MonoBehaviour:
   buy012PopUp: {fileID: 478391559}
   buyoutPopup: {fileID: 1496075055}
   onsenpopup: {fileID: 1314405645}
+  tilePopup: {fileID: 1595655892}
   playerID: 0
   teamID: 0
   teamNumberText: {fileID: 1306345115}
@@ -10997,6 +11157,7 @@ MonoBehaviour:
   buy012PopUp: {fileID: 1600060962}
   buyoutPopup: {fileID: 1600246662}
   onsenpopup: {fileID: 2060203993}
+  tilePopup: {fileID: 1864966995}
   playerID: 0
   teamID: 0
   teamNumberText: {fileID: 2077393189}
@@ -11840,11 +12001,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupName: TilepopupPrefab
-  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
-  canvas: {fileID: 1311088091}
-  assignedPopup: {fileID: 0}
-  Tilepopup_closeButton: {fileID: 0}
+  currentPlayerController: {fileID: 0}
 --- !u!65 &934837767
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13311,11 +13468,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupName: TilepopupPrefab
-  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
-  canvas: {fileID: 1311088091}
-  assignedPopup: {fileID: 0}
-  Tilepopup_closeButton: {fileID: 0}
+  currentPlayerController: {fileID: 0}
 --- !u!65 &1030296632
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14251,7 +14404,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
       propertyPath: m_Name
-      value: TilepopupPrefab
+      value: TilepopupPrefab_0
       objectReference: {fileID: 0}
     - target: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
       propertyPath: m_IsActive
@@ -15274,11 +15427,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupName: TilepopupPrefab
-  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
-  canvas: {fileID: 1311088091}
-  assignedPopup: {fileID: 0}
-  Tilepopup_closeButton: {fileID: 0}
+  currentPlayerController: {fileID: 0}
 --- !u!65 &1204162626
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -17229,6 +17378,9 @@ RectTransform:
   - {fileID: 2129439399161125630}
   - {fileID: 8200925308322033328}
   - {fileID: 1595655893}
+  - {fileID: 1602686092}
+  - {fileID: 1631320402}
+  - {fileID: 1864966996}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -18395,11 +18547,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupName: TilepopupPrefab
-  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
-  canvas: {fileID: 1311088091}
-  assignedPopup: {fileID: 0}
-  Tilepopup_closeButton: {fileID: 0}
+  currentPlayerController: {fileID: 0}
 --- !u!65 &1424931539
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -18542,11 +18690,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupName: TilepopupPrefab
-  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
-  canvas: {fileID: 1311088091}
-  assignedPopup: {fileID: 0}
-  Tilepopup_closeButton: {fileID: 0}
+  currentPlayerController: {fileID: 0}
 --- !u!65 &1426842057
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -19145,11 +19289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupName: TilepopupPrefab
-  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
-  canvas: {fileID: 1311088091}
-  assignedPopup: {fileID: 0}
-  Tilepopup_closeButton: {fileID: 0}
+  currentPlayerController: {fileID: 0}
 --- !u!65 &1495957055
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -20014,6 +20154,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1386837867997331502, guid: df3d4855ab4d909409391fd23e1f2592, type: 3}
   m_PrefabInstance: {fileID: 1211099166}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1595655892 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+  m_PrefabInstance: {fileID: 1120336731}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1595655893 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
@@ -20051,6 +20196,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d85a6fed69eed92449a5d8a806299a17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1602686091 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+  m_PrefabInstance: {fileID: 1752534706}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &1602686092 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+  m_PrefabInstance: {fileID: 1752534706}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1612570217
 GameObject:
   m_ObjectHideFlags: 0
@@ -20095,6 +20250,16 @@ RectTransform:
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5292238981095045069, guid: e4e29d626ae3c8c4ab9f229fd963dcef, type: 3}
   m_PrefabInstance: {fileID: 974085706}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1631320401 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+  m_PrefabInstance: {fileID: 700467782}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &1631320402 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+  m_PrefabInstance: {fileID: 700467782}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1635103989
 GameObject:
@@ -20213,11 +20378,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupName: TilepopupPrefab
-  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
-  canvas: {fileID: 1311088091}
-  assignedPopup: {fileID: 0}
-  Tilepopup_closeButton: {fileID: 0}
+  currentPlayerController: {fileID: 0}
 --- !u!65 &1635103994
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -20445,11 +20606,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupName: TilepopupPrefab
-  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
-  canvas: {fileID: 1311088091}
-  assignedPopup: {fileID: 0}
-  Tilepopup_closeButton: {fileID: 0}
+  currentPlayerController: {fileID: 0}
 --- !u!65 &1637674617
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -20613,11 +20770,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupName: TilepopupPrefab
-  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
-  canvas: {fileID: 1311088091}
-  assignedPopup: {fileID: 0}
-  Tilepopup_closeButton: {fileID: 0}
+  currentPlayerController: {fileID: 0}
 --- !u!114 &1646637865
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21155,6 +21308,7 @@ MonoBehaviour:
   buy012PopUp: {fileID: 61338422}
   buyoutPopup: {fileID: 2099122993}
   onsenpopup: {fileID: 146907672}
+  tilePopup: {fileID: 1602686091}
   playerID: 0
   teamID: 0
   teamNumberText: {fileID: 989305671}
@@ -22670,6 +22824,107 @@ RectTransform:
   m_AnchoredPosition: {x: -6.44, y: -0.09}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1001 &1752534706
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1311088092}
+    m_Modifications:
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 827.80005
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_Name
+      value: TilepopupPrefab_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
 --- !u!1001 &1756617263
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23910,6 +24165,16 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7598422955054652239, guid: 044b2e02af3df484aa3f7e07d743f290, type: 3}
   m_PrefabInstance: {fileID: 1239395390}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1864966995 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+  m_PrefabInstance: {fileID: 5220690}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &1864966996 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+  m_PrefabInstance: {fileID: 5220690}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1882825949
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24213,11 +24478,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupName: TilepopupPrefab
-  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
-  canvas: {fileID: 1311088091}
-  assignedPopup: {fileID: 0}
-  Tilepopup_closeButton: {fileID: 0}
+  currentPlayerController: {fileID: 0}
 --- !u!65 &1905214324
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -24819,11 +25080,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupName: TilepopupPrefab
-  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
-  canvas: {fileID: 1311088091}
-  assignedPopup: {fileID: 0}
-  Tilepopup_closeButton: {fileID: 0}
+  currentPlayerController: {fileID: 0}
 --- !u!65 &1947342158
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -25233,11 +25490,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupName: TilepopupPrefab
-  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
-  canvas: {fileID: 1311088091}
-  assignedPopup: {fileID: 0}
-  Tilepopup_closeButton: {fileID: 0}
+  currentPlayerController: {fileID: 0}
 --- !u!65 &1976787702
 BoxCollider:
   m_ObjectHideFlags: 0

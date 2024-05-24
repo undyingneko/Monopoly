@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     public SellableItem selectedProperty;
     public List<SellableItem> selectedPropertiestoSell;
     public PlayerController[] players;
+    
     public static int currentPlayerIndex;
     public static bool GameOver = false;
     

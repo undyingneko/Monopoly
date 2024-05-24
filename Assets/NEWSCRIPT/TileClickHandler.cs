@@ -25,7 +25,8 @@ public class TileClickHandler : MonoBehaviour
         }
         else
         {
-            Debug.Log("Tile clicked outside of demolition mode.");
+            return;
+            // Debug.Log("Tile clicked outside of demolition mode.");
         }
     }
 

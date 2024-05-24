@@ -4,9 +4,19 @@ using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Properties;
+using Unity.VisualScripting;
 
 public class PlayerController : MonoBehaviour
 {
+    private TextMeshProUGUI Tilepopup_propertyNameText;
+    private TextMeshProUGUI ownerText;
+    private TextMeshProUGUI Tilepopup_RentPrice;
+    private TextMeshProUGUI Tilepopup_BuyOutPrice;
+    private TextMeshProUGUI priceStage0Text;
+    private TextMeshProUGUI priceStage4Text;
+    private TextMeshProUGUI[] stagePriceTexts = new TextMeshProUGUI[3];
+
+
     private SpriteRenderer playerSpriteRenderer;
     // public List<StallManager.StallData> properties;
     // public List<StallManager.StallData> ownedStalls = new List<StallManager.StallData>();
@@ -33,6 +43,7 @@ public class PlayerController : MonoBehaviour
     public BuyPropertyPopup012 buy012PopUp;
     public BuyOutPopUp buyoutPopup;
     public OnsenPopUp onsenpopup;
+    public GameObject tilePopup;
 
     public int playerID;
     public int teamID;
@@ -136,6 +147,181 @@ public class PlayerController : MonoBehaviour
         selectedmoney.gameObject.SetActive(false);
         MoneyNeeded.gameObject.SetActive(false);
         playerSpriteRenderer  = GetComponent<SpriteRenderer>();
+
+        InitializePopupComponents();
+    }
+    private void InitializePopupComponents()
+    {
+        Tilepopup_propertyNameText = tilePopup.transform.Find("Tilepopup_propertyNameText").GetComponent<TextMeshProUGUI>();
+        ownerText = tilePopup.transform.Find("Tilepopup_OwnerText").GetComponent<TextMeshProUGUI>();
+        Tilepopup_RentPrice = tilePopup.transform.Find("Tilepopup_RentPrice").GetComponent<TextMeshProUGUI>();
+        Tilepopup_BuyOutPrice = tilePopup.transform.Find("Tilepopup_BuyOutPrice").GetComponent<TextMeshProUGUI>();
+        priceStage0Text = tilePopup.transform.Find("Tile_PriceStage0").GetComponent<TextMeshProUGUI>();
+        priceStage4Text = tilePopup.transform.Find("Tile_PriceStage4").GetComponent<TextMeshProUGUI>();
+        for (int i = 1; i <= 3; i++)
+        {
+            stagePriceTexts[i - 1] = tilePopup.transform.Find("Tile_PriceStage" + i).GetComponent<TextMeshProUGUI>();
+            stagePriceTexts[i - 1].gameObject.SetActive(false);
+        }
+
+        Button Tilepopup_closeButton = tilePopup.transform.Find("Tilepopup_closeButton").GetComponent<Button>();
+        Tilepopup_closeButton.onClick.AddListener(CloseActivePopup);
+        Tilepopup_propertyNameText.gameObject.SetActive(false);
+        ownerText.gameObject.SetActive(false);
+        Tilepopup_RentPrice.gameObject.SetActive(false);
+        Tilepopup_BuyOutPrice.gameObject.SetActive(false);
+        priceStage0Text.gameObject.SetActive(false);
+        priceStage4Text.gameObject.SetActive(false);
+
+        tilePopup.SetActive(false); // Ensure the popup is initially inactive
+    }
+
+    public void OnTileClick(TileScript tile)
+    {
+        if (gameManager.isCardEffect || gameManager.isSelling)
+        {
+            return;
+        }
+
+        BuyPropertyPopup012 buyPopup = FindObjectOfType<BuyPropertyPopup012>();
+        if (buyPopup != null && buyPopup.isActiveAndEnabled)
+        {
+            return;
+        }
+
+        BuyOutPopUp buyoutPopup = FindObjectOfType<BuyOutPopUp>();
+        if (buyoutPopup != null && buyoutPopup.isActiveAndEnabled)
+        {
+            return;
+        }
+
+        if (gameManager.isCardEffect || gameManager.isSelling)
+        {
+            return;
+        }
+        CloseActivePopup();
+        if (tilePopup != null)
+        {
+            tilePopup.SetActive(true);
+            // InitializePopupComponents();
+            int Tilepopup_waypointIndex = GetWaypointIndexFromName(gameObject.name);
+
+            StallManager.StallData stallData = stallManager.GetStallByWaypointIndex(Tilepopup_waypointIndex);
+            OnsenManager.OnsenData onsenData = onsenManager.GetOnsenByWaypointIndex(Tilepopup_waypointIndex);
+
+
+            if (stallData != null)
+            {
+                UpdatePopupContentStall(stallData);
+            }
+            else if (onsenData != null)
+            {
+                UpdatePopupContentOnsen(onsenData);
+            }
+            else
+            {
+                Debug.Log("No property found for this tile.");
+            } 
+        }
+    }
+
+    private int GetWaypointIndexFromName(string gameObjectName)
+    {
+        int waypointIndex;
+        string[] nameParts = gameObjectName.Split('_');
+        if (nameParts.Length >= 2 && int.TryParse(nameParts[1], out waypointIndex))
+        {
+            return waypointIndex;
+        }
+        else
+        {
+            Debug.LogError("Invalid GameObject name format: " + gameObjectName);
+            return -1; // Return -1 if unable to extract waypoint index
+        }
+    }         
+    private void CloseActivePopup()
+    {
+        if (tilePopup != null)
+        {
+            tilePopup.SetActive(false);
+        }
+    }
+    public void UpdatePopupContentStall(StallManager.StallData item)
+    {
+        gameManager = FindObjectOfType<GameManager>();
+
+        Tilepopup_propertyNameText.gameObject.SetActive(true);
+        ownerText.gameObject.SetActive(true);
+        Tilepopup_RentPrice.gameObject.SetActive(true);
+        Tilepopup_BuyOutPrice.gameObject.SetActive(true);
+        priceStage0Text.gameObject.SetActive(true);
+        priceStage4Text.gameObject.SetActive(true);
+
+        Tilepopup_propertyNameText.text = item.name;
+        ownerText.text = "Owned By: " + (item.owned ? "Player " + item.ownerID : "None");
+
+        if (item.owned)
+        {
+            string formattedStagePrice = gameManager.FormatPrice(item.rentPrices[item.currentStageIndex]);
+            Tilepopup_RentPrice.text = "Current Rent Price: " + formattedStagePrice;
+
+            string formattedBuyOutPrice = gameManager.FormatPrice(item.buyoutPrices[item.currentStageIndex]);
+            Tilepopup_BuyOutPrice.text = "Buy Out Price: " + formattedBuyOutPrice;
+        }
+        else
+        {
+            Tilepopup_RentPrice.text = "";
+            Tilepopup_BuyOutPrice.text = "";
+        }
+
+        string formattedStage0Price = gameManager.FormatPrice(item.stagePrices[0]);
+        priceStage0Text.text = "Price to buy Land: " + formattedStage0Price;
+
+        string formattedStage4Price = gameManager.FormatPrice(item.stagePrices[4]);
+        priceStage4Text.text = "Price to buy Hotel: " + formattedStage4Price;
+
+        for (int i = 1; i <= 3; i++)
+        {
+            if (i < item.stagePrices.Count)
+            {
+                stagePriceTexts[i - 1].gameObject.SetActive(true);
+                string formattedStagePrice = gameManager.FormatPrice(item.stagePrices[i]);
+                stagePriceTexts[i - 1].text = "Price stage " + i + ": " + formattedStagePrice;
+            }
+            else
+            {
+                stagePriceTexts[i - 1].gameObject.SetActive(false);
+            }
+        }
+    }
+
+    public void UpdatePopupContentOnsen(OnsenManager.OnsenData item)
+    {
+        gameManager = FindObjectOfType<GameManager>();
+
+        Tilepopup_propertyNameText.gameObject.SetActive(true);
+        ownerText.gameObject.SetActive(true);
+        Tilepopup_RentPrice.gameObject.SetActive(true);
+        Tilepopup_BuyOutPrice.gameObject.SetActive(true);
+        priceStage0Text.gameObject.SetActive(true);
+
+        Tilepopup_propertyNameText.text = item.name;
+        ownerText.text = "Owned By: " + (item.owned ? "Player " + item.ownerID : "None");
+
+        if (item.owned)
+        {
+            string formattedStagePrice = gameManager.FormatPrice(item.rentPriceOnsen);
+            Tilepopup_RentPrice.text = "Current Rent Price: " + formattedStagePrice;
+            Tilepopup_BuyOutPrice.text = "";
+        }
+        else
+        {
+            Tilepopup_RentPrice.text = "";
+            Tilepopup_BuyOutPrice.text = "";
+        }
+
+        string formattedStage0Price = gameManager.FormatPrice(item.priceOnsen);
+        priceStage0Text.text = "Price to buy Onsen: " + formattedStage0Price;
     }
     private void ShowHotSpringPopup(OnsenManager.OnsenData onsen, PlayerController player)
     {
@@ -399,11 +585,6 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator CheckPosition()
     {
-        // if (currentPosition == 4 || currentPosition == 13 || currentPosition == 18 || currentPosition == 25)
-        // {
-        //     yield return StartCoroutine(ShowMessage($"You've discovered a hot spring!"));
-        //     ShowHotSpringPopup(onsen, this);
-        // }
         if (currentPosition == 12 || currentPosition == 20 || currentPosition == 23 || currentPosition == 28)
         {
             yield return StartCoroutine(DisplayChancePopUp());

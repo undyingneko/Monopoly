@@ -149,7 +149,7 @@ GameObject:
   - component: {fileID: 9141664535957210022}
   - component: {fileID: 1790009089419736515}
   m_Layer: 5
-  m_Name: StageImage
+  m_Name: Tilepopup_StageImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1129,7 +1129,7 @@ GameObject:
   - component: {fileID: 1051442868398201210}
   - component: {fileID: 1972711751003667477}
   m_Layer: 5
-  m_Name: OwnerText
+  m_Name: Tilepopup_OwnerText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
