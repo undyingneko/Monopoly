@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     private TextMeshProUGUI priceStage0Text;
     private TextMeshProUGUI priceStage4Text;
     private TextMeshProUGUI[] stagePriceTexts = new TextMeshProUGUI[3];
+    public Button Tilepopup_closeButton;
 
 
     private SpriteRenderer playerSpriteRenderer;
@@ -150,6 +151,27 @@ public class PlayerController : MonoBehaviour
 
         InitializePopupComponents();
     }
+    void Update()
+    {
+        // Handle player input to detect clicks or touches
+        if (Input.GetMouseButtonDown(0))
+        {
+            // Raycast to detect which tile was clicked
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit))
+            {
+                // Check if the clicked GameObject has a TileClickHandler component
+                TileScript tileScript = hit.collider.GetComponent<TileScript>();
+                if (tileScript != null)
+                {
+                    // Pass information about the clicking player to the TileClickHandler
+                    tileScript.HandleTileClick(this);
+                }
+            }
+        }
+    }
+
     private void InitializePopupComponents()
     {
         Tilepopup_propertyNameText = tilePopup.transform.Find("Tilepopup_propertyNameText").GetComponent<TextMeshProUGUI>();
@@ -158,13 +180,15 @@ public class PlayerController : MonoBehaviour
         Tilepopup_BuyOutPrice = tilePopup.transform.Find("Tilepopup_BuyOutPrice").GetComponent<TextMeshProUGUI>();
         priceStage0Text = tilePopup.transform.Find("Tile_PriceStage0").GetComponent<TextMeshProUGUI>();
         priceStage4Text = tilePopup.transform.Find("Tile_PriceStage4").GetComponent<TextMeshProUGUI>();
+
+        Tilepopup_closeButton = tilePopup.transform.Find("Tilepopup_closeButton").GetComponent<Button>();
         for (int i = 1; i <= 3; i++)
         {
             stagePriceTexts[i - 1] = tilePopup.transform.Find("Tile_PriceStage" + i).GetComponent<TextMeshProUGUI>();
             stagePriceTexts[i - 1].gameObject.SetActive(false);
         }
 
-        Button Tilepopup_closeButton = tilePopup.transform.Find("Tilepopup_closeButton").GetComponent<Button>();
+        // Button Tilepopup_closeButton = tilePopup.transform.Find("Tilepopup_closeButton").GetComponent<Button>();
         Tilepopup_closeButton.onClick.AddListener(CloseActivePopup);
         Tilepopup_propertyNameText.gameObject.SetActive(false);
         ownerText.gameObject.SetActive(false);
@@ -176,7 +200,7 @@ public class PlayerController : MonoBehaviour
         tilePopup.SetActive(false); // Ensure the popup is initially inactive
     }
 
-    public void OnTileClick(TileScript tile)
+    public void OnTileClick()
     {
         if (gameManager.isCardEffect || gameManager.isSelling)
         {
@@ -200,32 +224,32 @@ public class PlayerController : MonoBehaviour
             return;
         }
         CloseActivePopup();
-        if (tilePopup != null)
-        {
-            tilePopup.SetActive(true);
-            // InitializePopupComponents();
-            int Tilepopup_waypointIndex = GetWaypointIndexFromName(gameObject.name);
+        // if (tilePopup != null)
+        // {
+        //     tilePopup.SetActive(true);
+        //     // InitializePopupComponents();
+        //     int Tilepopup_waypointIndex = GetWaypointIndexFromName(gameObject.name);
 
-            StallManager.StallData stallData = stallManager.GetStallByWaypointIndex(Tilepopup_waypointIndex);
-            OnsenManager.OnsenData onsenData = onsenManager.GetOnsenByWaypointIndex(Tilepopup_waypointIndex);
+        //     StallManager.StallData stallData = stallManager.GetStallByWaypointIndex(Tilepopup_waypointIndex);
+        //     OnsenManager.OnsenData onsenData = onsenManager.GetOnsenByWaypointIndex(Tilepopup_waypointIndex);
 
 
-            if (stallData != null)
-            {
-                UpdatePopupContentStall(stallData);
-            }
-            else if (onsenData != null)
-            {
-                UpdatePopupContentOnsen(onsenData);
-            }
-            else
-            {
-                Debug.Log("No property found for this tile.");
-            } 
-        }
+        //     if (stallData != null)
+        //     {
+        //         UpdatePopupContentStall(stallData);
+        //     }
+        //     else if (onsenData != null)
+        //     {
+        //         UpdatePopupContentOnsen(onsenData);
+        //     }
+        //     else
+        //     {
+        //         Debug.Log("No property found for this tile.");
+        //     } 
+        // }
     }
 
-    private int GetWaypointIndexFromName(string gameObjectName)
+    public int GetWaypointIndexFromName(string gameObjectName)
     {
         int waypointIndex;
         string[] nameParts = gameObjectName.Split('_');
@@ -239,11 +263,12 @@ public class PlayerController : MonoBehaviour
             return -1; // Return -1 if unable to extract waypoint index
         }
     }         
-    private void CloseActivePopup()
+    public void CloseActivePopup()
     {
         if (tilePopup != null)
         {
             tilePopup.SetActive(false);
+            Tilepopup_closeButton.onClick.RemoveListener(CloseActivePopup);
         }
     }
     public void UpdatePopupContentStall(StallManager.StallData item)
