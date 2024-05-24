@@ -154,7 +154,7 @@ public class CardManager : MonoBehaviour
                 Debug.LogWarning("Card effect not found: " + cardName);
                 break;
         }
-        yield return new WaitForSecondsRealtime(1f);
+        // yield return new WaitForSecondsRealtime(1f);
     }
     // Define card effects
     private IEnumerator BirthdayGiftEffect(PlayerController currentPlayer)
@@ -562,7 +562,7 @@ public class CardManager : MonoBehaviour
         }
         yield return new WaitForSecondsRealtime(3f);
         yield return ApplyCardEffect(drawnCard.name, player);
-        yield return new WaitForSecondsRealtime(1f);
+        // yield return new WaitForSecondsRealtime(1f);
     }
 
     private IEnumerator ShowCardObject()

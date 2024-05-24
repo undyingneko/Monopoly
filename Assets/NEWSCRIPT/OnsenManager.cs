@@ -125,6 +125,7 @@ public class OnsenManager : MonoBehaviour
             instance = this;
         }
         gameManager = FindObjectOfType<GameManager>();
+        InitializeOnsens();
         if (gameManager != null)
         {
             gameManager.TileImagesLoaded += OnTileImagesLoaded;
@@ -132,7 +133,7 @@ public class OnsenManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         // Loadonsens();
         // currentHostingFireWork = null;
-        InitializeOnsens();
+        
     }
 
     private void OnTileImagesLoaded()

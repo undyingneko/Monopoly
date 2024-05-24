@@ -527,6 +527,8 @@ GameObject:
   - component: {fileID: 32433899}
   - component: {fileID: 32433898}
   - component: {fileID: 32433900}
+  - component: {fileID: 32433902}
+  - component: {fileID: 32433901}
   m_Layer: 0
   m_Name: tile_4
   m_TagString: Tile
@@ -626,8 +628,37 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 7.74, y: 5.7, z: 0.2}
-  m_Center: {x: 0, y: -0.0000009536743, z: -0.0000033908436}
+  m_Size: {x: 7.760001, y: 5.7000003, z: 0.20000003}
+  m_Center: {x: -0.00000047683716, y: -0.0000009536743, z: 0}
+--- !u!114 &32433901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 32433897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c7e890d93936d4e9be9ebc01fd6b30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &32433902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 32433897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popupName: TilepopupPrefab
+  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+  canvas: {fileID: 1311088091}
+  assignedPopup: {fileID: 0}
+  Tilepopup_closeButton: {fileID: 0}
 --- !u!224 &36127449 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 542117287431148104, guid: 116aa0c3487039545beebdca96177ae2, type: 3}
@@ -1362,14 +1393,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  popupName: TilepopupPrefab
   TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
   canvas: {fileID: 1311088091}
-  Tilepopup_stagePriceTexts:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  assignedPopup: {fileID: 0}
   Tilepopup_closeButton: {fileID: 0}
 --- !u!65 &113239165
 BoxCollider:
@@ -3089,14 +3116,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  popupName: TilepopupPrefab
   TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
   canvas: {fileID: 1311088091}
-  Tilepopup_stagePriceTexts:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  assignedPopup: {fileID: 0}
   Tilepopup_closeButton: {fileID: 0}
 --- !u!65 &226369774
 BoxCollider:
@@ -4425,14 +4448,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  popupName: TilepopupPrefab
   TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
   canvas: {fileID: 1311088091}
-  Tilepopup_stagePriceTexts:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  assignedPopup: {fileID: 0}
   Tilepopup_closeButton: {fileID: 0}
 --- !u!65 &355771000
 BoxCollider:
@@ -6785,6 +6804,9 @@ GameObject:
   m_Component:
   - component: {fileID: 550673977}
   - component: {fileID: 550673976}
+  - component: {fileID: 550673980}
+  - component: {fileID: 550673979}
+  - component: {fileID: 550673978}
   m_Layer: 0
   m_Name: tile_13
   m_TagString: Tile
@@ -6865,6 +6887,56 @@ Transform:
   - {fileID: 146612659}
   m_Father: {fileID: 1003896591}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &550673978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 550673975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c7e890d93936d4e9be9ebc01fd6b30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &550673979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 550673975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popupName: TilepopupPrefab
+  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+  canvas: {fileID: 1311088091}
+  assignedPopup: {fileID: 0}
+  Tilepopup_closeButton: {fileID: 0}
+--- !u!65 &550673980
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 550673975}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 7.760001, y: 5.7000003, z: 0.20000003}
+  m_Center: {x: -0.00000047683716, y: -0.0000009536743, z: 0}
 --- !u!224 &555335515 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7246326150205344208, guid: 52bffa397dbaf1a4ab29cd41377bcce5, type: 3}
@@ -6979,14 +7051,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  popupName: TilepopupPrefab
   TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
   canvas: {fileID: 1311088091}
-  Tilepopup_stagePriceTexts:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  assignedPopup: {fileID: 0}
   Tilepopup_closeButton: {fileID: 0}
 --- !u!65 &567536206
 BoxCollider:
@@ -8058,14 +8126,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  popupName: TilepopupPrefab
   TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
   canvas: {fileID: 1311088091}
-  Tilepopup_stagePriceTexts:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  assignedPopup: {fileID: 0}
   Tilepopup_closeButton: {fileID: 0}
 --- !u!65 &644995776
 BoxCollider:
@@ -8774,14 +8838,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  popupName: TilepopupPrefab
   TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
   canvas: {fileID: 1311088091}
-  Tilepopup_stagePriceTexts:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  assignedPopup: {fileID: 0}
   Tilepopup_closeButton: {fileID: 0}
 --- !u!65 &699870123
 BoxCollider:
@@ -8925,14 +8985,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  popupName: TilepopupPrefab
   TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
   canvas: {fileID: 1311088091}
-  Tilepopup_stagePriceTexts:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  assignedPopup: {fileID: 0}
   Tilepopup_closeButton: {fileID: 0}
 --- !u!65 &702703702
 BoxCollider:
@@ -9277,14 +9333,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  popupName: TilepopupPrefab
   TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
   canvas: {fileID: 1311088091}
-  Tilepopup_stagePriceTexts:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  assignedPopup: {fileID: 0}
   Tilepopup_closeButton: {fileID: 0}
 --- !u!65 &714587846
 BoxCollider:
@@ -9806,14 +9858,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  popupName: TilepopupPrefab
   TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
   canvas: {fileID: 1311088091}
-  Tilepopup_stagePriceTexts:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  assignedPopup: {fileID: 0}
   Tilepopup_closeButton: {fileID: 0}
 --- !u!65 &746459778
 BoxCollider:
@@ -11792,14 +11840,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  popupName: TilepopupPrefab
   TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
   canvas: {fileID: 1311088091}
-  Tilepopup_stagePriceTexts:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  assignedPopup: {fileID: 0}
   Tilepopup_closeButton: {fileID: 0}
 --- !u!65 &934837767
 BoxCollider:
@@ -13160,6 +13204,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1030296629}
   - component: {fileID: 1030296628}
+  - component: {fileID: 1030296632}
+  - component: {fileID: 1030296631}
+  - component: {fileID: 1030296630}
   m_Layer: 0
   m_Name: tile_18
   m_TagString: Tile
@@ -13240,6 +13287,56 @@ Transform:
   - {fileID: 356437183}
   m_Father: {fileID: 1003896591}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1030296630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1030296627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c7e890d93936d4e9be9ebc01fd6b30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1030296631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1030296627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popupName: TilepopupPrefab
+  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+  canvas: {fileID: 1311088091}
+  assignedPopup: {fileID: 0}
+  Tilepopup_closeButton: {fileID: 0}
+--- !u!65 &1030296632
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1030296627}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 7.760001, y: 5.7000003, z: 0.20000003}
+  m_Center: {x: -0.00000047683716, y: -0.0000009536743, z: 0}
 --- !u!1001 &1030923876
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14064,6 +14161,107 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1113223345}
   m_CullTransparentMesh: 1
+--- !u!1001 &1120336731
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1311088092}
+    m_Modifications:
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 827.80005
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_Name
+      value: TilepopupPrefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
 --- !u!224 &1129016090 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5609926561172301932, guid: 85d24269a51d8964dbc618d2900eac92, type: 3}
@@ -15076,14 +15274,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  popupName: TilepopupPrefab
   TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
   canvas: {fileID: 1311088091}
-  Tilepopup_stagePriceTexts:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  assignedPopup: {fileID: 0}
   Tilepopup_closeButton: {fileID: 0}
 --- !u!65 &1204162626
 BoxCollider:
@@ -17034,6 +17228,7 @@ RectTransform:
   - {fileID: 54659075}
   - {fileID: 2129439399161125630}
   - {fileID: 8200925308322033328}
+  - {fileID: 1595655893}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -18200,14 +18395,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  popupName: TilepopupPrefab
   TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
   canvas: {fileID: 1311088091}
-  Tilepopup_stagePriceTexts:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  assignedPopup: {fileID: 0}
   Tilepopup_closeButton: {fileID: 0}
 --- !u!65 &1424931539
 BoxCollider:
@@ -18351,14 +18542,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  popupName: TilepopupPrefab
   TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
   canvas: {fileID: 1311088091}
-  Tilepopup_stagePriceTexts:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  assignedPopup: {fileID: 0}
   Tilepopup_closeButton: {fileID: 0}
 --- !u!65 &1426842057
 BoxCollider:
@@ -18958,14 +19145,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  popupName: TilepopupPrefab
   TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
   canvas: {fileID: 1311088091}
-  Tilepopup_stagePriceTexts:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  assignedPopup: {fileID: 0}
   Tilepopup_closeButton: {fileID: 0}
 --- !u!65 &1495957055
 BoxCollider:
@@ -19831,6 +20014,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1386837867997331502, guid: df3d4855ab4d909409391fd23e1f2592, type: 3}
   m_PrefabInstance: {fileID: 1211099166}
   m_PrefabAsset: {fileID: 0}
+--- !u!224 &1595655893 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1650116390677642847, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+  m_PrefabInstance: {fileID: 1120336731}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1600060961 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3656705575260860301, guid: c4936c166a2d7ef4f8adc20b5849be12, type: 3}
@@ -19918,6 +20106,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1635103991}
   - component: {fileID: 1635103990}
+  - component: {fileID: 1635103994}
+  - component: {fileID: 1635103993}
+  - component: {fileID: 1635103992}
   m_Layer: 0
   m_Name: tile_25
   m_TagString: Tile
@@ -19998,6 +20189,56 @@ Transform:
   - {fileID: 1233348503}
   m_Father: {fileID: 1003896591}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1635103992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1635103989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c7e890d93936d4e9be9ebc01fd6b30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1635103993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1635103989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popupName: TilepopupPrefab
+  TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
+  canvas: {fileID: 1311088091}
+  assignedPopup: {fileID: 0}
+  Tilepopup_closeButton: {fileID: 0}
+--- !u!65 &1635103994
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1635103989}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 7.760001, y: 5.7000003, z: 0.20000003}
+  m_Center: {x: -0.00000047683716, y: -0.0000009536743, z: 0}
 --- !u!1001 &1635942625
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20204,14 +20445,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  popupName: TilepopupPrefab
   TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
   canvas: {fileID: 1311088091}
-  Tilepopup_stagePriceTexts:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  assignedPopup: {fileID: 0}
   Tilepopup_closeButton: {fileID: 0}
 --- !u!65 &1637674617
 BoxCollider:
@@ -20376,14 +20613,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  popupName: TilepopupPrefab
   TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
   canvas: {fileID: 1311088091}
-  Tilepopup_stagePriceTexts:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  assignedPopup: {fileID: 0}
   Tilepopup_closeButton: {fileID: 0}
 --- !u!114 &1646637865
 MonoBehaviour:
@@ -23980,14 +24213,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  popupName: TilepopupPrefab
   TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
   canvas: {fileID: 1311088091}
-  Tilepopup_stagePriceTexts:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  assignedPopup: {fileID: 0}
   Tilepopup_closeButton: {fileID: 0}
 --- !u!65 &1905214324
 BoxCollider:
@@ -24590,14 +24819,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  popupName: TilepopupPrefab
   TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
   canvas: {fileID: 1311088091}
-  Tilepopup_stagePriceTexts:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  assignedPopup: {fileID: 0}
   Tilepopup_closeButton: {fileID: 0}
 --- !u!65 &1947342158
 BoxCollider:
@@ -25008,14 +25233,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  popupName: TilepopupPrefab
   TilepopupPrefab: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
   canvas: {fileID: 1311088091}
-  Tilepopup_stagePriceTexts:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  assignedPopup: {fileID: 0}
   Tilepopup_closeButton: {fileID: 0}
 --- !u!65 &1976787702
 BoxCollider:

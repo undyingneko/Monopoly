@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     public Dictionary<int, GameObject> dice2Sides;
     private Coroutine turnCoroutine;
 
-    private Dictionary<GameObject, SellableItem> tileToPropertyMap;
+    private Dictionary<GameObject, SellableItem> tileToPropertyMap = new Dictionary<GameObject, SellableItem>();
     public Dictionary<int, GameObject> waypointIndexToTileMap;
 
     public SellableItem selectedProperty;
