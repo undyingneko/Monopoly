@@ -200,55 +200,6 @@ public class PlayerController : MonoBehaviour
         tilePopup.SetActive(false); // Ensure the popup is initially inactive
     }
 
-    public void OnTileClick()
-    {
-        if (gameManager.isCardEffect || gameManager.isSelling)
-        {
-            return;
-        }
-
-        BuyPropertyPopup012 buyPopup = FindObjectOfType<BuyPropertyPopup012>();
-        if (buyPopup != null && buyPopup.isActiveAndEnabled)
-        {
-            return;
-        }
-
-        BuyOutPopUp buyoutPopup = FindObjectOfType<BuyOutPopUp>();
-        if (buyoutPopup != null && buyoutPopup.isActiveAndEnabled)
-        {
-            return;
-        }
-
-        if (gameManager.isCardEffect || gameManager.isSelling)
-        {
-            return;
-        }
-        CloseActivePopup();
-        // if (tilePopup != null)
-        // {
-        //     tilePopup.SetActive(true);
-        //     // InitializePopupComponents();
-        //     int Tilepopup_waypointIndex = GetWaypointIndexFromName(gameObject.name);
-
-        //     StallManager.StallData stallData = stallManager.GetStallByWaypointIndex(Tilepopup_waypointIndex);
-        //     OnsenManager.OnsenData onsenData = onsenManager.GetOnsenByWaypointIndex(Tilepopup_waypointIndex);
-
-
-        //     if (stallData != null)
-        //     {
-        //         UpdatePopupContentStall(stallData);
-        //     }
-        //     else if (onsenData != null)
-        //     {
-        //         UpdatePopupContentOnsen(onsenData);
-        //     }
-        //     else
-        //     {
-        //         Debug.Log("No property found for this tile.");
-        //     } 
-        // }
-    }
-
     public int GetWaypointIndexFromName(string gameObjectName)
     {
         int waypointIndex;

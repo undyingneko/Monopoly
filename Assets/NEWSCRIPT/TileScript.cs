@@ -17,6 +17,29 @@ public class TileScript : MonoBehaviour
     // Handle mouse clicks on the tile
     public void HandleTileClick(PlayerController clickingPlayer)
     {
+        clickingPlayer.CloseActivePopup();
+        if (gameManager.isCardEffect || gameManager.isSelling)
+        {
+            return;
+        }
+
+        BuyPropertyPopup012 buyPopup = FindObjectOfType<BuyPropertyPopup012>();
+        if (buyPopup != null && buyPopup.isActiveAndEnabled)
+        {
+            return;
+        }
+
+        BuyOutPopUp buyoutPopup = FindObjectOfType<BuyOutPopUp>();
+        if (buyoutPopup != null && buyoutPopup.isActiveAndEnabled)
+        {
+            return;
+        }
+
+        if (gameManager.isCardEffect || gameManager.isSelling)
+        {
+            return;
+        }
+        
         // clickingPlayer.tilePopup.SetActive(true);
         if (clickingPlayer.tilePopup != null)
         {

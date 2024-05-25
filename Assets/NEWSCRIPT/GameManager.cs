@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour
         StartGame();
         currentHostingFireWork = null;
     }
-
+    
     void StartGame()
     {
         // Initialize the game
