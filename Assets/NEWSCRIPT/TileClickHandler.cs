@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class TileClickHandler : MonoBehaviour
 {
-    private SellableItem associatedProperty;
+    private Properties associatedProperty;
     // private GameManager gameManager;
     private void OnMouseDown()
     {
@@ -30,7 +30,7 @@ public class TileClickHandler : MonoBehaviour
         }
     }
 
-    public void SetAssociatedProperty(SellableItem property)
+    public void SetAssociatedProperty(Properties property)
     {
         associatedProperty = property;
         Debug.Log("Associated property set: " + property.name);

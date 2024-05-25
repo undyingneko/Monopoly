@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SellingHandler : MonoBehaviour
 {
-    private SellableItem associatedProperty;
+    private Properties associatedProperty;
     // private GameManager gameManager;
     public int totalPropertyValue;
     // public int moneyneeded;
@@ -86,7 +86,7 @@ public class SellingHandler : MonoBehaviour
         player.sellButton.onClick.RemoveAllListeners();
         GameManager.Instance.SellSelectionMade = true;
     }
-    public void SetAssociatedProperty(SellableItem property)
+    public void SetAssociatedProperty(Properties property)
     {
         associatedProperty = property;
         Debug.Log("Associated property set: " + property.name);

@@ -21,16 +21,18 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer playerSpriteRenderer;
     // public List<StallManager.StallData> properties;
     // public List<StallManager.StallData> ownedStalls = new List<StallManager.StallData>();
+
+    // public List<Properties> ownedProperties;
     public List<StallManager.StallData> ownedStalls;
     public List<OnsenManager.OnsenData> ownedOnsens;
 
-    public List<SellableItem> ListPropertiesForEffect;
-    public SellableItem propertyToBeEffected;
+    public List<Properties> ListPropertiesForEffect;
+    public Properties propertyToBeEffected;
     
-    public SellableItem itemToLandOn;
+    public Properties itemToLandOn;
 
-    public List<SellableItem> ListPropertiesForSelling;
-    public List<SellableItem> propertiesToSell;
+    public List<Properties> ListPropertiesForSelling;
+    public List<Properties> propertiesToSell;
 
     // public List<StallManager.StallData> propertyToSell;
     // private PlayerController currentPlayerController;
@@ -683,11 +685,11 @@ public class PlayerController : MonoBehaviour
 
         if (stall != null)
         {
-            itemToLandOn = new SellableItem { stallData = stall };
+            itemToLandOn = new Properties { stallData = stall };
         }
         else if (hotSpring != null)
         {
-            itemToLandOn = new SellableItem { onsenData = hotSpring };
+            itemToLandOn = new Properties { onsenData = hotSpring };
         }
 
         if (itemToLandOn == null)
@@ -825,7 +827,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private IEnumerator HandleRent( int rentPriceToDeduct, SellableItem itemToLandOn)
+    private IEnumerator HandleRent( int rentPriceToDeduct, Properties itemToLandOn)
     {
         // string formattedRent = FormatMoney(rentPriceToDeduct);
         PlayerController ownerPlayer = FindPlayerByID(itemToLandOn.ownerID);
@@ -871,12 +873,12 @@ public class PlayerController : MonoBehaviour
                     // ListPropertiesForSelling.AddRange(ownedStalls);
                     foreach (var stalltosell in ownedStalls)
                     {
-                        ListPropertiesForSelling.Add(new SellableItem { stallData = stalltosell });
+                        ListPropertiesForSelling.Add(new Properties { stallData = stalltosell });
                     }
                     // Add hot springs
                     foreach (var onsentosell in ownedOnsens)
                     {
-                        ListPropertiesForSelling.Add(new SellableItem { onsenData = onsentosell });
+                        ListPropertiesForSelling.Add(new Properties { onsenData = onsentosell });
                     }
 
                     if (ListPropertiesForSelling.Count > 0)
@@ -1107,11 +1109,13 @@ public class PlayerController : MonoBehaviour
     private IEnumerator DelayedNextTurn()
     {
         yield return StartCoroutine(WaitForPropertyDecision());
-        yield return new WaitForSecondsRealtime(0.5f); // Wait for 1 second
+        yield return new WaitForSecondsRealtime(0.5f); 
         gameManager.buyPropertyDecisionMade = false;
         gameManager.buyOutDecisionMade = false;
-        gameManager.EndedAllInteraction = false;    
-        gameManager.NextTurn(); // Call NextTurn after waiting
+        gameManager.EndedAllInteraction = false; 
+        
+           
+        gameManager.NextTurn(); 
     }
     public void StartTurn()
     {

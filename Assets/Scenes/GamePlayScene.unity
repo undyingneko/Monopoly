@@ -217,7 +217,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -377,6 +377,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3710db7ca05f0e146bfc8f3b1cad70db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Tilepopup_closeButton: {fileID: 0}
   ownedStalls: []
   ownedOnsens: []
   ListPropertiesForEffect: []
@@ -756,7 +757,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayerController: {fileID: 0}
 --- !u!224 &36127449 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 542117287431148104, guid: 116aa0c3487039545beebdca96177ae2, type: 3}
@@ -1491,7 +1491,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayerController: {fileID: 0}
 --- !u!65 &113239165
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3210,7 +3209,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayerController: {fileID: 0}
 --- !u!65 &226369774
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4538,7 +4536,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayerController: {fileID: 0}
 --- !u!65 &355771000
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6997,7 +6994,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayerController: {fileID: 0}
 --- !u!65 &550673980
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7133,7 +7129,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayerController: {fileID: 0}
 --- !u!65 &567536206
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8204,7 +8199,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayerController: {fileID: 0}
 --- !u!65 &644995776
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8912,7 +8906,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayerController: {fileID: 0}
 --- !u!65 &699870123
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9040,7 +9033,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9156,7 +9149,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayerController: {fileID: 0}
 --- !u!65 &702703702
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9500,7 +9492,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayerController: {fileID: 0}
 --- !u!65 &714587846
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -10021,7 +10012,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayerController: {fileID: 0}
 --- !u!65 &746459778
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -10522,6 +10512,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3710db7ca05f0e146bfc8f3b1cad70db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Tilepopup_closeButton: {fileID: 0}
   ownedStalls: []
   ownedOnsens: []
   ListPropertiesForEffect: []
@@ -11074,6 +11065,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3710db7ca05f0e146bfc8f3b1cad70db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Tilepopup_closeButton: {fileID: 0}
   ownedStalls: []
   ownedOnsens: []
   ListPropertiesForEffect: []
@@ -12001,7 +11993,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayerController: {fileID: 0}
 --- !u!65 &934837767
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13468,7 +13459,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayerController: {fileID: 0}
 --- !u!65 &1030296632
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14408,7 +14398,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -15427,7 +15417,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayerController: {fileID: 0}
 --- !u!65 &1204162626
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -16460,6 +16449,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81603feafd31f5c449529e6487cea457, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  players:
+  - {fileID: 793143341}
+  - {fileID: 1676970795}
+  - {fileID: 21105488}
+  - {fileID: 817987055}
   currentHostingFireWork:
     stallData:
       name: 
@@ -16531,11 +16525,6 @@ MonoBehaviour:
       isWelcomeEvent: 0
       isFireWork: 0
   selectedPropertiestoSell: []
-  players:
-  - {fileID: 793143341}
-  - {fileID: 1676970795}
-  - {fileID: 21105488}
-  - {fileID: 817987055}
   buyPropertyDecisionMade: 0
   buyOutDecisionMade: 0
   OnsenDecisionMade: 0
@@ -18547,7 +18536,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayerController: {fileID: 0}
 --- !u!65 &1424931539
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -18690,7 +18678,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayerController: {fileID: 0}
 --- !u!65 &1426842057
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -19289,7 +19276,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayerController: {fileID: 0}
 --- !u!65 &1495957055
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -20378,7 +20364,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayerController: {fileID: 0}
 --- !u!65 &1635103994
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -20606,7 +20591,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayerController: {fileID: 0}
 --- !u!65 &1637674617
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -20770,7 +20754,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayerController: {fileID: 0}
 --- !u!114 &1646637865
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21225,6 +21208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3710db7ca05f0e146bfc8f3b1cad70db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Tilepopup_closeButton: {fileID: 0}
   ownedStalls: []
   ownedOnsens: []
   ListPropertiesForEffect: []
@@ -22918,7 +22902,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4413062453064831431, guid: 2cf21313f91b76c448af1f83371f60a5, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -24478,7 +24462,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayerController: {fileID: 0}
 --- !u!65 &1905214324
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -25080,7 +25063,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayerController: {fileID: 0}
 --- !u!65 &1947342158
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -25490,7 +25472,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1b03e7fa3c524ab9f35c35dd54a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayerController: {fileID: 0}
 --- !u!65 &1976787702
 BoxCollider:
   m_ObjectHideFlags: 0

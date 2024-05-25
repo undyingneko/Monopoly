@@ -6,17 +6,41 @@ using System;
 
 public class GameManager : MonoBehaviour
 {
-    public SellableItem currentHostingFireWork;
+    private readonly List<int[]> sides = new List<int[]>
+    {
+        new[] { 1, 2, 3, 5, 6, 7 },
+        new[] { 9, 10, 11, 14, 15 },
+        new[] { 17, 19, 21, 22 },
+        new[] { 26, 27, 29, 30 }
+    };
+
+    private readonly List<int[]> packs = new List<int[]>
+    {
+        new[] { 1, 2, 3 },
+        new[] { 5, 6, 7 },
+        new[] { 9, 10, 11 },
+        new[] { 14, 15 },
+        new[] { 17, 19 },
+        new[] { 21, 22 },
+        new[] { 26, 27 },
+        new[] { 29, 30 }
+    };
+
+    private readonly int[] hotsprings = { 4, 13, 18, 25 };
+
+    public PlayerController[] players;
+
+    public Properties currentHostingFireWork;
     public Dictionary<int, GameObject> dice1Sides;
     public Dictionary<int, GameObject> dice2Sides;
     private Coroutine turnCoroutine;
 
-    private Dictionary<GameObject, SellableItem> tileToPropertyMap = new Dictionary<GameObject, SellableItem>();
+    private Dictionary<GameObject, Properties> tileToPropertyMap = new Dictionary<GameObject, Properties>();
     public Dictionary<int, GameObject> waypointIndexToTileMap;
 
-    public SellableItem selectedProperty;
-    public List<SellableItem> selectedPropertiestoSell;
-    public PlayerController[] players;
+    public Properties selectedProperty;
+    public List<Properties> selectedPropertiestoSell;
+    
     
     public static int currentPlayerIndex;
     public static bool GameOver = false;
@@ -200,7 +224,7 @@ public class GameManager : MonoBehaviour
             return null;
         }
     } 
-    public void AssignPropertyToTile(GameObject tile, SellableItem property)
+    public void AssignPropertyToTile(GameObject tile, Properties property)
     {
         if (!tileToPropertyMap.ContainsKey(tile))
         {
@@ -213,7 +237,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("Property assigned to tile: " + property.name);
     }
 
-    public SellableItem GetPropertyFromTile(GameObject tile)
+    public Properties GetPropertyFromTile(GameObject tile)
     {
         if (tileToPropertyMap.TryGetValue(tile, out var property))
         {
@@ -222,7 +246,7 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
-    public void HandleTileClick(SellableItem property)
+    public void HandleTileClick(Properties property)
     {
         // Update the selected property based on the clicked tile
         selectedProperty = property;
@@ -269,4 +293,217 @@ public class GameManager : MonoBehaviour
         ObjectToHide.gameObject.SetActive(false);
     } 
 
+    public void CheckWinningConditions()
+    {
+        if (CheckSideMonopoly() || CheckTripleMonopoly() || CheckHotspringMonopoly())
+        {
+            // Handle the win (e.g., display win message, end the game)
+            Debug.Log("We have a winner!");
+            GameOver = true;
+        }
+    }
+
+    
+    private bool CheckSideMonopoly()
+    {
+        foreach (PlayerController player in players)
+        {
+            int teamID = player.teamID;
+            foreach (int[] side in sides)
+            {
+                if (OwnsAllStalls(side, teamID))
+                {
+                    Debug.Log($"Team {teamID} wins with a Side Monopoly!");
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // Method to check Triple Monopoly
+    private bool CheckTripleMonopoly()
+    {
+        foreach (PlayerController player in players)
+        {
+            int teamID = player.teamID;
+            int packsOwned = 0;
+
+            foreach (int[] pack in packs)
+            {
+                if (OwnsAllStalls(pack, teamID))
+                {
+                    packsOwned++;
+                }
+                if (packsOwned >= 3)
+                {
+                    Debug.Log($"Team {teamID} wins with a Triple Monopoly!");
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // Method to check Hotspring Monopoly
+    private bool CheckHotspringMonopoly()
+    {
+        foreach (PlayerController player in players)
+        {
+            int teamID = player.teamID;
+            if (OwnsAllStalls(hotsprings, teamID))
+            {
+                Debug.Log($"Team {teamID} wins with a Hotspring Monopoly!");
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Helper method to check if a team owns all stalls in a given set of waypoint indices
+    private bool OwnsAllStalls(int[] waypoints, int teamID)
+    {
+        foreach (int waypoint in waypoints)
+        {
+            GameObject tile = GetTileForWaypointIndex(waypoint);
+            if (tile == null) return false;
+
+            Properties property = GetPropertyFromTile(tile);
+            if (property == null || property.teamownerID != teamID)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // public bool CheckSideMonopoly(int teamID)
+    // {
+    //     // Check if the team owns all stalls in any side
+    //     List<int[]> sides = new List<int[]>
+    //     {
+    //         new int[] { 1, 2, 3, 5, 6, 7 },
+    //         new int[] { 9, 10, 11, 14, 15 },
+    //         new int[] { 17, 19, 21, 22 },
+    //         new int[] { 26, 27, 29, 30 }
+    //     };
+
+    //     foreach (int[] side in sides)
+    //     {
+    //         bool ownsAllStalls = true;
+    //         foreach (int waypointIndex in side)
+    //         {
+    //             StallManager.StallData stall = StallManager.Instance.GetStallByWaypointIndex(waypointIndex);
+    //             if (stall == null || stall.teamownerID != teamID)
+    //             {
+    //                 ownsAllStalls = false;
+    //                 break;
+    //             }
+    //         }
+
+    //         if (ownsAllStalls)
+    //         {
+    //             return true;
+    //         }
+    //     }
+
+    //     return false;
+    // }
+
+    // public bool CheckTripleMonopoly(int teamID)
+    // {
+    //     // Check if the team owns 3 packs of stalls
+    //     List<int[]> packs = new List<int[]>
+    //     {
+    //         new int[] { 1, 2, 3 },
+    //         new int[] { 5, 6, 7 },
+    //         new int[] { 9, 10, 11 },
+    //         new int[] { 14, 15 },
+    //         new int[] { 17, 19 },
+    //         new int[] { 21, 22 },
+    //         new int[] { 26, 27 },
+    //         new int[] { 29, 30 }
+    //     };
+
+    //     int packCount = 0;
+    //     foreach (int[] pack in packs)
+    //     {
+    //         bool ownsPack = true;
+    //         foreach (int waypointIndex in pack)
+    //         {
+    //             StallManager.StallData stall = StallManager.Instance.GetStallByWaypointIndex(waypointIndex);
+    //             if (stall == null || stall.teamownerID != teamID)
+    //             {
+    //                 ownsPack = false;
+    //                 break;
+    //             }
+    //         }
+
+    //         if (ownsPack)
+    //         {
+    //             packCount++;
+    //         }
+    //     }
+
+    //     return packCount >= 3;
+    // }
+
+    // public bool CheckHotspringMonopoly(int teamID)
+    // {
+    //     // Check if the team owns all hotsprings
+    //     List<int> hotspringspack = new List<int> { 8, 16, 23, 28 };
+
+    //     foreach (int waypointIndex in hotspringspack)
+    //     {
+    //         OnsenManager.OnsenData onsen = OnsenManager.Instance.GetOnsenByWaypointIndex(waypointIndex);
+    //         if (onsen == null || onsen.teamownerID != teamID)
+    //         {
+    //             return false;
+    //         }
+    //     }
+
+    //     return true;
+    // }
+
+    // // public bool CheckBankruptcy(int teamID)
+    // // {
+    // //     // Check if all opponents fail to pay rent and go bankrupt
+    // //     foreach (PlayerController player in players)
+    // //     {
+    // //         if (player.teamID != teamID && !player.isBankRupt)
+    // //         {
+    // //             return false;
+    // //         }
+    // //     }
+
+    // //     return true;
+    // // }
+
+    // // public bool CheckAcceptWinnings(int teamID)
+    // // {
+    // //     // Check if all players of a team leave
+    // //     foreach (PlayerController player in players)
+    // //     {
+    // //         if (player.teamID == teamID && !player.isLeaving)
+    // //         {
+    // //             return false;
+    // //         }
+    // //     }
+
+    // //     return true;
+    // // }
 }

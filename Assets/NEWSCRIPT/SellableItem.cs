@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 
 [System.Serializable]
-public class SellableItem
+public class Properties
 {
-    // public SellableItem currentHotspotProperty = null;
+    // public Properties currentHotspotProperty = null;
     public StallManager.StallData stallData;
     public OnsenManager.OnsenData onsenData;
 
@@ -251,8 +251,8 @@ public class SellableItem
         }
     }
 
-    // public List<SellableItem> ietms = new List<ItemData>();
-    // public SellableItem GetItemByWaypointIndex(int JSONwaypointIndex)
+    // public List<Properties> ietms = new List<ItemData>();
+    // public Properties GetItemByWaypointIndex(int JSONwaypointIndex)
     // {
     //     foreach (var item in items)
     //     {

@@ -330,11 +330,11 @@ public class CardManager : MonoBehaviour
         currentPlayer.propertyToBeEffected = null;
         foreach (var stalltosell in currentPlayer.ownedStalls)
         {
-            currentPlayer.ListPropertiesForEffect.Add(new SellableItem { stallData = stalltosell });
+            currentPlayer.ListPropertiesForEffect.Add(new Properties { stallData = stalltosell });
         }
         foreach (var onsentosell in currentPlayer.ownedOnsens)
         {
-            currentPlayer.ListPropertiesForEffect.Add(new SellableItem { onsenData = onsentosell });
+            currentPlayer.ListPropertiesForEffect.Add(new Properties { onsenData = onsentosell });
         }
 
         if (currentPlayer.ListPropertiesForEffect.Count > 0)
@@ -395,11 +395,11 @@ public class CardManager : MonoBehaviour
         currentPlayer.propertyToBeEffected = null;
         foreach (var stalltosell in currentPlayer.ownedStalls)
         {
-            currentPlayer.ListPropertiesForEffect.Add(new SellableItem { stallData = stalltosell });
+            currentPlayer.ListPropertiesForEffect.Add(new Properties { stallData = stalltosell });
         }
         foreach (var onsentosell in currentPlayer.ownedOnsens)
         {
-            currentPlayer.ListPropertiesForEffect.Add(new SellableItem { onsenData = onsentosell });
+            currentPlayer.ListPropertiesForEffect.Add(new Properties { onsenData = onsentosell });
         }
         if (currentPlayer.ListPropertiesForEffect.Count > 0)
         {
@@ -448,11 +448,11 @@ public class CardManager : MonoBehaviour
         currentPlayer.propertyToBeEffected = null;
         foreach (var stalltosell in currentPlayer.ownedStalls)
         {
-            currentPlayer.ListPropertiesForEffect.Add(new SellableItem { stallData = stalltosell });
+            currentPlayer.ListPropertiesForEffect.Add(new Properties { stallData = stalltosell });
         }
         foreach (var onsentosell in currentPlayer.ownedOnsens)
         {
-            currentPlayer.ListPropertiesForEffect.Add(new SellableItem { onsenData = onsentosell });
+            currentPlayer.ListPropertiesForEffect.Add(new Properties { onsenData = onsentosell });
         }
         if (currentPlayer.ListPropertiesForEffect.Count > 0)
         {
@@ -597,11 +597,11 @@ public class CardManager : MonoBehaviour
             {
                 foreach (var stalltosell in player.ownedStalls)
                 {
-                    currentPlayer.ListPropertiesForEffect.Add(new SellableItem { stallData = stalltosell });
+                    currentPlayer.ListPropertiesForEffect.Add(new Properties { stallData = stalltosell });
                 }
                 foreach (var onsentosell in player.ownedOnsens)
                 {
-                    currentPlayer.ListPropertiesForEffect.Add(new SellableItem { onsenData = onsentosell });
+                    currentPlayer.ListPropertiesForEffect.Add(new Properties { onsenData = onsentosell });
                 }
                 // currentPlayer.ListPropertiesForEffect.AddRange(player.ownedStalls);
             }
@@ -685,7 +685,7 @@ public class CardManager : MonoBehaviour
         gameManager.isCardEffect = false;
     }
 
-    private void UpdateRentText(SellableItem propertyToBeEffected, int stageIndex)
+    private void UpdateRentText(Properties propertyToBeEffected, int stageIndex)
     {
         Debug.Log("Updating rent text for stall: " + propertyToBeEffected.name + " at stage index: " + stageIndex);
         Debug.Log(System.Environment.StackTrace);
