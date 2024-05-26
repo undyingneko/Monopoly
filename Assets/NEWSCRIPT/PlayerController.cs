@@ -8,6 +8,8 @@ using Unity.VisualScripting;
 
 public class PlayerController : MonoBehaviour
 {
+    public Image playerIcon;
+
     private TextMeshProUGUI Tilepopup_propertyNameText;
     private TextMeshProUGUI ownerText;
     private TextMeshProUGUI Tilepopup_RentPrice;
@@ -650,9 +652,10 @@ public class PlayerController : MonoBehaviour
                 UpdateMoneyText(); // Update UI to reflect the new money amount
                 gameManager.DisplayPlus300();
             }
-            yield return new WaitForSecondsRealtime(0.3f);
+            yield return new WaitForSecondsRealtime(0.05f); //0.3 base
         }
         yield return StartCoroutine(LandOnProperty());
+        gameManager.CheckWinningConditions();
     }
 
     public void MoveForward()
@@ -1103,6 +1106,7 @@ public class PlayerController : MonoBehaviour
         playerMoveText.gameObject.SetActive(false);
         rollButton.gameObject.SetActive(false);
         spriteRenderer.sortingOrder = originalSortingOrder;
+        
         StartCoroutine(DelayedNextTurn());
     }
 
@@ -1113,9 +1117,13 @@ public class PlayerController : MonoBehaviour
         gameManager.buyPropertyDecisionMade = false;
         gameManager.buyOutDecisionMade = false;
         gameManager.EndedAllInteraction = false; 
-        
+        // gameManager.CheckWinningConditions();
+        if (!GameManager.GameOver)
+        {
+            gameManager.NextTurn();
+        }
            
-        gameManager.NextTurn(); 
+        // gameManager.NextTurn(); 
     }
     public void StartTurn()
     {
