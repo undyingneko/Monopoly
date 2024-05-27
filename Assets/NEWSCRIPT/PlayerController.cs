@@ -458,7 +458,7 @@ public class PlayerController : MonoBehaviour
             turnsInJail = 0;
             Debug.Log("current position before moving in jail" + currentPosition); 
             Debug.Log("sum= " + sum);
-            MovePlayer(sum);
+            yield return StartCoroutine(MovePlayer(sum));
             yield return StartCoroutine(WaitForPropertyDecision());
             Debug.Log("current position after moving in jail" + currentPosition); 
             EndTurn();
@@ -471,7 +471,8 @@ public class PlayerController : MonoBehaviour
             if (turnsInJail >= 3)
             {   
                 InJail = false;
-                MovePlayer(diceValues[0] + diceValues[1]);
+                yield return StartCoroutine(MovePlayerCoroutine(diceValues[0] + diceValues[1]));
+                // MovePlayer(diceValues[0] + diceValues[1]);
                 turnsInJail = 0;
                 // yield return StartCoroutine(WaitForPropertyDecision());
                 EndTurn();
@@ -533,7 +534,7 @@ public class PlayerController : MonoBehaviour
         sumText.text = "" + sum; 
         yield return new WaitForSecondsRealtime(0.1f);
 
-        yield return MovePlayerCoroutine(sum);
+        yield return StartCoroutine(MovePlayerCoroutine(sum));
         // MovePlayer(diceValues[0] + diceValues[1]);
 
         if (currentPosition == 8)
@@ -626,9 +627,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void MovePlayer(int steps)
+    private IEnumerator MovePlayer(int steps)
     {
-        StartCoroutine(MovePlayerCoroutine(steps));
+        yield return StartCoroutine(MovePlayerCoroutine(steps));
     }
 
     public IEnumerator MovePlayerCoroutine(int steps)
@@ -654,8 +655,7 @@ public class PlayerController : MonoBehaviour
             }
             yield return new WaitForSecondsRealtime(0.05f); //0.3 base
         }
-        yield return StartCoroutine(LandOnProperty());
-        gameManager.CheckWinningConditions();
+        yield return StartCoroutine(LandOnProperty());   
     }
 
     public void MoveForward()
@@ -725,6 +725,8 @@ public class PlayerController : MonoBehaviour
                 if (itemToLandOn.stallData.nextStageIndex <= 5 && itemToLandOn.Price <= Money)
                 {
                     ShowBuy012(itemToLandOn.stallData, this);
+                    yield return new WaitUntil(() => gameManager.buyPropertyDecisionMade);
+                    yield return StartCoroutine(gameManager.CheckWinningConditions());
                 }
                 else
                 {
@@ -769,6 +771,8 @@ public class PlayerController : MonoBehaviour
                         if (stall.nextStageIndex <= stall.stagePrices.Count && stall.stagePrices[stall.nextStageIndex] <= Money)
                         {
                             ShowBuy012(stall, this);
+                            yield return new WaitUntil(() => gameManager.buyPropertyDecisionMade);
+                            yield return StartCoroutine(gameManager.CheckWinningConditions());
                         }
                         else if (Money < stall.stagePrices[stall.nextStageIndex])
                         {
@@ -791,6 +795,8 @@ public class PlayerController : MonoBehaviour
                             if (stall.buyoutPrices[stall.currentStageIndex] <= Money )
                             {
                                 ShowBuyOutPopUp(stall, this);
+                                yield return new WaitUntil(() => gameManager.buyOutDecisionMade);
+                                yield return StartCoroutine(gameManager.CheckWinningConditions());                                  
                             }
                             else if (stall.buyoutPrices[stall.currentStageIndex] > Money)
                             {
@@ -807,6 +813,8 @@ public class PlayerController : MonoBehaviour
                             if (stall.stagePrices[stall.nextStageIndex] <= Money && ownerPlayeragain.teamID == this.teamID)
                             {
                                 ShowBuy012(stall, this);
+                                yield return new WaitUntil(() => gameManager.buyPropertyDecisionMade);
+                                yield return StartCoroutine(gameManager.CheckWinningConditions());    
                                 
                             }
                             else if (stall.stagePrices[stall.nextStageIndex] > Money && ownerPlayeragain.teamID == this.teamID)
@@ -828,6 +836,8 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+        // yield return StartCoroutine(gameManager.CheckWinningConditions());
+
     }
 
     private IEnumerator HandleRent( int rentPriceToDeduct, Properties itemToLandOn)

@@ -7,6 +7,12 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    public bool sideMonopolyFound;
+    public bool tripleMonopolyFound;
+    public bool hotspringMonopolyFound;
+    public bool ownsallstalls;
+    public bool ownsallonsens;
+
     public int winningTeamID;
     public GameObject gameOverPanel;
     public TextMeshProUGUI winningTeamText;
@@ -91,6 +97,12 @@ public class GameManager : MonoBehaviour
         LoadDiceSides();
         StartGame();
         currentHostingFireWork = null;
+
+        sideMonopolyFound = false;
+        tripleMonopolyFound= false;
+        hotspringMonopolyFound= false;
+        ownsallstalls= false;
+        ownsallonsens= false;    
     }
     
     void StartGame()
@@ -300,15 +312,20 @@ public class GameManager : MonoBehaviour
         ObjectToHide.gameObject.SetActive(false);
     } 
 
-    public void CheckWinningConditions()
+    public IEnumerator CheckWinningConditions()
     {
         winningTeamID = -1;
-        if (CheckSideMonopoly(ref winningTeamID) || CheckTripleMonopoly(ref winningTeamID) || CheckHotspringMonopoly(ref winningTeamID))
+        yield return StartCoroutine(CheckSideMonopoly());
+        yield return StartCoroutine(CheckTripleMonopoly());
+        yield return StartCoroutine(CheckHotspringMonopoly());
+        
+        if (sideMonopolyFound || tripleMonopolyFound || hotspringMonopolyFound)
         {
             Debug.Log("We have a winner!");
             GameOver = true;
             DisplayGameOverUI(winningTeamID);
         }
+        yield return null;
     }
 
      private void DisplayGameOverUI(int winningTeamID)
@@ -323,28 +340,30 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private bool CheckSideMonopoly(ref int winningTeamID)
+    private IEnumerator CheckSideMonopoly()
     {
+        sideMonopolyFound = false;
         foreach (PlayerController player in players)
         {
             int teamID = player.teamID;
             foreach (int[] side in sides)
             {
-                if (OwnsAllStalls(side, teamID))
+                yield return StartCoroutine(OwnsAllStalls(side, teamID));
+                if (ownsallstalls == true)
                 {
                     winningTeamID = teamID; // Set the winning team ID
                     Debug.Log($"Team {teamID} wins with a Side Monopoly!");
-                    return true;
+                    sideMonopolyFound = true;
+                    yield return null; // Yield to continue coroutine execution
+                    yield break; // Exit the coroutine early
                 }
             }
         }
-        return false;
     }
 
-    // Method to check Triple Monopoly
-    private bool CheckTripleMonopoly(ref int winningTeamID)
+    private IEnumerator CheckTripleMonopoly()
     {
-        winningTeamID = -1;
+        tripleMonopolyFound = false;
         foreach (PlayerController player in players)
         {
             int teamID = player.teamID;
@@ -352,7 +371,8 @@ public class GameManager : MonoBehaviour
 
             foreach (int[] pack in packs)
             {
-                if (OwnsAllStalls(pack, teamID))
+                yield return StartCoroutine(OwnsAllStalls(pack, teamID));
+                if (ownsallstalls)
                 {
                     packsOwned++;
                 }
@@ -360,57 +380,63 @@ public class GameManager : MonoBehaviour
                 {
                     winningTeamID = teamID;
                     Debug.Log($"Team {teamID} wins with a Triple Monopoly!");
-                    return true;
+                    tripleMonopolyFound = true;
+                    yield return null; // Yield to continue coroutine execution
+                    yield break; // Exit the coroutine early
                 }
             }
         }
-        return false;
     }
 
-    // Method to check Hotspring Monopoly
-    private bool CheckHotspringMonopoly(ref int winningTeamID)
+    private IEnumerator CheckHotspringMonopoly()
     {
-        winningTeamID = -1;
+        hotspringMonopolyFound = false;
         foreach (PlayerController player in players)
         {
             int teamID = player.teamID;
-            if (OwnsAllOnsen(hotsprings, teamID))
+            yield return StartCoroutine(OwnsAllOnsen(hotsprings, teamID));
+
+            if (ownsallonsens)
             {
                 winningTeamID = teamID;
                 Debug.Log($"Team {teamID} wins with a Hotspring Monopoly!");
-                return true;
+                hotspringMonopolyFound = true;
+                yield return null; // Yield to continue coroutine execution
+                yield break; // Exit the coroutine early
             }
         }
-        return false;
     }
 
-    // Helper method to check if a team owns all stalls in a given set of waypoint indices
-    private bool OwnsAllStalls(int[] waypoints, int teamID)
+
+    private IEnumerator OwnsAllStalls(int[] waypoints, int teamID)
     {
+        ownsallstalls = false;
         foreach (int waypoint in waypoints)
         {
             StallManager.StallData stall = StallManager.Instance.GetStallByWaypointIndex(waypoint);
-            if (stall == null || stall.teamownerID != teamID)
+            if (stall != null && stall.teamownerID == teamID)
             {
-                return false;
+                ownsallstalls = true; 
+                yield return null;
+                yield break; 
             }
         }
-        return true;
     }
 
-    private bool OwnsAllOnsen(int[] waypoints, int teamID)
+    private IEnumerator OwnsAllOnsen(int[] waypoints, int teamID)
     {
+        ownsallonsens = false;
         foreach (int waypoint in waypoints)
         {
             OnsenManager.OnsenData onsen = OnsenManager.Instance.GetOnsenByWaypointIndex(waypoint);
-
-            if (onsen == null ) return false;
-            if (onsen == null || onsen.teamownerID != teamID)
+            if (onsen != null && onsen.teamownerID == teamID)
             {
-                return false;
+                ownsallonsens = true;
+                yield return null;
+                yield break; // Exit the coroutine early
             }
         }
-        return true;
     }
+
 
 }
