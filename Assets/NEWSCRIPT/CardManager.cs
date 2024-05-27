@@ -472,7 +472,7 @@ public class CardManager : MonoBehaviour
                 clickHandler.SetAssociatedProperty(playerProperty);
             }
             yield return new WaitUntil(() => gameManager.ChanceSelectionMade);
-            Debug.Log("this part");
+            // Debug.Log("this part");
 
             currentPlayer.propertyToBeEffected = gameManager.selectedProperty;
             if (currentPlayer.propertyToBeEffected != null )
@@ -480,7 +480,7 @@ public class CardManager : MonoBehaviour
                 if (gameManager.FireworkPlaceIsSet && gameManager.currentHostingFireWork.teamownerID != currentPlayer.teamID)
                 {
                     var previousHotspotProperty = gameManager.currentHostingFireWork;
-                    Debug.Log("Previous hotspot:" + previousHotspotProperty.name);
+                    // Debug.Log("Previous hotspot:" + previousHotspotProperty.name);
                     previousHotspotProperty.isFireWork = false;
                     if (previousHotspotProperty.stallData != null)
                     {
@@ -494,7 +494,7 @@ public class CardManager : MonoBehaviour
                     }
                     // previousHotspotProperty.InitializePrices();
 
-                    Debug.Log("Old rent price" + previousHotspotProperty.rentPrices[previousHotspotProperty.currentStageIndex]);
+                    // Debug.Log("Old rent price" + previousHotspotProperty.rentPrices[previousHotspotProperty.currentStageIndex]);
                     // stallManager.InitializeRentText(previousHotspotProperty);
                     UpdateRentText(previousHotspotProperty, previousHotspotProperty.currentStageIndex);
                 }          
@@ -516,7 +516,7 @@ public class CardManager : MonoBehaviour
                 // stallManager.InitializeRentText(currentPlayer.propertyToBeEffected);
                 UpdateRentText(currentPlayer.propertyToBeEffected, currentPlayer.propertyToBeEffected.currentStageIndex);
                 gameManager.currentHostingFireWork = currentPlayer.propertyToBeEffected;
-                Debug.Log("Current hotspot:" + gameManager.currentHostingFireWork.name);
+                // Debug.Log("Current hotspot:" + gameManager.currentHostingFireWork.name);
                 StartCoroutine(currentPlayer.ShowMessage(currentPlayer.propertyToBeEffected.name + " is now hosting a firework display, becoming a hot spot!"));
             
             }
@@ -626,7 +626,7 @@ public class CardManager : MonoBehaviour
 
         yield return new WaitUntil(() => gameManager.ChanceSelectionMade);
         currentPlayer.propertyToBeEffected = gameManager.selectedProperty;
-        Debug.Log("Selected property " + currentPlayer.propertyToBeEffected.name);
+        // Debug.Log("Selected property " + currentPlayer.propertyToBeEffected.name);
     }
 
     private void Destroy(PlayerController currentPlayer)
@@ -687,11 +687,11 @@ public class CardManager : MonoBehaviour
 
     private void UpdateRentText(Properties propertyToBeEffected, int stageIndex)
     {
-        Debug.Log("Updating rent text for stall: " + propertyToBeEffected.name + " at stage index: " + stageIndex);
-        Debug.Log(System.Environment.StackTrace);
+        // Debug.Log("Updating rent text for stall: " + propertyToBeEffected.name + " at stage index: " + stageIndex);
+        // Debug.Log(System.Environment.StackTrace);
         if (propertyToBeEffected.rentText != null)
         {
-            Debug.Log("Rent text is assigned for stall: " + propertyToBeEffected.name);
+            // Debug.Log("Rent text is assigned for stall: " + propertyToBeEffected.name);
             propertyToBeEffected.rentText.text = StallManager.Instance.FormatPrice(propertyToBeEffected.rentPrices[stageIndex]);
             propertyToBeEffected.rentText.gameObject.SetActive(true);
         }

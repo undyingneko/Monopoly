@@ -107,7 +107,8 @@ public class BuyPropertyPopup012 : MonoBehaviour
     }
 
     private void OnDisable()
-    {   Debug.Log("Popup disabled");
+    {   
+        // Debug.Log("Popup disabled");
         playerController.isBuyPopUpActive = false;
         if (buyConfirmationCoroutine != null)
         {
@@ -118,6 +119,7 @@ public class BuyPropertyPopup012 : MonoBehaviour
         {
             BuyPropertyPopup_buyButtons[i].onClick.RemoveAllListeners();
         }  
+        gameManager.buyPropertyDecisionMade = false;
            
     }
 
@@ -129,7 +131,7 @@ public class BuyPropertyPopup012 : MonoBehaviour
             return;
         }
         currentStall = stall;
-        Debug.Log ("currentStall name:"+ currentStall.name);
+        // Debug.Log ("currentStall name:"+ currentStall.name);
 
         BuyPropertyPopup_stallNameText.text = stall.name;
         // stall.stageImageInstances.Clear();  
@@ -235,7 +237,7 @@ public class BuyPropertyPopup012 : MonoBehaviour
                     {
                         currentPlayer.Money -= stagePrice; 
                         currentPlayer.UpdateMoneyText(); 
-                        Debug.Log("Money deducted successfully. Remaining money: " + currentPlayer.Money);
+
                         
                         if (!currentStall.owned)
                         {
@@ -249,24 +251,18 @@ public class BuyPropertyPopup012 : MonoBehaviour
                             currentStall.currentStageIndex = stageIndex;
                             currentStall.nextStageIndex = stageIndex + 1;
                         }     
-                        Debug.Log("Stall bought successfully.");
                         gameObject.SetActive(false); 
 
                         stallManager.DeactivateOldStageImages(currentStall);
                         currentStall.stageImages[stageIndex].SetActive(true);
                         stallManager.ActivateRentTagImage(currentStall);
                         stallManager.UpdateRentText(currentStall, stageIndex);
-
-                        Debug.Log("JSONwaypointIndex = "+ currentStall.JSONwaypointIndex + "+" + "currentStageIndex = " + currentStall.currentStageIndex);
-                        Debug.Log("Image Count " + currentStall.stageImages.Count);
                         gameManager.buyPropertyDecisionMade = true;
-                        Debug.Log("gameManager.buyPropertyDecisionMade set to : " + gameManager.buyPropertyDecisionMade);
+
                     }
                     else
                     {
-                        Debug.LogWarning("Insufficient funds to buy the stall.");
                         gameManager.buyPropertyDecisionMade = true;
-                        Debug.Log("gameManager.buyPropertyDecisionMade set to : " + gameManager.buyPropertyDecisionMade);
                     }
                 }
                 else
@@ -276,15 +272,13 @@ public class BuyPropertyPopup012 : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("GameManager reference is null in BuyStage method!");
+
                 return;
             }
             if (buyConfirmationCoroutine != null)
             {
                 StopCoroutine(buyConfirmationCoroutine);
             }
-        
-        Debug.Log ("currentPlayerIndex:"+ GameManager.currentPlayerIndex);
     }
 
     IEnumerator BuyConfirmationTimer()
@@ -293,7 +287,6 @@ public class BuyPropertyPopup012 : MonoBehaviour
         gameObject.SetActive(false);
         // playerController.EndBuyPropertyInteraction();
         gameManager.buyPropertyDecisionMade = true;
-        Debug.Log("gameManager.buyPropertyDecisionMade set to : " + gameManager.buyPropertyDecisionMade);
     }
 
     public void Decline()
@@ -301,7 +294,7 @@ public class BuyPropertyPopup012 : MonoBehaviour
         gameObject.SetActive(false);
         // playerController.EndBuyPropertyInteraction();
         gameManager.buyPropertyDecisionMade = true;
-        Debug.Log("gameManager.buyPropertyDecisionMade set to : " + gameManager.buyPropertyDecisionMade);  
+
     }
 
     private string FormatStagePrice(int stageIndex, StallManager.StallData stall)

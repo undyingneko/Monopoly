@@ -352,7 +352,7 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator RollDiceOnClick(int dice1Value, int dice2Value)
     {
-        if (!GameManager.GameOver && isTurn && coroutineAllowed)
+        if (!gameManager.GameOver && isTurn && coroutineAllowed)
         {
             if (InJail && !hasGetOutOfJailCard)
             {
@@ -396,8 +396,6 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator RollDiceInJail(int dice1Value, int dice2Value)
     {    
-        Debug.Log("inside roll dice in jail");
-        Debug.Log("current position step in jail=" + currentPosition);   
         coroutineAllowed = false;
         int[] diceValues = new int[2];
         // For testing purposes, set the dice values to double 6
@@ -456,11 +454,8 @@ public class PlayerController : MonoBehaviour
         {
             InJail = false;
             turnsInJail = 0;
-            Debug.Log("current position before moving in jail" + currentPosition); 
-            Debug.Log("sum= " + sum);
             yield return StartCoroutine(MovePlayer(sum));
             yield return StartCoroutine(WaitForPropertyDecision());
-            Debug.Log("current position after moving in jail" + currentPosition); 
             EndTurn();
             coroutineAllowed = false;
             
@@ -491,7 +486,6 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator RollTheDice(int dice1Value, int dice2Value)
     {
-        Debug.Log("inside roll dice normal");
         coroutineAllowed = false;
         int[] diceValues = new int[2];
         foreach (var dice1Image in gameManager.dice1Sides.Values)
@@ -594,7 +588,7 @@ public class PlayerController : MonoBehaviour
 
         if (isDoubles)
         {   
-            Debug.Log ("inside isDouble");
+            // Debug.Log("inside isDouble");
             consecutiveDoublesCount++;
             fatigueLevel = Mathf.Min(fatigueLevel + 1, maxFatigueLevel);
             
@@ -655,8 +649,18 @@ public class PlayerController : MonoBehaviour
             }
             yield return new WaitForSecondsRealtime(0.05f); //0.3 base
         }
-        yield return StartCoroutine(LandOnProperty());   
+        yield return StartCoroutine(LandOnProperty());
+        
+        // yield return StartCoroutine(gameManager.CheckWinningConditions());
+        // if (gameManager.GameOver)
+        // {
+        //     gameManager.DisplayGameOverUI(this.teamID);
+        //     yield break;
+        // }
+
     }
+
+
 
     public void MoveForward()
     {
@@ -697,7 +701,6 @@ public class PlayerController : MonoBehaviour
 
         if (itemToLandOn == null)
         {
-            Debug.Log("No stall or hot spring found at the current position.");
             yield break;
         }
         if (!itemToLandOn.owned)
@@ -726,7 +729,13 @@ public class PlayerController : MonoBehaviour
                 {
                     ShowBuy012(itemToLandOn.stallData, this);
                     yield return new WaitUntil(() => gameManager.buyPropertyDecisionMade);
+                    gameManager.buyPropertyDecisionMade = false;
                     yield return StartCoroutine(gameManager.CheckWinningConditions());
+                    if (gameManager.GameOver)
+                    {
+                        gameManager.DisplayGameOverUI(this.teamID);
+                        yield break;
+                    }
                 }
                 else
                 {
@@ -772,7 +781,13 @@ public class PlayerController : MonoBehaviour
                         {
                             ShowBuy012(stall, this);
                             yield return new WaitUntil(() => gameManager.buyPropertyDecisionMade);
+                            gameManager.buyPropertyDecisionMade = false;
                             yield return StartCoroutine(gameManager.CheckWinningConditions());
+                            if (gameManager.GameOver)
+                            {
+                                gameManager.DisplayGameOverUI(this.teamID);
+                                yield break;
+                            }
                         }
                         else if (Money < stall.stagePrices[stall.nextStageIndex])
                         {
@@ -796,7 +811,13 @@ public class PlayerController : MonoBehaviour
                             {
                                 ShowBuyOutPopUp(stall, this);
                                 yield return new WaitUntil(() => gameManager.buyOutDecisionMade);
-                                yield return StartCoroutine(gameManager.CheckWinningConditions());                                  
+                                gameManager.buyOutDecisionMade = false;
+                                yield return StartCoroutine(gameManager.CheckWinningConditions());
+                                if (gameManager.GameOver)
+                                {
+                                    gameManager.DisplayGameOverUI(this.teamID);
+                                    yield break;
+                                }                              
                             }
                             else if (stall.buyoutPrices[stall.currentStageIndex] > Money)
                             {
@@ -814,7 +835,13 @@ public class PlayerController : MonoBehaviour
                             {
                                 ShowBuy012(stall, this);
                                 yield return new WaitUntil(() => gameManager.buyPropertyDecisionMade);
-                                yield return StartCoroutine(gameManager.CheckWinningConditions());    
+                                gameManager.buyPropertyDecisionMade = false;
+                                yield return StartCoroutine(gameManager.CheckWinningConditions());
+                                if (gameManager.GameOver)
+                                {
+                                    gameManager.DisplayGameOverUI(this.teamID);
+                                    yield break;
+                                }
                                 
                             }
                             else if (stall.stagePrices[stall.nextStageIndex] > Money && ownerPlayeragain.teamID == this.teamID)
@@ -836,7 +863,6 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
-        // yield return StartCoroutine(gameManager.CheckWinningConditions());
 
     }
 
@@ -1090,7 +1116,6 @@ public class PlayerController : MonoBehaviour
         // Update the text displayed on the moneyText object
         moneyText.text = FormatMoney(Money);
         // moneyText.text = Money.ToString();
-        Debug.Log("Money updated. Current money: " + Money);
     }
     
     public string FormatMoney(long amount)
@@ -1128,7 +1153,7 @@ public class PlayerController : MonoBehaviour
         gameManager.buyOutDecisionMade = false;
         gameManager.EndedAllInteraction = false; 
         // gameManager.CheckWinningConditions();
-        if (!GameManager.GameOver)
+        if (!gameManager.GameOver)
         {
             gameManager.NextTurn();
         }

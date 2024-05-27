@@ -5,40 +5,45 @@ using System.Collections.Generic;
 using System;
 using UnityEngine.UI;
 
+
 public class GameManager : MonoBehaviour
 {
-    public bool sideMonopolyFound;
-    public bool tripleMonopolyFound;
-    public bool hotspringMonopolyFound;
-    public bool ownsallstalls;
-    public bool ownsallonsens;
+    public bool GameOver;
+    // public bool checksidefinished;
+
+    
+    // public bool sideMonopolyFound;
+    // public bool tripleMonopolyFound;
+    // public bool hotspringMonopolyFound;
+    // public bool ownsallstalls;
+    // public bool ownsallonsens;
 
     public int winningTeamID;
     public GameObject gameOverPanel;
     public TextMeshProUGUI winningTeamText;
     public Image[] playerIcons;
 
-    private readonly List<int[]> sides = new List<int[]>
-    {
-        new[] { 1, 2, 3, 5, 6, 7 },
-        new[] { 9, 10, 11, 14, 15 },
-        new[] { 17, 19, 21, 22 },
-        new[] { 26, 27, 29, 30 }
-    };
+    // private readonly List<int[]> sides = new List<int[]>
+    // {
+    //     new[] { 1, 2, 3, 5, 6, 7 },
+    //     new[] { 9, 10, 11, 14, 15 },
+    //     new[] { 17, 19, 21, 22 },
+    //     new[] { 26, 27, 29, 30 }
+    // };
 
-    private readonly List<int[]> packs = new List<int[]>
-    {
-        new[] { 1, 2, 3 },
-        new[] { 5, 6, 7 },
-        new[] { 9, 10, 11 },
-        new[] { 14, 15 },
-        new[] { 17, 19 },
-        new[] { 21, 22 },
-        new[] { 26, 27 },
-        new[] { 29, 30 }
-    };
+    // private readonly List<int[]> packs = new List<int[]>
+    // {
+    //     new[] { 1, 2, 3 },
+    //     new[] { 5, 6, 7 },
+    //     new[] { 9, 10, 11 },
+    //     new[] { 14, 15 },
+    //     new[] { 17, 19 },
+    //     new[] { 21, 22 },
+    //     new[] { 26, 27 },
+    //     new[] { 29, 30 }
+    // };
 
-    private readonly int[] hotsprings = { 4, 13, 18, 25 };
+    // private readonly int[] hotsprings = { 4, 13, 18, 25 };
 
     public PlayerController[] players;
 
@@ -55,7 +60,7 @@ public class GameManager : MonoBehaviour
     
     
     public static int currentPlayerIndex;
-    public static bool GameOver;
+    
     
     // private PlayerController playerController;
     public static GameManager Instance;
@@ -98,11 +103,8 @@ public class GameManager : MonoBehaviour
         StartGame();
         currentHostingFireWork = null;
 
-        sideMonopolyFound = false;
-        tripleMonopolyFound= false;
-        hotspringMonopolyFound= false;
-        ownsallstalls= false;
-        ownsallonsens= false;    
+        // ownsallstalls= false;
+        // ownsallonsens= false;    
     }
     
     void StartGame()
@@ -168,7 +170,7 @@ public class GameManager : MonoBehaviour
             {
                 dice1Sides.Add(i, dice1Image);
                 dice1Image.SetActive(false);
-                Debug.Log("found Dice_1_Image_" + i); // Initially set all dice images to inactive
+                // Debug.Log("found Dice_1_Image_" + i); // Initially set all dice images to inactive
             }
             else
             {
@@ -194,7 +196,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Loaded dice images from the hierarchy.");
+            // Debug.Log("Loaded dice images from the hierarchy.");
         }
     }
     public string FormatPrice(int price)
@@ -253,7 +255,7 @@ public class GameManager : MonoBehaviour
         {
             tileToPropertyMap[tile] = property;
         }
-        Debug.Log("Property assigned to tile: " + property.name);
+        // Debug.Log("Property assigned to tile: " + property.name);
     }
 
     public Properties GetPropertyFromTile(GameObject tile)
@@ -283,7 +285,7 @@ public class GameManager : MonoBehaviour
             {
                 // Assign the tile image to its corresponding TileWaypointIndex
                 AssignTileToWaypointIndex(waypointIndex, tileImage);
-                Debug.Log($"Tile image assigned for waypoint index: {waypointIndex}");
+                // Debug.Log($"Tile image assigned for waypoint index: {waypointIndex}");
             }
             else
             {
@@ -312,23 +314,122 @@ public class GameManager : MonoBehaviour
         ObjectToHide.gameObject.SetActive(false);
     } 
 
-    public IEnumerator CheckWinningConditions()
+    public bool CheckSideMonopoly(int teamID)
     {
-        winningTeamID = -1;
-        yield return StartCoroutine(CheckSideMonopoly());
-        yield return StartCoroutine(CheckTripleMonopoly());
-        yield return StartCoroutine(CheckHotspringMonopoly());
-        
-        if (sideMonopolyFound || tripleMonopolyFound || hotspringMonopolyFound)
-        {
-            Debug.Log("We have a winner!");
-            GameOver = true;
-            DisplayGameOverUI(winningTeamID);
-        }
-        yield return null;
+        // Define the waypoint indices for each side
+        int[] side1Indices = { 1, 2, 3, 5, 6, 7 };
+        int[] side2Indices = { 9, 10, 11, 14, 15 };
+        int[] side3Indices = { 17, 19, 21, 22 };
+        int[] side4Indices = { 26, 27, 29, 30 };
+
+        // Check if the player owns all properties in any side
+        bool side1Monopoly = CheckStallOwned(teamID, side1Indices);
+        bool side2Monopoly = CheckStallOwned(teamID, side2Indices);
+        bool side3Monopoly = CheckStallOwned(teamID, side3Indices);
+        bool side4Monopoly = CheckStallOwned(teamID, side4Indices);
+        Debug.Log("All properties checked for side monopoly.");
+        // Return true if any side monopoly condition is met
+        return side1Monopoly || side2Monopoly || side3Monopoly || side4Monopoly;
+
     }
 
-     private void DisplayGameOverUI(int winningTeamID)
+    public bool CheckTripleMonopoly(int teamID)
+    {
+        // Define the waypoint indices for each pack
+        int[] pack1Indices = { 1, 2, 3 };
+        int[] pack2Indices = { 5, 6, 7 };
+        int[] pack3Indices = { 9, 10, 11 };
+        int[] pack4Indices = { 14, 15 };
+        int[] pack5Indices = { 17, 19 };
+        int[] pack6Indices = { 21, 22 };
+        int[] pack7Indices = { 26, 27 };
+        int[] pack8Indices = { 29, 30 };
+
+        // Check if the player owns all properties in any pack
+        bool pack1Monopoly = CheckStallOwned(teamID, pack1Indices);
+        bool pack2Monopoly = CheckStallOwned(teamID, pack2Indices);
+        bool pack3Monopoly = CheckStallOwned(teamID, pack3Indices);
+        bool pack4Monopoly = CheckStallOwned(teamID, pack4Indices);
+        bool pack5Monopoly = CheckStallOwned(teamID, pack5Indices);
+        bool pack6Monopoly = CheckStallOwned(teamID, pack6Indices);
+        bool pack7Monopoly = CheckStallOwned(teamID, pack7Indices);
+        bool pack8Monopoly = CheckStallOwned(teamID, pack8Indices);
+
+        // Return true if any triple monopoly condition is met
+        return pack1Monopoly || pack2Monopoly || pack3Monopoly || pack4Monopoly ||
+               pack5Monopoly || pack6Monopoly || pack7Monopoly || pack8Monopoly;
+    }
+
+    public bool CheckHotspringMonopoly(int teamID)
+    {
+        // Check if the player owns all hotsprings
+        bool hotspringMonopoly = CheckOnsenOwned(teamID, new int[] { 4, 13, 18, 25 });
+
+        return hotspringMonopoly;
+    }
+
+    public bool CheckBankruptcy()
+    {
+        // Check if all opponents have gone bankrupt
+        bool allOpponentsBankrupt = true;
+        foreach (PlayerController opponent in players)
+        {
+            if (!opponent.isBankRupt)
+            {
+                allOpponentsBankrupt = false;
+                break;
+            }
+        }
+
+        return allOpponentsBankrupt;
+    }
+
+    public bool CheckAcceptWinnings()
+    {
+        // Check if everyone has left the match
+        bool everyoneLeft = true;
+        foreach (PlayerController player in players)
+        {
+            if (player.gameObject.activeSelf)
+            {
+                everyoneLeft = false;
+                break;
+            }
+        }
+
+        return everyoneLeft;
+    }
+
+    private bool CheckStallOwned(int teamID, int[] waypointIndices)
+    {
+        foreach (int waypointIndex in waypointIndices)
+        {
+            StallManager.StallData stall = StallManager.Instance.GetStallByWaypointIndex(waypointIndex);
+
+            if (stall == null || stall.teamownerID != teamID)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private bool CheckOnsenOwned(int teamID, int[] waypointIndices)
+    {
+        foreach (int waypointIndex in waypointIndices)
+        {
+            OnsenManager.OnsenData onsen = OnsenManager.Instance.GetOnsenByWaypointIndex(waypointIndex);
+
+            if (onsen == null || onsen.teamownerID != teamID)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    public void DisplayGameOverUI(int winningTeamID)
     {
         gameOverPanel.SetActive(true);
         winningTeamText.text = "Team " + winningTeamID + " Wins!";
@@ -339,104 +440,29 @@ public class GameManager : MonoBehaviour
             playerIcons[i].sprite = players[i].playerIcon.sprite;
         }
     }
-
-    private IEnumerator CheckSideMonopoly()
+       
+    public IEnumerator CheckWinningConditions()
     {
-        sideMonopolyFound = false;
+        winningTeamID = -1;
         foreach (PlayerController player in players)
         {
-            int teamID = player.teamID;
-            foreach (int[] side in sides)
+        // Check if any winning condition is met
+            bool sideMonopolyFound = CheckSideMonopoly(player.teamID);
+            // bool tripleMonopolyFound = gameManager.CheckTripleMonopoly(this.teamID);
+            // bool hotspringMonopolyFound = gameManager.CheckHotspringMonopoly(this.teamID);
+            if (sideMonopolyFound)
             {
-                yield return StartCoroutine(OwnsAllStalls(side, teamID));
-                if (ownsallstalls == true)
-                {
-                    winningTeamID = teamID; // Set the winning team ID
-                    Debug.Log($"Team {teamID} wins with a Side Monopoly!");
-                    sideMonopolyFound = true;
-                    yield return null; // Yield to continue coroutine execution
-                    yield break; // Exit the coroutine early
-                }
+                Debug.Log("We have a winner!");
+                GameOver = true;
+                winningTeamID = player.teamID;
+                DisplayGameOverUI(player.teamID);
+            }
+            else
+            {
+                Debug.Log("No side monopoly found.");
             }
         }
-    }
-
-    private IEnumerator CheckTripleMonopoly()
-    {
-        tripleMonopolyFound = false;
-        foreach (PlayerController player in players)
-        {
-            int teamID = player.teamID;
-            int packsOwned = 0;
-
-            foreach (int[] pack in packs)
-            {
-                yield return StartCoroutine(OwnsAllStalls(pack, teamID));
-                if (ownsallstalls)
-                {
-                    packsOwned++;
-                }
-                if (packsOwned >= 3)
-                {
-                    winningTeamID = teamID;
-                    Debug.Log($"Team {teamID} wins with a Triple Monopoly!");
-                    tripleMonopolyFound = true;
-                    yield return null; // Yield to continue coroutine execution
-                    yield break; // Exit the coroutine early
-                }
-            }
-        }
-    }
-
-    private IEnumerator CheckHotspringMonopoly()
-    {
-        hotspringMonopolyFound = false;
-        foreach (PlayerController player in players)
-        {
-            int teamID = player.teamID;
-            yield return StartCoroutine(OwnsAllOnsen(hotsprings, teamID));
-
-            if (ownsallonsens)
-            {
-                winningTeamID = teamID;
-                Debug.Log($"Team {teamID} wins with a Hotspring Monopoly!");
-                hotspringMonopolyFound = true;
-                yield return null; // Yield to continue coroutine execution
-                yield break; // Exit the coroutine early
-            }
-        }
-    }
-
-
-    private IEnumerator OwnsAllStalls(int[] waypoints, int teamID)
-    {
-        ownsallstalls = false;
-        foreach (int waypoint in waypoints)
-        {
-            StallManager.StallData stall = StallManager.Instance.GetStallByWaypointIndex(waypoint);
-            if (stall != null && stall.teamownerID == teamID)
-            {
-                ownsallstalls = true; 
-                yield return null;
-                yield break; 
-            }
-        }
-    }
-
-    private IEnumerator OwnsAllOnsen(int[] waypoints, int teamID)
-    {
-        ownsallonsens = false;
-        foreach (int waypoint in waypoints)
-        {
-            OnsenManager.OnsenData onsen = OnsenManager.Instance.GetOnsenByWaypointIndex(waypoint);
-            if (onsen != null && onsen.teamownerID == teamID)
-            {
-                ownsallonsens = true;
-                yield return null;
-                yield break; // Exit the coroutine early
-            }
-        }
-    }
-
-
+        yield return null;
+        Debug.Log("Done checking all");
+    } 
 }

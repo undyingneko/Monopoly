@@ -168,7 +168,7 @@ public class OnsenManager : MonoBehaviour
         {
             if (onsen.ONSENwaypointIndex == ONSENwaypointIndex)
             {
-                Debug.Log("Onsen found: " + onsen.name);
+                // Debug.Log("Onsen found: " + onsen.name);
 
                 return onsen;
             }
@@ -272,14 +272,14 @@ public class OnsenManager : MonoBehaviour
             // Get the color variation of the rent tag image
             string rentTagColor = rentTagImage.name.Split('_')[2]; 
             rentTagColor = rentTagColor.Replace("(Clone)", "");
-            Debug.Log("Rent tag color: " + rentTagColor + ", Expected color: " + color);
+            // Debug.Log("Rent tag color: " + rentTagColor + ", Expected color: " + color);
 
             // Compare the color variation with the player's color
             if (rentTagColor.Equals(color))
             {
                 // Activate the rent tag image
                 rentTagImage.SetActive(true);
-                Debug.Log("Rent tag image activated for color: " + color);
+                // Debug.Log("Rent tag image activated for color: " + color);
                 return; // Exit the loop once the rent tag image is activated
             }
         }
@@ -289,11 +289,11 @@ public class OnsenManager : MonoBehaviour
 
     public void UpdateonsenRentText(OnsenData onsen)
     {
-        Debug.Log("Updating rent text for property: " + onsen.name);
-        Debug.Log(System.Environment.StackTrace);
+        // Debug.Log("Updating rent text for property: " + onsen.name);
+        // Debug.Log(System.Environment.StackTrace);
         if (onsen.onsenRentText != null)
         {
-            Debug.Log("Rent text is assigned for property: " + onsen.name);
+            // Debug.Log("Rent text is assigned for property: " + onsen.name);
             onsen.onsenRentText.text = FormatPrice(onsen.rentPriceOnsen);
             onsen.onsenRentText.gameObject.SetActive(true);
         }

@@ -184,7 +184,7 @@ public class StallManager : MonoBehaviour
         {
             // File exists, try to read it
             string json = File.ReadAllText(jsonFilePath);
-            Debug.Log("JSON Contents: " + json); // Print JSON contents
+            // Debug.Log("JSON Contents: " + json); // Print JSON contents
 
             // Deserialize JSON data into StallDataWrapper
             StallDataWrapper wrapper = JsonUtility.FromJson<StallDataWrapper>(json);
@@ -192,7 +192,7 @@ public class StallManager : MonoBehaviour
             if (wrapper != null && wrapper.stalls != null && wrapper.stalls.Count > 0)
             {
                 // Properties loaded successfully
-                Debug.Log("Properties loaded successfully. Count: " + wrapper.stalls.Count);
+                // Debug.Log("Properties loaded successfully. Count: " + wrapper.stalls.Count);
 
                 // Assign stalls from wrapper to StallManager's stalls
                 stalls = wrapper.stalls;
@@ -229,7 +229,7 @@ public class StallManager : MonoBehaviour
         {
             if (stall.JSONwaypointIndex == JSONwaypointIndex)
             {
-                Debug.Log("Property found: " + stall.name);
+                // Debug.Log("Property found: " + stall.name);
 
                 return stall;
             }
@@ -261,7 +261,7 @@ public class StallManager : MonoBehaviour
             stall.stageImages.Add(stageImageInstance);
         }
 
-        Debug.Log("Number of stage images after loaded for stall " + stall.name + ": " + stall.stageImages.Count);
+        // Debug.Log("Number of stage images after loaded for stall " + stall.name + ": " + stall.stageImages.Count);
 
         // Ensure the number of loaded images matches the number of stages
         if (stall.stageImages.Count == stall.stageIndexes.Count)
@@ -270,7 +270,7 @@ public class StallManager : MonoBehaviour
             {
                 // Assign the image to its corresponding stage
                 GameObject stageImage = stall.stageImages[i];
-                Debug.Log("Stage Image for stage " + i + " associated with stall " + stall.name);
+                // Debug.Log("Stage Image for stage " + i + " associated with stall " + stall.name);
                 
             }
         }
@@ -291,7 +291,7 @@ public class StallManager : MonoBehaviour
                 // Deactivate the stage image
                 stageImage.SetActive(false);
             }
-            Debug.Log("Old stage images deactivated for stall: " + stall.name);
+            // Debug.Log("Old stage images deactivated for stall: " + stall.name);
         }
         else
         {
@@ -362,14 +362,14 @@ public class StallManager : MonoBehaviour
             // Get the color variation of the rent tag image
             string rentTagColor = rentTagImage.name.Split('_')[2]; 
             rentTagColor = rentTagColor.Replace("(Clone)", "");
-            Debug.Log("Rent tag color: " + rentTagColor + ", Expected color: " + color);
+            // Debug.Log("Rent tag color: " + rentTagColor + ", Expected color: " + color);
 
             // Compare the color variation with the player's color
             if (rentTagColor.Equals(color))
             {
                 // Activate the rent tag image
                 rentTagImage.SetActive(true);
-                Debug.Log("Rent tag image activated for color: " + color);
+                // Debug.Log("Rent tag image activated for color: " + color);
                 return; // Exit the loop once the rent tag image is activated
             }
         }
@@ -379,11 +379,11 @@ public class StallManager : MonoBehaviour
 
     public void UpdateRentText(StallData stall, int stageIndex)
     {
-        Debug.Log("Updating rent text for stall: " + stall.name + " at stage index: " + stageIndex);
-        Debug.Log(System.Environment.StackTrace);
+        // Debug.Log("Updating rent text for stall: " + stall.name + " at stage index: " + stageIndex);
+        // Debug.Log(System.Environment.StackTrace);
         if (stall.rentText != null)
         {
-            Debug.Log("Rent text is assigned for stall: " + stall.name);
+            // Debug.Log("Rent text is assigned for stall: " + stall.name);
             stall.rentText.text = FormatPrice(stall.rentPrices[stageIndex]);
             stall.rentText.gameObject.SetActive(true);
         }

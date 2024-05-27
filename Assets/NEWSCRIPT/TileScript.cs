@@ -64,7 +64,7 @@ public class TileScript : MonoBehaviour
             }
             else
             {
-                Debug.Log("No property found for this tile.");
+                Debug.LogWarning("No property found for this tile.");
             } 
         }
     }
