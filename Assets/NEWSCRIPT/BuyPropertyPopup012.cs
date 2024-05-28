@@ -15,10 +15,8 @@ public class BuyPropertyPopup012 : MonoBehaviour
     public Button BuyPropertyPopup_closeButton; // Reference to the close button
 
     private StallManager stallManager;
-    public PlayerController playerController;
 
-
-    private PlayerController currentPlayer;
+    public PlayerController currentPlayer;
     private StallManager.StallData currentStall;
 
     private float buyConfirmationTime = 10f; // Time limit for confirming the purchase
@@ -34,12 +32,6 @@ public class BuyPropertyPopup012 : MonoBehaviour
 
     private void Start()
     {
-        if (playerController == null)
-        {
-            Debug.LogError("PlayerController reference is not set.");
-        }      
-        // GameManager gameManager = FindObjectOfType<GameManager>();
-        // playerController = GetComponentInParent<PlayerController>();
         gameManager = FindObjectOfType<GameManager>();
         if (gameManager == null)
         {
@@ -49,8 +41,6 @@ public class BuyPropertyPopup012 : MonoBehaviour
 
         stallManager = StallManager.Instance;
         // ownedByTeammateText.gameObject.SetActive(false);
-
-        // Ensure that the StallManager reference is not null
         if (stallManager == null)
         {
             Debug.LogError("StallManager reference is not set in BuyPropertyPopup012!");
@@ -66,21 +56,10 @@ public class BuyPropertyPopup012 : MonoBehaviour
             Debug.LogError("GameManager not found!");
             return;
         }
-        int currentPlayerIndex = GameManager.currentPlayerIndex;
-
-
-        if (currentPlayerIndex >= 0 && currentPlayerIndex < gameManager.players.Length)
-        {
-            currentPlayer = gameManager.players[currentPlayerIndex];
-        }
-        else
-        {
-            Debug.LogError("Invalid currentPlayerIndex in GameManager!");
-        } 
-        if (playerController != null)
+        if (currentPlayer != null)
         {
             Debug.Log("Popup enabled");
-            playerController.isBuyPopUpActive = true;
+            currentPlayer.isBuyPopUpActive = true;
             buyConfirmationCoroutine = StartCoroutine(BuyConfirmationTimer());
             BuyPropertyPopup_closeButton.onClick.AddListener(Decline); 
             for (int i = 0; i < BuyPropertyPopup_buyButtons.Length; i++)
@@ -98,7 +77,7 @@ public class BuyPropertyPopup012 : MonoBehaviour
     private void OnDisable()
     {   
         // Debug.Log("Popup disabled");
-        playerController.isBuyPopUpActive = false;
+        currentPlayer.isBuyPopUpActive = false;
         if (buyConfirmationCoroutine != null)
         {
             StopCoroutine(buyConfirmationCoroutine);
@@ -274,14 +253,14 @@ public class BuyPropertyPopup012 : MonoBehaviour
     {
         yield return new WaitForSeconds(buyConfirmationTime);
         gameObject.SetActive(false);
-        // playerController.EndBuyPropertyInteraction();
+        // currentPlayer.EndBuyPropertyInteraction();
         gameManager.buyPropertyDecisionMade = true;
     }
 
     public void Decline()
     {
         gameObject.SetActive(false);
-        // playerController.EndBuyPropertyInteraction();
+        // currentPlayer.EndBuyPropertyInteraction();
         gameManager.buyPropertyDecisionMade = true;
 
     }

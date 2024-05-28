@@ -305,19 +305,19 @@ public class PlayerController : MonoBehaviour
     }
     private void ShowHotSpringPopup(OnsenManager.OnsenData onsen, PlayerController player)
     {
-        onsenpopup.playerController = player;
+        onsenpopup.currentPlayer = player;
         player.onsenpopup.gameObject.SetActive(true);
         player.onsenpopup.DisplayBuyHotSpring(onsen);
     }
     private void ShowBuy012(StallManager.StallData stall, PlayerController player)
     {
-        buy012PopUp.playerController = player;
+        buy012PopUp.currentPlayer = player;
         player.buy012PopUp.gameObject.SetActive(true);
         player.buy012PopUp.Display012(stall);
     }
     private void ShowBuyOutPopUp(StallManager.StallData stall, PlayerController player)
     {
-        buyoutPopup.playerController = player;
+        buyoutPopup.currentPlayer = player;
         player.buyoutPopup.gameObject.SetActive(true);
         player.buyoutPopup.DisplayBuyOut(stall);
     }
@@ -758,8 +758,8 @@ public class PlayerController : MonoBehaviour
             PlayerController ownerPlayer = FindPlayerByID(itemToLandOn.ownerID);
             if (itemToLandOn.onsenData != null)
             {
-                int rentPriceToDeduct = 3000000;
-                // int rentPriceToDeduct = itemToLandOn.onsenData.rentPriceOnsen + (20000 * fatigueLevel);
+                // int rentPriceToDeduct = 3000000;
+                int rentPriceToDeduct = itemToLandOn.onsenData.rentPriceOnsen + (20000 * fatigueLevel);
                 string formattedRent = FormatMoney(rentPriceToDeduct); 
                 yield return StartCoroutine(ShowMessage($"You pay the hot spring entry fee of ${formattedRent}, plus a surcharge for deluxe relaxation amenities tailored to your fatigue level of {fatigueLevel}.")); 
 
@@ -808,8 +808,8 @@ public class PlayerController : MonoBehaviour
                     }
                     else if (ownerPlayer.teamID != this.teamID)
                     {
-                        // int rentPriceToDeduct = stall.rentPrices[stall.currentStageIndex];
-                        int rentPriceToDeduct = 3000000;
+                        int rentPriceToDeduct = stall.rentPrices[stall.currentStageIndex];
+                        // int rentPriceToDeduct = 3000000;
                         string formattedRent = FormatMoney(rentPriceToDeduct);  
                         yield return StartCoroutine(ShowMessage("You have to pay the meal expense of $" + formattedRent));
                         yield return StartCoroutine(HandleRent(rentPriceToDeduct,itemToLandOn));
@@ -1006,8 +1006,8 @@ public class PlayerController : MonoBehaviour
                     }
                     else
                     {
-                        // Inform the player if they don't own any properties to sell
                         yield return StartCoroutine(ShowMessage("You don't own any properties to sell."));
+                        //addd more 
                     }
                     yield return new WaitUntil(() => gameManager.SellSelectionMade);
                     

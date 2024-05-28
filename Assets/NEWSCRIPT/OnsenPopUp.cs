@@ -16,9 +16,7 @@ public class OnsenPopUp : MonoBehaviour
 
     private StallManager stallManager;
     private OnsenManager onsenManager;
-    public PlayerController playerController;
-
-    private PlayerController currentPlayer;
+    public PlayerController currentPlayer;
     private OnsenManager.OnsenData currentOnsen;
 
 
@@ -90,9 +88,9 @@ public class OnsenPopUp : MonoBehaviour
             Debug.LogError("Buy button not found");
         }    
 
-        if (playerController != null)
+        if (currentPlayer != null)
         {
-            playerController.isHotSpringActive = true;
+            currentPlayer.isHotSpringActive = true;
             buyConfirmationCoroutine = StartCoroutine(BuyConfirmationTimer());
             closeButton.onClick.AddListener(Decline); // Add a listener to the close button
             buyButton.onClick.AddListener(() => BuyHotSpring(GameManager.currentPlayerIndex));
@@ -108,20 +106,11 @@ public class OnsenPopUp : MonoBehaviour
             Debug.LogError("GameManager not found!");
             return;
         }
-        int currentPlayerIndex = GameManager.currentPlayerIndex;
-        if (currentPlayerIndex >= 0 && currentPlayerIndex < gameManager.players.Length)
-        {
-            currentPlayer = gameManager.players[currentPlayerIndex];
-        }
-        else
-        {
-            Debug.LogError("Invalid currentPlayerIndex in GameManager!");
-        }  
     }
 
     private void OnDisable()
     {   
-        playerController.isHotSpringActive = false;
+        currentPlayer.isHotSpringActive = false;
         if (buyConfirmationCoroutine != null)
         {
             StopCoroutine(buyConfirmationCoroutine);
@@ -156,7 +145,6 @@ public class OnsenPopUp : MonoBehaviour
             
             if (gameManager != null && currentPlayerIndex >= 0 && currentPlayerIndex < gameManager.players.Length)
             {
-                // PlayerController currentPlayer = gameManager.players[currentPlayerIndex];
                 if (currentPlayer != null)
                 {
                     if (currentPlayer.Money >= newhotspringprice)
@@ -204,19 +192,13 @@ public class OnsenPopUp : MonoBehaviour
     IEnumerator BuyConfirmationTimer()
     {
         yield return new WaitForSeconds(buyConfirmationTime);
-
-        // Close the popup after the confirmation time if no purchase is made
         gameObject.SetActive(false);
-        // playerController.EndBuyPropertyInteraction();
         gameManager.OnsenDecisionMade = true;
     }
     public void Decline()
     {
-        // Close the popup immediately when the close button is pressed
         gameObject.SetActive(false);
-        // playerController.EndBuyPropertyInteraction();
         gameManager.OnsenDecisionMade = true;
-        
     }
     private string FormatHotSpringPrice (OnsenManager.OnsenData hotspring)
     {

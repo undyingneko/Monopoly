@@ -17,10 +17,7 @@ public class BuyOutPopUp : MonoBehaviour
 
 
     private StallManager propertyManager;
-    public PlayerController playerController;
-
-
-    private PlayerController currentPlayer;
+    public PlayerController currentPlayer;
     private StallManager.StallData currentProperty;
 
     private float buyConfirmationTime = 10f; // Time limit for confirming the purchase
@@ -99,10 +96,10 @@ public class BuyOutPopUp : MonoBehaviour
             Debug.LogError("Stage number text not found");
         }
 
-        if (playerController != null)
+        if (currentPlayer != null)
         {
             Debug.Log("Popup enabled");
-            playerController.isBuyPopUpActive = true;
+            currentPlayer.isBuyPopUpActive = true;
             buyConfirmationCoroutine = StartCoroutine(BuyConfirmationTimer());
             closeButton.onClick.AddListener(Decline); // Add a listener to the close button
             buyButton.onClick.AddListener(() => BuyOut(GameManager.currentPlayerIndex));
@@ -118,28 +115,11 @@ public class BuyOutPopUp : MonoBehaviour
             Debug.LogError("GameManager not found!");
             return;
         }
-        int currentPlayerIndex = GameManager.currentPlayerIndex;
-        if (currentPlayerIndex >= 0 && currentPlayerIndex < gameManager.players.Length)
-        {
-            currentPlayer = gameManager.players[currentPlayerIndex];
-            if (currentPlayer == null)
-            {
-                Debug.LogError("Current player not found!");
-            }
-            else
-            {
-                Debug.Log("Current player assigned: " + currentPlayer.name);
-            }
-        }
-        else
-        {
-            Debug.LogError("Invalid currentPlayerIndex in GameManager!");
-        }  
     }
 
     private void OnDisable()
     {   
-        playerController.isBuyPopUpActive = false;
+        currentPlayer.isBuyPopUpActive = false;
         Debug.Log("Popup disabled");
         if (buyConfirmationCoroutine != null)
         {
@@ -217,7 +197,7 @@ public class BuyOutPopUp : MonoBehaviour
                 {
                     if (currentPlayer.Money >= buyoutPrice)
                     {
-                        PlayerController ownerPlayer = playerController.FindPlayerByID(currentProperty.ownerID);
+                        PlayerController ownerPlayer = currentPlayer.FindPlayerByID(currentProperty.ownerID);
                         currentPlayer.Money -= buyoutPrice; 
                         ownerPlayer.Money += buyoutPrice;
                         
@@ -275,7 +255,7 @@ public class BuyOutPopUp : MonoBehaviour
 
         // Close the popup after the confirmation time if no purchase is made
         gameObject.SetActive(false);
-        // playerController.EndBuyPropertyInteraction();
+        // currentPlayer.EndBuyPropertyInteraction();
         gameManager.buyOutDecisionMade = true;
         Debug.Log("gameManager.buyOutDecisionMade set to : " + gameManager.buyOutDecisionMade);
     }
@@ -283,7 +263,7 @@ public class BuyOutPopUp : MonoBehaviour
     {
         // Close the popup immediately when the close button is pressed
         gameObject.SetActive(false);
-        // playerController.EndBuyPropertyInteraction();
+        // currentPlayer.EndBuyPropertyInteraction();
         gameManager.buyOutDecisionMade = true;
         Debug.Log("gameManager.buyOutDecisionMade set to : " + gameManager.buyOutDecisionMade);
         
