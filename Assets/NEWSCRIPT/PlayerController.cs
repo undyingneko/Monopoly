@@ -9,6 +9,7 @@ using Unity.VisualScripting;
 public class PlayerController : MonoBehaviour
 {
     public Image playerIcon;
+    private int AllcompensationAmount;
 
     private TextMeshProUGUI Tilepopup_propertyNameText;
     private TextMeshProUGUI ownerText;
@@ -947,11 +948,7 @@ public class PlayerController : MonoBehaviour
                             if (ListPropertiesForSelling.Count == 1)
                             {
                                 yield return StartCoroutine(ApplySell(rentPriceToDeduct));
- 
-                                // foreach (var stallToSell in propertiesToSell)
-                                // {
-                                    yield return StartCoroutine(ShowMessage("You have sold all your properties!"));
-                                // }
+                                yield return StartCoroutine(ShowMessage("You have sold all your properties!"));
                                 GameManager.Instance.SellSelectionMade = true;                                               
                             }
                             else if (ListPropertiesForSelling.Count > 1)
@@ -991,10 +988,10 @@ public class PlayerController : MonoBehaviour
                         else
                         {
                             yield return StartCoroutine(ApplySell(rentPriceToDeduct));  
-                            // Money = 0;
-                            // UpdateMoneyText();
-                            // ownerPlayer.Money += moneyall;
-                            // ownerPlayer.UpdateMoneyText();                                            
+                            ownerPlayer.Money += Money;
+                            ownerPlayer.UpdateMoneyText();
+                            Money = 0;
+                            UpdateMoneyText();                                            
                             isBankRupt = true;                                          
                             yield return StartCoroutine(ShowMessage("You have sold all of your properties"));
                             yield return StartCoroutine(ShowMessage("BANKRUPT!!!"));
@@ -1007,7 +1004,19 @@ public class PlayerController : MonoBehaviour
                     else
                     {
                         yield return StartCoroutine(ShowMessage("You don't own any properties to sell."));
-                        //addd more 
+                        AllcompensationAmount = Money;
+                        ownerPlayer.Money += AllcompensationAmount;
+                        ownerPlayer.UpdateMoneyText();
+                        Money -= AllcompensationAmount;
+                        UpdateMoneyText();
+                        isBankRupt = true;                                          
+                        yield return StartCoroutine(ShowMessage("You have sold all of your properties"));
+                        yield return StartCoroutine(ShowMessage("BANKRUPT!!!"));
+                        BankRuptStamp.gameObject.SetActive(true);
+                        HidePlayerImage();
+                        GameManager.Instance.SellSelectionMade = true;
+                        yield break;                 
+
                     }
                     yield return new WaitUntil(() => gameManager.SellSelectionMade);
                     
@@ -1037,11 +1046,13 @@ public class PlayerController : MonoBehaviour
     private IEnumerator ApplySell(int rentPriceToDeduct)
     {
         PlayerController ownerPlayer = FindPlayerByID(itemToLandOn.ownerID);
+        AllcompensationAmount = 0;
         foreach (var propertyToSell in ListPropertiesForSelling)
         {
-            int compensationAmount = propertyToSell.Price;
-            Money += compensationAmount;
-            UpdateMoneyText();
+            AllcompensationAmount += propertyToSell.Price;
+            // int compensationAmount = propertyToSell.Price;
+            // Money += compensationAmount;
+            // UpdateMoneyText();
             if (propertyToSell.stallData != null)
             {
                 StallManager.StallData stalltosell = propertyToSell.stallData;
@@ -1074,10 +1085,11 @@ public class PlayerController : MonoBehaviour
             propertyToSell.rentText.gameObject.SetActive(false);
             yield return StartCoroutine(ShowMessage("You have sold  your" + propertyToSell.name));
         }
-        Money -= rentPriceToDeduct;
-        UpdateMoneyText();
-        ownerPlayer.Money += rentPriceToDeduct;
-        ownerPlayer.UpdateMoneyText();                                                
+        // AllcompensationAmount += Money;
+        ownerPlayer.Money += AllcompensationAmount;
+        ownerPlayer.UpdateMoneyText(); 
+        Money -= AllcompensationAmount;
+        UpdateMoneyText();                                                      
         selectedmoney.gameObject.SetActive(false);
         MoneyNeeded.gameObject.SetActive(false);
         yield return null;
@@ -1150,7 +1162,6 @@ public class PlayerController : MonoBehaviour
         playerMoveText.gameObject.SetActive(false);
         rollButton.gameObject.SetActive(false);
         spriteRenderer.sortingOrder = originalSortingOrder;
-        
         StartCoroutine(DelayedNextTurn());
     }
 
@@ -1161,17 +1172,13 @@ public class PlayerController : MonoBehaviour
         gameManager.buyPropertyDecisionMade = false;
         gameManager.buyOutDecisionMade = false;
         gameManager.EndedAllInteraction = false; 
-        // gameManager.CheckWinningConditions();
         if (!gameManager.GameOver)
         {
             gameManager.NextTurn();
         }
-           
-        // gameManager.NextTurn(); 
     }
     public void StartTurn()
     {
-        
         isTurn = true;
         coroutineAllowed = true;
         if (!isBuyPopUpActive)

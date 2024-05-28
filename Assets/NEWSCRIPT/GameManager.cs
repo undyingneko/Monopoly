@@ -346,18 +346,26 @@ public class GameManager : MonoBehaviour
         int[] pack8Indices = { 29, 30 };
 
         // Check if the player owns all properties in any pack
-        bool pack1Monopoly = CheckStallOwned(teamID, pack1Indices);
-        bool pack2Monopoly = CheckStallOwned(teamID, pack2Indices);
-        bool pack3Monopoly = CheckStallOwned(teamID, pack3Indices);
-        bool pack4Monopoly = CheckStallOwned(teamID, pack4Indices);
-        bool pack5Monopoly = CheckStallOwned(teamID, pack5Indices);
-        bool pack6Monopoly = CheckStallOwned(teamID, pack6Indices);
-        bool pack7Monopoly = CheckStallOwned(teamID, pack7Indices);
-        bool pack8Monopoly = CheckStallOwned(teamID, pack8Indices);
+        int numPacksOwned = 0;
+        if (CheckStallOwned(teamID, pack1Indices))
+            numPacksOwned++;
+        if (CheckStallOwned(teamID, pack2Indices))
+            numPacksOwned++;
+        if (CheckStallOwned(teamID, pack3Indices))
+            numPacksOwned++;
+        if (CheckStallOwned(teamID, pack4Indices))
+            numPacksOwned++;
+        if (CheckStallOwned(teamID, pack5Indices))
+            numPacksOwned++;
+        if (CheckStallOwned(teamID, pack6Indices))
+            numPacksOwned++;
+        if (CheckStallOwned(teamID, pack7Indices))
+            numPacksOwned++;
+        if (CheckStallOwned(teamID, pack8Indices))
+            numPacksOwned++;
 
-        // Return true if any triple monopoly condition is met
-        return pack1Monopoly || pack2Monopoly || pack3Monopoly || pack4Monopoly ||
-               pack5Monopoly || pack6Monopoly || pack7Monopoly || pack8Monopoly;
+        // Return true if the player owns more than 3 packs
+        return numPacksOwned >= 3;
     }
 
     public bool CheckHotspringMonopoly(int teamID)
@@ -448,9 +456,9 @@ public class GameManager : MonoBehaviour
         {
         // Check if any winning condition is met
             bool sideMonopolyFound = CheckSideMonopoly(player.teamID);
-            // bool tripleMonopolyFound = gameManager.CheckTripleMonopoly(this.teamID);
+            bool tripleMonopolyFound = CheckTripleMonopoly(player.teamID);
             bool hotspringMonopolyFound = CheckHotspringMonopoly(player.teamID);
-            if (sideMonopolyFound || hotspringMonopolyFound)
+            if (sideMonopolyFound || tripleMonopolyFound || hotspringMonopolyFound)
             {
                 Debug.Log("We have a winner!");
                 GameOver = true;
