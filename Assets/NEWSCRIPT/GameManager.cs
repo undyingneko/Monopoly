@@ -9,42 +9,10 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     public bool GameOver;
-    // public bool checksidefinished;
-
-    
-    // public bool sideMonopolyFound;
-    // public bool tripleMonopolyFound;
-    // public bool hotspringMonopolyFound;
-    // public bool ownsallstalls;
-    // public bool ownsallonsens;
-
     public int winningTeamID;
     public GameObject gameOverPanel;
     public TextMeshProUGUI winningTeamText;
     public Image[] playerIcons;
-
-    // private readonly List<int[]> sides = new List<int[]>
-    // {
-    //     new[] { 1, 2, 3, 5, 6, 7 },
-    //     new[] { 9, 10, 11, 14, 15 },
-    //     new[] { 17, 19, 21, 22 },
-    //     new[] { 26, 27, 29, 30 }
-    // };
-
-    // private readonly List<int[]> packs = new List<int[]>
-    // {
-    //     new[] { 1, 2, 3 },
-    //     new[] { 5, 6, 7 },
-    //     new[] { 9, 10, 11 },
-    //     new[] { 14, 15 },
-    //     new[] { 17, 19 },
-    //     new[] { 21, 22 },
-    //     new[] { 26, 27 },
-    //     new[] { 29, 30 }
-    // };
-
-    // private readonly int[] hotsprings = { 4, 13, 18, 25 };
-
     public PlayerController[] players;
 
     public Properties currentHostingFireWork;
@@ -54,15 +22,9 @@ public class GameManager : MonoBehaviour
 
     private Dictionary<GameObject, Properties> tileToPropertyMap = new Dictionary<GameObject, Properties>();
     public Dictionary<int, GameObject> waypointIndexToTileMap;
-
     public Properties selectedProperty;
     public List<Properties> selectedPropertiestoSell;
-    
-    
     public static int currentPlayerIndex;
-    
-    
-    // private PlayerController playerController;
     public static GameManager Instance;
 
     public bool buyPropertyDecisionMade = false;
@@ -105,6 +67,32 @@ public class GameManager : MonoBehaviour
 
         // ownsallstalls= false;
         // ownsallonsens= false;    
+    }
+    
+  
+    void Update()
+    {
+        if (CheckTwoPlayersLeft())
+        {
+            StopGame();
+        }
+    }
+
+    void StopGame()
+    {
+        GameOver = true;
+        DisplayGameOverUI(winningTeamID);
+        // foreach (Image icon in playerIcons)
+        // {
+        //     icon.enabled = false;
+        // }
+        foreach (PlayerController player in players)
+        {
+            player.rollButton.gameObject.SetActive(false);
+            player.rollButton.onClick.RemoveAllListeners();
+            player.playerMoveText.gameObject.SetActive(false);
+            
+        } 
     }
     
     void StartGame()
@@ -151,7 +139,7 @@ public class GameManager : MonoBehaviour
         do
         {
             currentPlayerIndex = (currentPlayerIndex + 1) % players.Length;
-        } while (players[currentPlayerIndex].isBankRupt);
+        } while (players[currentPlayerIndex].isBankRupt || players[currentPlayerIndex].isLeft);
 
         turnCoroutine = StartCoroutine(StartTurnCoroutine());
     }
@@ -398,15 +386,51 @@ public class GameManager : MonoBehaviour
         bool everyoneLeft = true;
         foreach (PlayerController player in players)
         {
-            if (player.gameObject.activeSelf)
+            if (player.playerSpriteRenderer.enabled == false && player.teamID != currentPlayerIndex)
             {
-                everyoneLeft = false;
-                break;
+            everyoneLeft = false;
+            break;
             }
         }
-
         return everyoneLeft;
     }
+
+    public bool CheckTwoPlayersLeft()
+    {
+        int team1left = 0;
+        int team2left = 0;
+        int teamID1 = 1;
+        int teamID2 = 2;
+
+        foreach (PlayerController player in players)
+        {
+            if (player.isLeft || player.isBankRupt)
+            {
+                if (player.teamID == teamID1)
+                {
+                    team1left++;
+                    if (team1left >= 2)
+                    {
+                        winningTeamID = 2;
+                        return true;
+                    }
+                }
+                else if (player.teamID == teamID2)
+                {
+                    team2left++;
+                    if (team2left >= 2)
+                    {
+                        winningTeamID = 1;
+                        return true;
+                    }
+                }
+            }
+        }
+        
+        return false;
+    }
+
+
 
     private bool CheckStallOwned(int teamID, int[] waypointIndices)
     {
@@ -473,4 +497,30 @@ public class GameManager : MonoBehaviour
         yield return null;
         Debug.Log("Done checking all");
     } 
+
+    // public IEnumerator CheckIfTeamLeft()
+    // {
+    //     HashSet<int> remainingTeams = new HashSet<int>();
+
+    //     // Collect all teams with remaining players
+    //     foreach (PlayerController player in players)
+    //     {
+    //         if (player != null && !player.isLeft) 
+    //         {
+    //             remainingTeams.Add(player.teamID);
+    //         }
+    //     }
+
+    //     // If only one team remains, they win
+    //     if (remainingTeams.Count == 1)
+    //     {
+    //         winningTeamID = new List<int>(remainingTeams)[0];
+    //         Debug.Log($"Team {winningTeamID} wins as the only remaining team!");
+    //         GameOver = true;
+    //         DisplayGameOverUI(winningTeamID);
+    //     }
+
+    //     yield return null;
+    // }
+
 }

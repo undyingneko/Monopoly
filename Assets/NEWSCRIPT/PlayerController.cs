@@ -20,8 +20,7 @@ public class PlayerController : MonoBehaviour
     private TextMeshProUGUI[] stagePriceTexts = new TextMeshProUGUI[3];
     public Button Tilepopup_closeButton;
 
-
-    private SpriteRenderer playerSpriteRenderer;
+    public SpriteRenderer playerSpriteRenderer;
     // public List<StallManager.StallData> properties;
     // public List<StallManager.StallData> ownedStalls = new List<StallManager.StallData>();
 
@@ -42,7 +41,7 @@ public class PlayerController : MonoBehaviour
     
     public int dice1Value;
     public int dice2Value;
-    public GameObject BankRuptStamp;
+
     public GameObject MessageObject;
     public GameObject ChancePopUp;
 
@@ -83,7 +82,13 @@ public class PlayerController : MonoBehaviour
     public bool InJail = false;
     private int turnsInJail = 0;
     public TextMeshProUGUI goToJailText;
+
     public bool isBankRupt = false;
+    public GameObject BankRuptStamp;
+
+    public Button LeaveButton;
+    public bool isLeft;
+    public GameObject LeftStamp;
 
     public Transform canvasTransform;
     
@@ -124,7 +129,12 @@ public class PlayerController : MonoBehaviour
        
         gameManager = FindObjectOfType<GameManager>();
 
+        LeaveButton.onClick.AddListener(() => LeaveButtonOnClick());
+
         rollButton.onClick.AddListener(() => StartRollDiceCoroutine(dice1Value, dice2Value));
+        
+
+
         transform.position = waypoints[waypointIndex].transform.position;
         
         playerMoveText.gameObject.SetActive(false);
@@ -176,6 +186,7 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
 
     private void InitializePopupComponents()
     {
@@ -390,7 +401,7 @@ public class PlayerController : MonoBehaviour
 
         }
     }
-    private void StartRollDiceCoroutine(int dice1Value, int dice2Value)
+    public void StartRollDiceCoroutine(int dice1Value, int dice2Value)
     {
         StartCoroutine(RollDiceOnClick(dice1Value, dice2Value));
     }
@@ -838,7 +849,6 @@ public class PlayerController : MonoBehaviour
                             }
                             
                             // yield return StartCoroutine(WaitForPropertyDecision());
-                            yield return new WaitUntil(() => gameManager.buyOutDecisionMade);
                             yield return new WaitForSecondsRealtime(1f);
                             PlayerController ownerPlayeragain = FindPlayerByID(stall.ownerID);
                             if (stall.stagePrices[stall.nextStageIndex] <= Money && ownerPlayeragain.teamID == this.teamID)
@@ -1164,6 +1174,15 @@ public class PlayerController : MonoBehaviour
         spriteRenderer.sortingOrder = originalSortingOrder;
         StartCoroutine(DelayedNextTurn());
     }
+    private void LeaveButtonOnClick()
+    {
+        isLeft = true;
+        gameManager.EndedAllInteraction = true;
+        HidePlayerImage();
+        LeaveButton.onClick.RemoveAllListeners();
+        LeftStamp.gameObject.SetActive(true);
+        EndTurn();
+    }
 
     private IEnumerator DelayedNextTurn()
     {
@@ -1218,4 +1237,6 @@ public class PlayerController : MonoBehaviour
     {
         playerSpriteRenderer.enabled = false; // Hide the player image
     }
+
+    
 }
