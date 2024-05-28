@@ -714,6 +714,15 @@ public class PlayerController : MonoBehaviour
                     fatigueLevel = 0;
                     yield return StartCoroutine(ShowMessage("Your fatigue level has been reset to 0 after enjoying the natural onsen."));
                     ShowHotSpringPopup(itemToLandOn.onsenData, this);
+                    yield return new WaitUntil(() => gameManager.OnsenDecisionMade);
+                    gameManager.OnsenDecisionMade = false;
+                    yield return StartCoroutine(gameManager.CheckWinningConditions());
+                    if (gameManager.GameOver)
+                    {
+                        gameManager.DisplayGameOverUI(this.teamID);
+                        yield break;
+                    }
+
                 }
                 else
                 {

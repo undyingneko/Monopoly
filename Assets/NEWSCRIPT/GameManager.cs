@@ -327,7 +327,7 @@ public class GameManager : MonoBehaviour
         bool side2Monopoly = CheckStallOwned(teamID, side2Indices);
         bool side3Monopoly = CheckStallOwned(teamID, side3Indices);
         bool side4Monopoly = CheckStallOwned(teamID, side4Indices);
-        Debug.Log("All properties checked for side monopoly.");
+        // Debug.Log("All properties checked for side monopoly.");
         // Return true if any side monopoly condition is met
         return side1Monopoly || side2Monopoly || side3Monopoly || side4Monopoly;
 
@@ -449,8 +449,8 @@ public class GameManager : MonoBehaviour
         // Check if any winning condition is met
             bool sideMonopolyFound = CheckSideMonopoly(player.teamID);
             // bool tripleMonopolyFound = gameManager.CheckTripleMonopoly(this.teamID);
-            // bool hotspringMonopolyFound = gameManager.CheckHotspringMonopoly(this.teamID);
-            if (sideMonopolyFound)
+            bool hotspringMonopolyFound = CheckHotspringMonopoly(player.teamID);
+            if (sideMonopolyFound || hotspringMonopolyFound)
             {
                 Debug.Log("We have a winner!");
                 GameOver = true;
@@ -459,7 +459,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("No side monopoly found.");
+                Debug.Log("No monopoly found.");
             }
         }
         yield return null;

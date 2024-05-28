@@ -92,7 +92,6 @@ public class OnsenPopUp : MonoBehaviour
 
         if (playerController != null)
         {
-            Debug.Log("Popup enabled");
             playerController.isHotSpringActive = true;
             buyConfirmationCoroutine = StartCoroutine(BuyConfirmationTimer());
             closeButton.onClick.AddListener(Decline); // Add a listener to the close button
@@ -113,14 +112,6 @@ public class OnsenPopUp : MonoBehaviour
         if (currentPlayerIndex >= 0 && currentPlayerIndex < gameManager.players.Length)
         {
             currentPlayer = gameManager.players[currentPlayerIndex];
-            if (currentPlayer == null)
-            {
-                Debug.LogError("Current player not found!");
-            }
-            else
-            {
-                Debug.Log("Current player assigned: " + currentPlayer.name);
-            }
         }
         else
         {
@@ -131,12 +122,12 @@ public class OnsenPopUp : MonoBehaviour
     private void OnDisable()
     {   
         playerController.isHotSpringActive = false;
-        Debug.Log("Popup disabled");
         if (buyConfirmationCoroutine != null)
         {
             StopCoroutine(buyConfirmationCoroutine);
         }
         buyButton.onClick.RemoveListener(() => BuyHotSpring(GameManager.currentPlayerIndex));
+        gameManager.OnsenDecisionMade = false;
     }
 
     public void DisplayBuyHotSpring(OnsenManager.OnsenData hotspring)
@@ -147,8 +138,6 @@ public class OnsenPopUp : MonoBehaviour
             return;
         }
         currentOnsen = hotspring;
-        Debug.Log ("currentOnsen name:"+ currentOnsen.name);
-
         propertyNameText.text = hotspring.name;
         if (currentPlayer == null || currentOnsen == null)
         {
@@ -174,8 +163,6 @@ public class OnsenPopUp : MonoBehaviour
                     {
                         currentPlayer.Money -= newhotspringprice; 
                         currentPlayer.UpdateMoneyText();
-                        Debug.Log("Money deducted:" + newhotspringprice );
-
                         if (!currentOnsen.owned)
                         {
                             currentOnsen.owned = true;            
@@ -183,7 +170,6 @@ public class OnsenPopUp : MonoBehaviour
                             currentOnsen.teamownerID = currentPlayer.teamID;
                             currentPlayer.ownedOnsens.Add(currentOnsen);
                         }   
-                        Debug.Log("Hot Spring bought successfully.");
 
                         gameObject.SetActive(false); 
 
@@ -193,13 +179,11 @@ public class OnsenPopUp : MonoBehaviour
                         onsenManager.UpdateonsenRentText(currentOnsen);
                         currentOnsen.OnsenImage.SetActive(true);
                         gameManager.OnsenDecisionMade = true;
-                        Debug.Log("gameManager.OnsenDecisionMade set to : " + gameManager.OnsenDecisionMade);
+                        
                     }
                     else
-                    {
-                        Debug.LogWarning("Insufficient funds to buy the property.");
-                        gameManager.OnsenDecisionMade = true;
-                        Debug.Log("gameManager.OnsenDecisionMade set to : " + gameManager.OnsenDecisionMade);
+                    {           
+                        gameManager.OnsenDecisionMade = true;                     
                     }
                 }
                 else
@@ -216,7 +200,6 @@ public class OnsenPopUp : MonoBehaviour
             {
                 StopCoroutine(buyConfirmationCoroutine);
             }
-        Debug.Log ("currentPlayerIndex:"+ GameManager.currentPlayerIndex);
     }
     IEnumerator BuyConfirmationTimer()
     {
@@ -226,7 +209,6 @@ public class OnsenPopUp : MonoBehaviour
         gameObject.SetActive(false);
         // playerController.EndBuyPropertyInteraction();
         gameManager.OnsenDecisionMade = true;
-        Debug.Log("gameManager.OnsenDecisionMade set to : " + gameManager.OnsenDecisionMade);
     }
     public void Decline()
     {
@@ -234,7 +216,6 @@ public class OnsenPopUp : MonoBehaviour
         gameObject.SetActive(false);
         // playerController.EndBuyPropertyInteraction();
         gameManager.OnsenDecisionMade = true;
-        Debug.Log("gameManager.OnsenDecisionMade set to : " + gameManager.OnsenDecisionMade);
         
     }
     private string FormatHotSpringPrice (OnsenManager.OnsenData hotspring)

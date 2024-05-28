@@ -68,21 +68,10 @@ public class BuyPropertyPopup012 : MonoBehaviour
         }
         int currentPlayerIndex = GameManager.currentPlayerIndex;
 
-        // Check if the current player index is valid
+
         if (currentPlayerIndex >= 0 && currentPlayerIndex < gameManager.players.Length)
         {
-            // Assign the current player using the player index
             currentPlayer = gameManager.players[currentPlayerIndex];
-
-            // Check if the currentPlayer is null
-            if (currentPlayer == null)
-            {
-                Debug.LogError("Current player not found!");
-            }
-            else
-            {
-                Debug.Log("Current player assigned: " + currentPlayer.name);
-            }
         }
         else
         {
